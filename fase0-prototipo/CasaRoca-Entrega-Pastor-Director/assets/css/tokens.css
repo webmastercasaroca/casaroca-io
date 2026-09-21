@@ -1,0 +1,155 @@
+/* ============================================================
+   CASA ROCA AI SYSTEM — DESIGN TOKENS (v3 · Enterprise)
+   Identidad: "una casa cálida y segura".
+   Evolución a estándar SaaS senior (ref: Salesforce Lightning,
+   HubSpot, NetSuite, SAP Fiori) conservando la marca:
+   Azul (confianza/profundidad) + Mostaza (calidez/cercanía).
+   Verbos de marca: conocer, acompañar, ayudar, rodear.
+   ------------------------------------------------------------
+   NOTA: se conservan TODOS los nombres de variable previos para
+   no romper componentes; se refinan valores y se añaden nuevos.
+   ============================================================ */
+
+:root {
+  /* ---------- Color · Azul (primario de marca) ---------- */
+  --azul-950: #071D44;
+  --azul-900: #0A2A5E;
+  --azul-800: #0E367A;
+  --azul-700: #134291;   /* primario de marca */
+  --azul-600: #1B53AD;
+  --azul-500: #2A66C4;
+  --azul-400: #5589DA;
+  --azul-300: #92B3E8;
+  --azul-200: #C4D6F3;
+  --azul-100: #E4ECFA;
+  --azul-50:  #F1F6FD;
+
+  /* ---------- Color · Mostaza (acento cálido) ---------- */
+  --mostaza-800: #8A5A0E;
+  --mostaza-700: #A86E12;
+  --mostaza-600: #C8881A;
+  --mostaza-500: #E3A52C;  /* acento de marca */
+  --mostaza-400: #EFBC55;
+  --mostaza-300: #F6D389;
+  --mostaza-200: #FBE7BC;
+  --mostaza-100: #FDF4DE;
+  --mostaza-50:  #FEFBF2;
+
+  /* ---------- Neutros cálidos (warm slate) ----------
+     Base limpia y densa para datos, con tibieza sutil. */
+  --blanco-calido: #F5F6F8;  /* canvas / fondo general */
+  --superficie:    #FFFFFF;  /* tarjetas / superficie base */
+  --superficie-2:  #F1F2F5;  /* zonas suaves / fills */
+  --superficie-3:  #FAFAFC;  /* sutil (filas, headers de tabla) */
+  --borde-sutil:   #F0F1F4;
+  --borde:         #E6E8EE;
+  --borde-fuerte:  #D6D9E2;
+
+  --texto:        #161D2E;   /* principal */
+  --texto-suave:  #58617A;   /* secundario */
+  --texto-tenue:  #8A92A6;   /* terciario / placeholders */
+  --texto-sobre-azul: #FFFFFF;
+
+  /* ---------- Estados / feedback ---------- */
+  --exito:    #1E8A55;
+  --exito-bg: #E5F5EC;
+  --exito-borde: #BCE6CE;
+  --aviso:    #B5790F;
+  --aviso-bg: #FDF4DE;
+  --aviso-borde: #F4DDA1;
+  --peligro:  #C13A2B;
+  --peligro-bg:#FBEAE7;
+  --peligro-borde:#F2C5BE;
+  --info:     #1B53AD;
+  --info-bg:  #E4ECFA;
+  --info-borde:#C4D6F3;
+
+  /* ---------- Colores de las 4 etapas (recorrido) ---------- */
+  --etapa-conoce:    #2A66C4; /* azul */
+  --etapa-conoce-bg: #E4ECFA;
+  --etapa-conecta:   #7E57C2; /* violeta */
+  --etapa-conecta-bg:#EEE8F8;
+  --etapa-crece:     #1E8A55; /* verde */
+  --etapa-crece-bg:  #E5F5EC;
+  --etapa-sirve:     #E3A52C; /* mostaza */
+  --etapa-sirve-bg:  #FDF4DE;
+
+  /* ---------- Tipografía ----------
+     Inter como cara principal (cargada en index.html) con
+     fallback a la pila del sistema para uso offline. */
+  --fuente-base: "Inter", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --fuente-titulo: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --fuente-mono: "SFMono-Regular", "JetBrains Mono", "Roboto Mono", ui-monospace, Menlo, Consolas, monospace;
+  --num-tabular: "tnum" 1, "lnum" 1;
+
+  --tx-2xs:  0.6875rem; /* 11 */
+  --tx-xs:   0.75rem;   /* 12 */
+  --tx-sm:   0.8125rem; /* 13 — densidad de datos */
+  --tx-base: 0.9375rem; /* 15 — cuerpo */
+  --tx-md:   1.0625rem; /* 17 */
+  --tx-lg:   1.3125rem; /* 21 */
+  --tx-xl:   1.625rem;  /* 26 */
+  --tx-2xl:  2.0625rem; /* 33 */
+  --tx-3xl:  2.625rem;  /* 42 — hero KPIs */
+
+  --peso-regular: 400;
+  --peso-medio:   500;
+  --peso-semi:    600;
+  --peso-bold:    700;
+  --peso-black:   800;
+
+  --linea-apretada: 1.18;
+  --linea-base: 1.55;
+
+  --track-tight: -0.014em;  /* títulos */
+  --track-wide:  0.04em;    /* eyebrows / labels */
+
+  /* ---------- Espaciado (escala 4px) ---------- */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 2.5rem;
+  --sp-8: 3rem;
+
+  /* ---------- Radios ---------- */
+  --radio-xs: 6px;
+  --radio-sm: 9px;
+  --radio-md: 13px;
+  --radio-lg: 18px;
+  --radio-xl: 24px;
+  --radio-full: 999px;
+
+  /* ---------- Sombras (capas finas, tinte azul frío) ---------- */
+  --sombra-xs: 0 1px 2px rgba(13, 26, 56, 0.05);
+  --sombra-sm: 0 1px 2px rgba(13, 26, 56, 0.06), 0 1px 3px rgba(13, 26, 56, 0.04);
+  --sombra-md: 0 4px 12px -2px rgba(13, 26, 56, 0.10), 0 2px 6px -2px rgba(13, 26, 56, 0.06);
+  --sombra-lg: 0 18px 38px -10px rgba(13, 26, 56, 0.20), 0 6px 14px -6px rgba(13, 26, 56, 0.10);
+  --sombra-xl: 0 32px 64px -16px rgba(13, 26, 56, 0.28);
+  --sombra-azul: 0 6px 16px -4px rgba(19, 66, 145, 0.35);
+  --sombra-mostaza: 0 6px 16px -4px rgba(200, 136, 26, 0.35);
+  --sombra-interna: inset 0 1px 2px rgba(13, 26, 56, 0.06);
+
+  /* ---------- Anillos de foco / realce ---------- */
+  --ring-azul:    0 0 0 3px rgba(42, 102, 196, 0.20);
+  --ring-foco:    0 0 0 3px rgba(227, 165, 44, 0.50);
+  --ring-peligro: 0 0 0 3px rgba(193, 58, 43, 0.20);
+
+  /* ---------- Layout ---------- */
+  --ancho-app: 1280px;
+  --alto-topbar: 60px;
+  --alto-tabbar: 64px;
+  --ancho-sidebar: 260px;
+
+  /* ---------- Tamaños táctiles (accesibilidad) ---------- */
+  --tactil-min: 44px;
+
+  /* ---------- Transiciones / easing ---------- */
+  --t-rapida: 120ms cubic-bezier(0.4, 0, 0.2, 1);
+  --t-media: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+  --t-lenta: 360ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-suave: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-rebote: cubic-bezier(0.34, 1.56, 0.64, 1);
+}

@@ -1,0 +1,146 @@
+# ⛔ LA COMPUERTA, EN LA NUBE. Sin esto en verde no hay fusión: es el punto
+#    del checklist B11.05 y es lo que evita que una invariante rota entre a
+#    la rama principal porque «en mi máquina pasaba».
+name: Verificación
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  base-y-api:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: laboratorio-de-verificacion
+          POSTGRES_DB: casaroca_dev
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+        ports: [ '5433:5432' ]
+
+    env:
+      PGHOST: 127.0.0.1
+      PGPORT: '5433'
+      PGUSER: postgres
+      PGPASSWORD: laboratorio-de-verificacion
+      PGDATABASE: casaroca_dev
+      # Valores de laboratorio, declarados como tales. Los de verdad viven
+      # en el gestor de secretos y no pasan por aquí.
+      APP_JWT_SECRETO: secreto-de-verificacion-continua-no-usar-000
+      APP_LLAVE_N4: llave-de-verificacion-continua-no-usar-00000
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: backend/api/package-lock.json
+
+      - name: Cliente de PostgreSQL 16
+        run: |
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/pgdg.gpg
+          sudo apt-get update -qq && sudo apt-get install -yqq postgresql-client-16
+
+      - name: Dependencias de la API
+        working-directory: backend/api
+        run: npm ci --no-audit --no-fund
+
+      - name: Auditoría de dependencias
+        working-directory: backend/api
+        # No bloquea por vulnerabilidades bajas, sí por altas y críticas.
+        run: npm audit --audit-level=high
+
+      - name: Migraciones desde cero
+        working-directory: backend
+        run: ./scripts/migrar.sh
+
+      - name: Invariantes de la base
+        working-directory: backend
+        run: ./scripts/probar.sh --rapido
+
+      - name: Compilar la API
+        working-directory: backend/api
+        run: npm run build
+
+      - name: Autenticación de punta a punta
+        working-directory: backend
+        run: ./scripts/probar-auth.sh
+
+      # ⛔ 19 sep 2026 · Estos tres bancos (42 comprobaciones) estaban muertos
+      #    desde que se elimino la cabecera X-Persona-Id, y NO estaban aqui.
+      #    Al revivirlos aparecieron dos fallos reales: toda donacion daba 500
+      #    y no se podia convertir en miembro a quien no autorizo correo.
+      - name: Bancos de la API (humo, Drive 100p y extremo a extremo)
+        working-directory: backend
+        run: |
+          ./scripts/probar-api.sh
+          ./scripts/probar-api-drive.sh
+          ( cd api && npm run probar )
+
+      - name: Ningún cast de la API apunta a un tipo borrado
+        working-directory: backend
+        run: |
+          MUERTOS=""
+          for t in $(python3 scripts/tipos-citados.py api/src); do
+            N=$(psql -qtA -c "SELECT count(*) FROM pg_type y JOIN pg_namespace m ON m.oid=y.typnamespace WHERE m.nspname||'.'||y.typname='$t';")
+            [ "$N" = "0" ] && MUERTOS="$MUERTOS $t"
+          done
+          [ -z "$MUERTOS" ] || { echo "⛔ la API escribe a tipos BORRADOS:$MUERTOS"; exit 1; }
+
+      - name: La especificación está al día
+        working-directory: backend
+        run: |
+          cp api/openapi.yaml /tmp/antes.yaml
+          node scripts/generar-openapi.js
+          diff /tmp/antes.yaml api/openapi.yaml || {
+            echo "⛔ openapi.yaml quedó atrás: corra scripts/generar-openapi.js y versione el resultado"; exit 1; }
+
+      # ⛔ La infraestructura tambien es codigo: si no pasa por validate,
+      #    fmt y test, se entera GCP y cuesta dinero.
+      - name: Ningún secreto versionado
+        run: python3 backend/scripts/buscar-secretos.py .
+
+      - name: Terraform válido, formateado y probado
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.13.3
+          terraform_wrapper: false
+
+      - name: Terraform
+        working-directory: infra/gcp
+        run: |
+          terraform init -backend=false
+          terraform validate
+          terraform fmt -check -recursive
+          terraform test
+
+      - name: Copia y restauración probada
+        working-directory: backend
+        run: |
+          ./scripts/respaldar.sh
+          ./scripts/restaurar.sh
+
+      - name: Sin fugas de lectura
+        working-directory: backend
+        run: |
+          F=$(psql -qtA -c "SELECT count(*) FROM plataforma.v_control_rls WHERE veredicto LIKE 'FUGA%';")
+          echo "fugas: $F"; [ "$F" = "0" ] || exit 1
+
+      - name: Evidencia
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencia-verificacion
+          path: |
+            backend/docs/EVIDENCIA-restauracion.txt
+            backend/api/openapi.yaml

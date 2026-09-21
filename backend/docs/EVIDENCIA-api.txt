@@ -1,0 +1,19 @@
+
+===== API · MODULO DE NUEVOS (extremo a extremo) =====
+  1 | Registro publico entra a la bandeja          | 201 registrado                 | PASA
+  2 | Correo duplicado en la bandeja               | 409 EMAIL_DUPLICADO            | PASA
+  3 | Registro sin forma de contacto               | 400                            | PASA
+  4 | Peticion sin identidad                       | 401                            | PASA
+  5 | El coordinador de su sede lo ve              | true                           | PASA
+  6 | El de OTRA sede no lo ve                     | false                          | PASA
+  7 | Historial directo desde otra sede            | 404                            | PASA
+  8 | El contexto no se filtra entre peticiones    | sin fuga                       | PASA
+  9 | Contacto registrado y estado derivado        | 201 contactado                 | PASA
+ 10 | Conversion a miembro                         | 201 conoce                     | PASA
+ 11 | El consentimiento conserva su fecha original | 2 canales, fecha original      | PASA
+ 12 | Convertir dos veces                          | 409                            | PASA
+ 13 | El rol de la API no puede saltar RLS         | false                          | PASA
+
+ pasan | fallan | total
+ 13     | 0      | 13
+

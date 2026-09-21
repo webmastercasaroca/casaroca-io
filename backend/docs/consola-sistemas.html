@@ -1,0 +1,395 @@
+<title>Consola de Sistemas CasaRoca</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#EDF0F3; --surface:#FFFFFF; --surface-2:#F5F7F9; --surface-3:#E9EEF2;
+  --line:#D3DAE1; --line-soft:#E4E9ED;
+  --ink:#12202E; --ink-2:#43566A; --ink-3:#71838F;
+  --on:#1F6F5C; --on-soft:#DFEDE8;
+  --wait:#9C6212; --wait-soft:#F6EBDA;
+  --off:#8A97A2; --off-soft:#E9EDF0;
+  --alert:#9B2F2A; --alert-soft:#F6E2E0;
+  --shadow:0 1px 2px rgba(18,32,46,.06), 0 8px 24px -16px rgba(18,32,46,.28);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#0C161D; --surface:#132330; --surface-2:#182C3A; --surface-3:#1E3646;
+  --line:#26404F; --line-soft:#1D3241;
+  --ink:#E4EDF3; --ink-2:#9FB4C2; --ink-3:#71899A;
+  --on:#57B195; --on-soft:#123329;
+  --wait:#D9A05B; --wait-soft:#33240F;
+  --off:#5E7385; --off-soft:#1A2C39;
+  --alert:#DE8079; --alert-soft:#361B19;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+}}
+:root[data-theme="dark"]{
+  --ground:#0C161D; --surface:#132330; --surface-2:#182C3A; --surface-3:#1E3646;
+  --line:#26404F; --line-soft:#1D3241;
+  --ink:#E4EDF3; --ink-2:#9FB4C2; --ink-3:#71899A;
+  --on:#57B195; --on-soft:#123329;
+  --wait:#D9A05B; --wait-soft:#33240F;
+  --off:#5E7385; --off-soft:#1A2C39;
+  --alert:#DE8079; --alert-soft:#361B19;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:"Source Sans 3",ui-sans-serif,system-ui,sans-serif;font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:34px 22px 72px;display:flex;flex-direction:column;gap:26px}
+@media(max-width:640px){.wrap{padding:24px 14px 52px}}
+h1,h2,h3{font-family:"Bricolage Grotesque",sans-serif;margin:0;text-wrap:balance}
+h1{font-size:clamp(1.7rem,4vw,2.5rem);font-weight:800;letter-spacing:-.022em;line-height:1.1}
+h2{font-size:1.18rem;font-weight:600;letter-spacing:-.01em}
+h3{font-size:.98rem;font-weight:600}
+p{margin:0}
+.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:.66rem;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+
+header{display:flex;flex-direction:column;gap:11px}
+.lede{color:var(--ink-2);max-width:64ch;font-size:1.02rem}
+.master{display:flex;align-items:center;gap:10px;align-self:flex-start;
+  background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:9px 14px;box-shadow:var(--shadow)}
+.master .dot{width:9px;height:9px;border-radius:50%;background:var(--on);flex:none}
+.master b{font-weight:600}
+.master span{color:var(--ink-3);font-size:.82rem}
+
+/* pestañas */
+nav{display:flex;gap:3px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+nav button{
+  appearance:none;background:none;border:none;border-bottom:2px solid transparent;
+  font:inherit;font-weight:600;font-size:.93rem;color:var(--ink-3);
+  padding:9px 15px;cursor:pointer;margin-bottom:-1px;border-radius:5px 5px 0 0;
+}
+nav button:hover{color:var(--ink-2);background:var(--surface-2)}
+nav button[aria-selected="true"]{color:var(--on);border-bottom-color:var(--on)}
+nav button:focus-visible{outline:2px solid var(--on);outline-offset:-2px}
+.panel{display:none;flex-direction:column;gap:18px}
+.panel.on{display:flex}
+.hint{color:var(--ink-2);font-size:.93rem;max-width:70ch}
+
+/* iglesias */
+.churches{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:12px}
+.ch{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:15px 17px;
+  display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow)}
+.ch.is-master{border-color:var(--on);border-width:1.5px}
+.ch .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.ch .code{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-3);letter-spacing:.04em}
+.ch .nm{font-weight:600;font-size:1.02rem}
+.ch .meta{font-size:.8rem;color:var(--ink-3)}
+.badge{font-family:"IBM Plex Mono",monospace;font-size:.6rem;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;padding:3px 7px;border-radius:4px;white-space:nowrap}
+.badge.master{background:var(--on-soft);color:var(--on)}
+.badge.plant{background:var(--surface-3);color:var(--ink-2)}
+.mods{display:flex;flex-wrap:wrap;gap:4px}
+.m{font-size:.71rem;padding:3px 7px;border-radius:4px;border:1px solid transparent;white-space:nowrap;
+  font-family:"IBM Plex Mono",monospace}
+.m.on{background:var(--on-soft);color:var(--on);border-color:color-mix(in srgb,var(--on) 30%,transparent)}
+.m.wait{background:var(--wait-soft);color:var(--wait);border-color:color-mix(in srgb,var(--wait) 32%,transparent)}
+.m.off{background:var(--off-soft);color:var(--off)}
+.ch .foot{font-size:.78rem;color:var(--ink-3);display:flex;gap:12px;flex-wrap:wrap}
+
+/* matriz */
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface);box-shadow:var(--shadow)}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.82rem}
+th,td{padding:8px 9px;text-align:left;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+thead th{background:var(--ink);color:var(--surface);position:sticky;top:0;z-index:2;
+  font-family:"IBM Plex Mono",monospace;font-size:.63rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+tbody th{position:sticky;left:0;background:var(--surface);z-index:1;font-weight:600;
+  border-right:1px solid var(--line);min-width:186px;white-space:normal}
+tbody tr:nth-child(even) th, tbody tr:nth-child(even) td{background:var(--surface-2)}
+tbody tr:hover th, tbody tr:hover td{background:var(--surface-3)}
+.acts{display:flex;gap:3px}
+.a{font-family:"IBM Plex Mono",monospace;font-size:.64rem;font-weight:600;
+  width:17px;height:17px;line-height:17px;text-align:center;border-radius:3px;
+  background:var(--on-soft);color:var(--on)}
+.a.s{background:var(--alert-soft);color:var(--alert)}
+.dash{color:var(--ink-3);opacity:.45}
+.roleceil{font-family:"IBM Plex Mono",monospace;font-size:.66rem;color:var(--ink-3);font-weight:400;display:block}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.82rem;color:var(--ink-2);align-items:center}
+.legend .a{margin-right:5px}
+.legend span{display:inline-flex;align-items:center}
+
+/* simulador */
+.sim{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:5px}
+label{font-family:"IBM Plex Mono",monospace;font-size:.66rem;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:600}
+select{font:inherit;font-size:.93rem;padding:9px 11px;border-radius:8px;border:1px solid var(--line);
+  background:var(--surface);color:var(--ink);cursor:pointer}
+select:focus-visible{outline:2px solid var(--on);outline-offset:1px}
+.verdict{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
+.vrow{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;
+  padding:11px 16px;border-bottom:1px solid var(--line-soft)}
+.vrow:last-child{border-bottom:none}
+.vrow .mn{font-weight:600;font-size:.93rem;display:flex;flex-direction:column;gap:1px}
+.vrow .why{font-size:.79rem;color:var(--ink-3);font-weight:400}
+.vrow.no .mn{color:var(--ink-3)}
+.state{font-family:"IBM Plex Mono",monospace;font-size:.63rem;font-weight:600;letter-spacing:.07em;
+  text-transform:uppercase;padding:4px 9px;border-radius:5px;white-space:nowrap}
+.state.yes{background:var(--on-soft);color:var(--on)}
+.state.no{background:var(--off-soft);color:var(--off)}
+.state.wait{background:var(--wait-soft);color:var(--wait)}
+.sum{background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:13px 16px;
+  font-size:.92rem;color:var(--ink-2)}
+.sum b{color:var(--ink)}
+
+/* aprovisionamiento */
+.steps{display:flex;flex-direction:column;gap:10px}
+.step{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--on);
+  border-radius:8px;padding:14px 17px;display:flex;flex-direction:column;gap:5px;box-shadow:var(--shadow)}
+.step .k{font-family:"IBM Plex Mono",monospace;font-size:.65rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--on)}
+.step p{font-size:.9rem;color:var(--ink-2)}
+.tpl{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:11px}
+.t{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:14px 16px;
+  display:flex;flex-direction:column;gap:5px;box-shadow:var(--shadow)}
+.t .n{font-weight:600}
+.t .c{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--on)}
+.t p{font-size:.86rem;color:var(--ink-2)}
+pre{background:var(--ink);color:#E4EDF3;border-radius:9px;padding:15px 17px;overflow-x:auto;
+  font-family:"IBM Plex Mono",monospace;font-size:.79rem;line-height:1.65;margin:0}
+pre .c{color:#7E9AAB}
+pre .s{color:#8ED0B4}
+
+
+.cadena{display:flex;flex-direction:column;gap:8px}
+.esl{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:13px 16px;
+  display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;box-shadow:var(--shadow)}
+.esl .lvl{font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--on);background:var(--on-soft);padding:4px 8px;border-radius:5px;white-space:nowrap}
+.esl .nm{font-weight:600;display:flex;flex-direction:column;gap:2px}
+.esl .ds{font-size:.83rem;color:var(--ink-2);font-weight:400}
+.esl .tc{font-family:"IBM Plex Mono",monospace;font-size:.7rem;color:var(--ink-3);white-space:nowrap}
+.esl.nuevo{border-color:var(--on);border-width:1.5px}
+.esl .tag{font-family:"IBM Plex Mono",monospace;font-size:.58rem;letter-spacing:.07em;text-transform:uppercase;
+  background:var(--on-soft);color:var(--on);padding:2px 6px;border-radius:4px;margin-left:6px}
+@media(max-width:640px){.esl{grid-template-columns:auto 1fr}.esl .tc{grid-column:2}}
+footer{border-top:1px solid var(--line);padding-top:14px;font-size:.8rem;color:var(--ink-3);
+  display:flex;flex-direction:column;gap:3px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">CasaRoca System · Administración</span>
+    <h1>Consola de sistemas</h1>
+    <p class="lede">Qué módulos tiene encendidos cada iglesia, qué puede hacer cada rol en cada módulo,
+      y cómo se crea una iglesia nueva desde la maestra. Los datos salen de la base de desarrollo:
+      son el modelo real, no una maqueta.</p>
+    <div class="master"><span class="dot"></span>
+      <b>Bogotá Chicó</b><span>· sede maestra · desde aquí se crean las demás</span></div>
+  </header>
+
+  <nav role="tablist">
+    <button role="tab" aria-selected="true" data-p="iglesias">Iglesias</button>
+    <button role="tab" aria-selected="false" data-p="matriz">Matriz de permisos</button>
+    <button role="tab" aria-selected="false" data-p="sim">Qué puede hacer cada rol</button>
+    <button role="tab" aria-selected="false" data-p="jerarquia">Cadena de mando</button>
+    <button role="tab" aria-selected="false" data-p="prov">Crear una iglesia</button>
+  </nav>
+
+  <div class="panel on" id="p-iglesias">
+    <p class="hint">Cada tarjeta muestra los módulos del sistema. <strong>Verde</strong> = encendido ·
+      <strong>ámbar</strong> = apagado esperando la compuerta legal (H-02) · <strong>gris</strong> = no
+      incluido en la plantilla de esa iglesia.</p>
+    <div class="churches" id="churches"></div>
+  </div>
+
+  <div class="panel" id="p-matriz">
+    <p class="hint">Esta es la matriz del taller H-01 vuelta tabla. Una celda vacía no es un olvido:
+      es una decisión. Las acciones sensibles van en rojo porque son las que hay que discutir una
+      por una.</p>
+    <div class="legend" id="legend"></div>
+    <div class="scroll"><table id="matriz"></table></div>
+    <div class="sum" id="matrix-note"></div>
+  </div>
+
+  <div class="panel" id="p-sim">
+    <p class="hint">Elija un rol y una iglesia. La consola calcula el permiso efectivo y, cuando algo
+      está bloqueado, dice <em>cuál</em> de las condiciones falló — que es la pregunta real de soporte:
+      «¿por qué esta persona no ve este botón?».</p>
+    <div class="sim">
+      <div class="field"><label for="selRol">Rol</label><select id="selRol"></select></div>
+      <div class="field"><label for="selSede">Iglesia</label><select id="selSede"></select></div>
+    </div>
+    <div class="sum" id="simSum"></div>
+    <div class="verdict" id="simOut"></div>
+  </div>
+
+
+  <div class="panel" id="p-jerarquia">
+    <p class="hint">La cadena va de la organización a la persona. Cada eslabón acota el alcance del
+      siguiente: un director de segmento no ve la sede entera, y un líder no ve el segmento entero.</p>
+    <div class="cadena" id="cadena"></div>
+    <h2>Los segmentos</h2>
+    <p class="hint">El segmento es la franja dentro de un ministerio, y es el nivel al que se opera el
+      día a día. Sin esta entidad, «director de segmento» y «coordinador de segmento» no tendrían
+      sobre qué recaer.</p>
+    <div class="churches" id="segs"></div>
+  </div>
+
+  <div class="panel" id="p-prov">
+    <p class="hint">Una iglesia no se crea con un INSERT. Se crea con una función que la cuelga de la
+      maestra, le aplica su plantilla de módulos, le exige un pastor y deja constancia.</p>
+    <div class="steps">
+      <div class="step"><span class="k">Condición previa</span><h3>Alcance de organización</h3>
+        <p>Solo el Pastor Director General puede crear iglesias. Si la sesión no tiene alcance global, la base rechaza la operación.</p></div>
+      <div class="step"><span class="k">Paso 1</span><h3>La sede nace colgada de la maestra</h3>
+        <p>Con su código, país, ciudad y ola de migración. No puede nacer como sede madre: ya hay una, y solo puede haber una.</p></div>
+      <div class="step"><span class="k">Paso 2</span><h3>Se aplica la plantilla de módulos</h3>
+        <p>Los módulos que exigen compuerta legal —Aportes, Consejería y RocaKids— <strong>nacen apagados a propósito</strong>. Se encienden cuando exista la evidencia jurídica, no antes.</p></div>
+      <div class="step"><span class="k">Paso 3</span><h3>Se asigna el pastor congregacional</h3>
+        <p>Una filial sin pastor vigente no puede confirmar la transacción. La regla se evalúa al cierre, así que crear la sede y asignar al pastor caben en un solo movimiento.</p></div>
+      <div class="step"><span class="k">Paso 4</span><h3>Queda en la bitácora</h3>
+        <p>Append-only: quién la creó, cuándo, con qué plantilla y cuántos módulos. No se puede editar ni borrar.</p></div>
+    </div>
+    <h2>Las plantillas</h2>
+    <div class="tpl" id="tpls"></div>
+    <h2>Así se ve la operación</h2>
+    <pre><span class="c">-- Se opera con el contexto del Pastor Director General</span>
+SET LOCAL app.persona_id     = <span class="s">'…uuid del director…'</span>;
+SET LOCAL app.alcance_global = <span class="s">'true'</span>;
+
+SELECT sistema.crear_iglesia(
+  <span class="s">'CHIA'</span>,               <span class="c">-- código</span>
+  <span class="s">'Chía'</span>,               <span class="c">-- nombre</span>
+  <span class="s">'plantacion'</span>,         <span class="c">-- tipo</span>
+  <span class="s">'CO'</span>, <span class="s">'Chía'</span>,        <span class="c">-- país y ciudad</span>
+  <span class="s">'PLANTACION'</span>,         <span class="c">-- plantilla de módulos</span>
+  <span class="s">'…uuid del pastor…'</span>,  <span class="c">-- quién la pastorea</span>
+  4                     <span class="c">-- ola de migración</span>
+);</pre>
+  </div>
+
+  <footer>
+    <p>CasaRoca System · Fase 1 · consola de administración.</p>
+    <p>Datos leídos de la base de desarrollo el 24 de agosto de 2026. La matriz de permisos es la
+      <strong>propuesta</strong> que se lleva al taller H-01: se discute fila por fila y se firma.</p>
+  </footer>
+</div>
+
+<script>
+const D = {"modulos" : [{"codigo" : "personas", "nombre" : "Personas", "orden" : 1, "nivel" : 2, "nucleo" : true, "legal" : false, "desc" : "Registro maestro. La raíz: todos los demás módulos la referencian."}, {"codigo" : "organizacion", "nombre" : "Organización y sedes", "orden" : 2, "nivel" : 1, "nucleo" : true, "legal" : false, "desc" : "Sedes, ministerios activos y organigrama."}, {"codigo" : "identidad", "nombre" : "Identidad y accesos", "orden" : 3, "nivel" : 2, "nucleo" : true, "legal" : false, "desc" : "Roles, alcances y vigencias. Quién entra y hasta dónde."}, {"codigo" : "cumplimiento", "nombre" : "Auditoría y cumplimiento", "orden" : 4, "nivel" : 2, "nucleo" : true, "legal" : false, "desc" : "Habeas Data, auditoría, bitácora de lectura y clasificación."}, {"codigo" : "crm", "nombre" : "CRM Pastoral · 4C", "orden" : 5, "nivel" : 2, "nucleo" : false, "legal" : false, "desc" : "Seguimiento de nuevos y línea de tiempo de la relación."}, {"codigo" : "grupos", "nombre" : "Grupos y hogares", "orden" : 6, "nivel" : 2, "nucleo" : false, "legal" : false, "desc" : "Grupos familiares, pequeños y composición del hogar."}, {"codigo" : "asistencia", "nombre" : "Asistencia", "orden" : 7, "nivel" : 2, "nucleo" : false, "legal" : false, "desc" : "Conteo por servicio y entrada por persona."}, {"codigo" : "formacion", "nombre" : "Formación e Instituto", "orden" : 8, "nivel" : 2, "nucleo" : false, "legal" : false, "desc" : "Cursos cortos, IBLI y FACTER, cupos y certificados."}, {"codigo" : "talento", "nombre" : "Talento y voluntariado", "orden" : 9, "nivel" : 3, "nucleo" : false, "legal" : false, "desc" : "Empleados, contratos y quién sirve dónde."}, {"codigo" : "consejeria", "nombre" : "Consejería", "orden" : 10, "nivel" : 3, "nucleo" : false, "legal" : true, "desc" : "Casos reservados. Acceso por caso asignado."}, {"codigo" : "aportes", "nombre" : "Aportes", "orden" : 11, "nivel" : 3, "nucleo" : false, "legal" : true, "desc" : "Diezmos, ofrendas, pactos y conciliación contable."}, {"codigo" : "rocakids", "nombre" : "RocaKids", "orden" : 12, "nivel" : 4, "nucleo" : false, "legal" : true, "desc" : "Menores: check-in, entrega segura y autorizaciones."}], "roles" : [{"codigo" : "PASTOR_DIRECTOR_GENERAL", "nombre" : "Pastor Director General", "techo" : 4, "alcance" : "organizacion", "desc" : "Única persona con visibilidad de aporte por persona en toda la organización."}, {"codigo" : "CONTABILIDAD", "nombre" : "Contabilidad", "techo" : 3, "alcance" : "organizacion", "desc" : "Conciliación contable. Ve montos, no notas pastorales."}, {"codigo" : "TALENTO_HUMANO", "nombre" : "Talento Humano", "techo" : 3, "alcance" : "organizacion", "desc" : "Empleados y contratos. Separado de lo pastoral por diseño."}, {"codigo" : "INTEGRACION_TECNICA", "nombre" : "Integración técnica", "techo" : 1, "alcance" : "organizacion", "desc" : "Cuentas de servicio. Jamás accede a datos sensibles."}, {"codigo" : "TESORERIA", "nombre" : "Tesorería", "techo" : 3, "alcance" : "sede", "desc" : "Ve el agregado de aportes de su sede, sin detalle por persona."}, {"codigo" : "COORDINADOR_NUEVOS", "nombre" : "Coordinador de Nuevos", "techo" : 2, "alcance" : "sede", "desc" : "Recibe la bandeja de nuevos de su sede, los contacta y los acompaña hasta la decisión."}, {"codigo" : "PASTOR_CONGREGACIONAL", "nombre" : "Pastor Congregacional", "techo" : 2, "alcance" : "sede", "desc" : "Opera su sede. Ve SI una familia aporta y con qué frecuencia, nunca el monto."}, {"codigo" : "SECRETARIA", "nombre" : "Secretaría", "techo" : 2, "alcance" : "sede", "desc" : "Gestión administrativa y certificados."}, {"codigo" : "MAESTRO_ROCAKIDS", "nombre" : "Maestro RocaKids", "techo" : 4, "alcance" : "ministerio", "desc" : "Check-in y entrega segura de menores en su sede."}, {"codigo" : "COORDINADOR", "nombre" : "Coordinador", "techo" : 2, "alcance" : "ministerio", "desc" : "Coordina equipos y grupos de un ministerio."}, {"codigo" : "DIRECTOR_MINISTERIO", "nombre" : "Director de Ministerio", "techo" : 2, "alcance" : "ministerio", "desc" : "Dirige un ministerio dentro de su sede."}, {"codigo" : "COORDINADOR_SEGMENTO", "nombre" : "Coordinador de Segmento", "techo" : 2, "alcance" : "segmento", "desc" : "Coordina los grupos y los líderes de su segmento. Es quien conoce por nombre a la gente que atiende."}, {"codigo" : "DIRECTOR_SEGMENTO", "nombre" : "Director de Segmento", "techo" : 2, "alcance" : "segmento", "desc" : "Dirige una franja completa dentro de un ministerio — Aventureros en RocaKids, Legado en tMt. Responde por los coordinadores de su segmento."}, {"codigo" : "LIDER_GRUPO", "nombre" : "Líder", "techo" : 2, "alcance" : "grupo", "desc" : "Acompaña a los miembros de su grupo. Es el último eslabón de la cadena y el que más cerca está de las personas."}, {"codigo" : "CONSEJERO", "nombre" : "Consejero", "techo" : 3, "alcance" : "caso_propio", "desc" : "Accede solo a los casos de consejería que le fueron asignados."}, {"codigo" : "ACUDIENTE", "nombre" : "Acudiente", "techo" : 4, "alcance" : "persona_propia", "desc" : "Ve la ficha de los menores a su cargo, y solo la de ellos."}, {"codigo" : "MIEMBRO", "nombre" : "Miembro", "techo" : 2, "alcance" : "persona_propia", "desc" : "Ve y corrige su propia ficha."}], "acciones" : [{"codigo" : "ver", "nombre" : "Ver", "sensible" : false, "modulo" : null}, {"codigo" : "crear", "nombre" : "Crear", "sensible" : false, "modulo" : null}, {"codigo" : "editar", "nombre" : "Editar", "sensible" : false, "modulo" : null}, {"codigo" : "anular", "nombre" : "Anular", "sensible" : true, "modulo" : null}, {"codigo" : "exportar", "nombre" : "Exportar", "sensible" : true, "modulo" : null}, {"codigo" : "administrar", "nombre" : "Administrar", "sensible" : true, "modulo" : null}, {"codigo" : "REGISTRAR_CONTACTO", "nombre" : "Registrar contacto de seguimiento", "sensible" : false, "modulo" : "crm"}, {"codigo" : "CONVERTIR_MIEMBRO", "nombre" : "Convertir un nuevo en miembro", "sensible" : false, "modulo" : "crm"}, {"codigo" : "VER_METRICAS_NUEVOS", "nombre" : "Ver métricas de crecimiento", "sensible" : false, "modulo" : "crm"}, {"codigo" : "REGISTRAR_APORTE", "nombre" : "Registrar un aporte", "sensible" : false, "modulo" : "aportes"}, {"codigo" : "CONFIRMAR_APORTE", "nombre" : "Confirmar un aporte", "sensible" : true, "modulo" : "aportes"}, {"codigo" : "EXPEDIR_CERTIFICADO", "nombre" : "Expedir certificado tributario", "sensible" : true, "modulo" : "aportes"}, {"codigo" : "ANULAR_CERTIFICADO", "nombre" : "Anular certificado", "sensible" : true, "modulo" : "aportes"}, {"codigo" : "VER_NOTAS_CONFIDENCIALES", "nombre" : "Ver notas de consejería", "sensible" : true, "modulo" : "consejeria"}, {"codigo" : "ENTREGAR_MENOR", "nombre" : "Entregar un menor a su acudiente", "sensible" : true, "modulo" : "rocakids"}], "matriz" : [{"rol" : "ACUDIENTE", "modulo" : "personas", "acciones" : ["ver"]}, {"rol" : "ACUDIENTE", "modulo" : "rocakids", "acciones" : ["ver"]}, {"rol" : "CONSEJERO", "modulo" : "consejeria", "acciones" : ["ver","crear","editar","VER_NOTAS_CONFIDENCIALES"]}, {"rol" : "CONSEJERO", "modulo" : "personas", "acciones" : ["ver"]}, {"rol" : "CONTABILIDAD", "modulo" : "aportes", "acciones" : ["ver","exportar","CONFIRMAR_APORTE"]}, {"rol" : "CONTABILIDAD", "modulo" : "cumplimiento", "acciones" : ["ver"]}, {"rol" : "COORDINADOR", "modulo" : "asistencia", "acciones" : ["ver","crear"]}, {"rol" : "COORDINADOR", "modulo" : "crm", "acciones" : ["ver","crear","editar"]}, {"rol" : "COORDINADOR", "modulo" : "grupos", "acciones" : ["ver","crear","editar"]}, {"rol" : "COORDINADOR", "modulo" : "personas", "acciones" : ["ver","crear","editar"]}, {"rol" : "COORDINADOR_NUEVOS", "modulo" : "crm", "acciones" : ["ver","crear","REGISTRAR_CONTACTO","CONVERTIR_MIEMBRO"]}, {"rol" : "COORDINADOR_NUEVOS", "modulo" : "personas", "acciones" : ["ver"]}, {"rol" : "COORDINADOR_SEGMENTO", "modulo" : "asistencia", "acciones" : ["ver","crear"]}, {"rol" : "COORDINADOR_SEGMENTO", "modulo" : "crm", "acciones" : ["ver","crear","REGISTRAR_CONTACTO"]}, {"rol" : "COORDINADOR_SEGMENTO", "modulo" : "grupos", "acciones" : ["ver","editar"]}, {"rol" : "COORDINADOR_SEGMENTO", "modulo" : "personas", "acciones" : ["ver","crear","editar"]}, {"rol" : "DIRECTOR_MINISTERIO", "modulo" : "asistencia", "acciones" : ["ver","crear"]}, {"rol" : "DIRECTOR_MINISTERIO", "modulo" : "crm", "acciones" : ["ver","crear","editar"]}, {"rol" : "DIRECTOR_MINISTERIO", "modulo" : "formacion", "acciones" : ["ver","crear","editar"]}, {"rol" : "DIRECTOR_MINISTERIO", "modulo" : "grupos", "acciones" : ["ver","crear","editar"]}, {"rol" : "DIRECTOR_MINISTERIO", "modulo" : "personas", "acciones" : ["ver","crear","editar"]}, {"rol" : "DIRECTOR_SEGMENTO", "modulo" : "asistencia", "acciones" : ["ver","crear"]}, {"rol" : "DIRECTOR_SEGMENTO", "modulo" : "crm", "acciones" : ["ver","crear","editar","REGISTRAR_CONTACTO"]}, {"rol" : "DIRECTOR_SEGMENTO", "modulo" : "formacion", "acciones" : ["ver","crear"]}, {"rol" : "DIRECTOR_SEGMENTO", "modulo" : "grupos", "acciones" : ["ver","crear","editar"]}, {"rol" : "DIRECTOR_SEGMENTO", "modulo" : "organizacion", "acciones" : ["ver"]}, {"rol" : "DIRECTOR_SEGMENTO", "modulo" : "personas", "acciones" : ["ver","crear","editar"]}, {"rol" : "INTEGRACION_TECNICA", "modulo" : "organizacion", "acciones" : ["ver"]}, {"rol" : "LIDER_GRUPO", "modulo" : "asistencia", "acciones" : ["ver","crear"]}, {"rol" : "LIDER_GRUPO", "modulo" : "crm", "acciones" : ["ver","crear","REGISTRAR_CONTACTO"]}, {"rol" : "LIDER_GRUPO", "modulo" : "grupos", "acciones" : ["ver","editar"]}, {"rol" : "LIDER_GRUPO", "modulo" : "personas", "acciones" : ["ver"]}, {"rol" : "MAESTRO_ROCAKIDS", "modulo" : "personas", "acciones" : ["ver"]}, {"rol" : "MAESTRO_ROCAKIDS", "modulo" : "rocakids", "acciones" : ["ver","crear","editar","ENTREGAR_MENOR"]}, {"rol" : "MIEMBRO", "modulo" : "formacion", "acciones" : ["ver"]}, {"rol" : "MIEMBRO", "modulo" : "grupos", "acciones" : ["ver"]}, {"rol" : "MIEMBRO", "modulo" : "personas", "acciones" : ["ver","editar"]}, {"rol" : "PASTOR_CONGREGACIONAL", "modulo" : "asistencia", "acciones" : ["ver","crear"]}, {"rol" : "PASTOR_CONGREGACIONAL", "modulo" : "crm", "acciones" : ["ver","crear","editar","CONVERTIR_MIEMBRO"]}, {"rol" : "PASTOR_CONGREGACIONAL", "modulo" : "cumplimiento", "acciones" : ["ver"]}, {"rol" : "PASTOR_CONGREGACIONAL", "modulo" : "formacion", "acciones" : ["ver","crear"]}, {"rol" : "PASTOR_CONGREGACIONAL", "modulo" : "grupos", "acciones" : ["ver","crear","editar"]}, {"rol" : "PASTOR_CONGREGACIONAL", "modulo" : "identidad", "acciones" : ["ver","crear"]}, {"rol" : "PASTOR_CONGREGACIONAL", "modulo" : "organizacion", "acciones" : ["ver","editar"]}, {"rol" : "PASTOR_CONGREGACIONAL", "modulo" : "personas", "acciones" : ["ver","crear","editar"]}, {"rol" : "PASTOR_DIRECTOR_GENERAL", "modulo" : "aportes", "acciones" : ["ver","exportar"]}, {"rol" : "PASTOR_DIRECTOR_GENERAL", "modulo" : "asistencia", "acciones" : ["ver","exportar"]}, {"rol" : "PASTOR_DIRECTOR_GENERAL", "modulo" : "consejeria", "acciones" : ["ver"]}, {"rol" : "PASTOR_DIRECTOR_GENERAL", "modulo" : "crm", "acciones" : ["ver","crear","editar","exportar","VER_METRICAS_NUEVOS"]}, {"rol" : "PASTOR_DIRECTOR_GENERAL", "modulo" : "cumplimiento", "acciones" : ["ver","exportar"]}, {"rol" : "PASTOR_DIRECTOR_GENERAL", "modulo" : "formacion", "acciones" : ["ver","crear","editar"]}, {"rol" : "PASTOR_DIRECTOR_GENERAL", "modulo" : "grupos", "acciones" : ["ver","crear","editar"]}, {"rol" : "PASTOR_DIRECTOR_GENERAL", "modulo" : "identidad", "acciones" : ["ver","crear","editar","administrar"]}, {"rol" : "PASTOR_DIRECTOR_GENERAL", "modulo" : "organizacion", "acciones" : ["ver","crear","editar","administrar"]}, {"rol" : "PASTOR_DIRECTOR_GENERAL", "modulo" : "personas", "acciones" : ["ver","crear","editar","exportar","administrar"]}, {"rol" : "PASTOR_DIRECTOR_GENERAL", "modulo" : "rocakids", "acciones" : ["ver"]}, {"rol" : "PASTOR_DIRECTOR_GENERAL", "modulo" : "talento", "acciones" : ["ver","crear","editar"]}, {"rol" : "SECRETARIA", "modulo" : "formacion", "acciones" : ["ver","crear","editar"]}, {"rol" : "SECRETARIA", "modulo" : "grupos", "acciones" : ["ver"]}, {"rol" : "SECRETARIA", "modulo" : "organizacion", "acciones" : ["ver"]}, {"rol" : "SECRETARIA", "modulo" : "personas", "acciones" : ["ver","crear","editar"]}, {"rol" : "TALENTO_HUMANO", "modulo" : "personas", "acciones" : ["ver","editar"]}, {"rol" : "TALENTO_HUMANO", "modulo" : "talento", "acciones" : ["ver","crear","editar","exportar"]}, {"rol" : "TESORERIA", "modulo" : "aportes", "acciones" : ["ver","crear","anular","REGISTRAR_APORTE","EXPEDIR_CERTIFICADO","ANULAR_CERTIFICADO"]}, {"rol" : "TESORERIA", "modulo" : "personas", "acciones" : ["ver"]}], "iglesias" : [{"codigo" : "BOG-CHICO", "nombre" : "Bogotá Chicó", "tipo" : "sede_madre", "pais" : "CO", "ciudad" : "Bogotá", "maestra" : true, "activos" : 12, "apagados" : 0, "legal" : 0, "roles" : 1, "ola" : 1}, {"codigo" : "BCN", "nombre" : "Barcelona", "tipo" : "filial_internacional", "pais" : "ES", "ciudad" : "Barcelona", "maestra" : false, "activos" : 9, "apagados" : 3, "legal" : 3, "roles" : 2, "ola" : 5}, {"codigo" : "BOG-NORTE", "nombre" : "Bogotá Norte", "tipo" : "filial_nacional", "pais" : "CO", "ciudad" : "Bogotá", "maestra" : false, "activos" : 9, "apagados" : 3, "legal" : 3, "roles" : 2, "ola" : 2}, {"codigo" : "CHIA", "nombre" : "Chía", "tipo" : "plantacion", "pais" : "CO", "ciudad" : "Chía", "maestra" : false, "activos" : 8, "apagados" : 0, "legal" : 0, "roles" : 2, "ola" : 4}, {"codigo" : "MED", "nombre" : "Medellín", "tipo" : "filial_nacional", "pais" : "CO", "ciudad" : "Medellín", "maestra" : false, "activos" : 10, "apagados" : 2, "legal" : 2, "roles" : 2, "ola" : 3}, {"codigo" : "PTY", "nombre" : "Panamá", "tipo" : "filial_internacional", "pais" : "PA", "ciudad" : "Ciudad de Panamá", "maestra" : false, "activos" : 9, "apagados" : 3, "legal" : 3, "roles" : 2, "ola" : 5}], "habilitacion" : [{"sede" : "BOG-CHICO", "modulo" : "personas", "activo" : true}, {"sede" : "BOG-CHICO", "modulo" : "organizacion", "activo" : true}, {"sede" : "BOG-CHICO", "modulo" : "identidad", "activo" : true}, {"sede" : "BOG-CHICO", "modulo" : "cumplimiento", "activo" : true}, {"sede" : "BOG-CHICO", "modulo" : "crm", "activo" : true}, {"sede" : "BOG-CHICO", "modulo" : "grupos", "activo" : true}, {"sede" : "BOG-CHICO", "modulo" : "asistencia", "activo" : true}, {"sede" : "BOG-CHICO", "modulo" : "formacion", "activo" : true}, {"sede" : "BOG-CHICO", "modulo" : "talento", "activo" : true}, {"sede" : "BOG-CHICO", "modulo" : "consejeria", "activo" : true}, {"sede" : "BOG-CHICO", "modulo" : "aportes", "activo" : true}, {"sede" : "BOG-CHICO", "modulo" : "rocakids", "activo" : true}, {"sede" : "BOG-NORTE", "modulo" : "personas", "activo" : true}, {"sede" : "BOG-NORTE", "modulo" : "organizacion", "activo" : true}, {"sede" : "BOG-NORTE", "modulo" : "identidad", "activo" : true}, {"sede" : "BOG-NORTE", "modulo" : "cumplimiento", "activo" : true}, {"sede" : "BOG-NORTE", "modulo" : "crm", "activo" : true}, {"sede" : "BOG-NORTE", "modulo" : "grupos", "activo" : true}, {"sede" : "BOG-NORTE", "modulo" : "asistencia", "activo" : true}, {"sede" : "BOG-NORTE", "modulo" : "formacion", "activo" : true}, {"sede" : "BOG-NORTE", "modulo" : "talento", "activo" : true}, {"sede" : "BOG-NORTE", "modulo" : "consejeria", "activo" : false}, {"sede" : "BOG-NORTE", "modulo" : "aportes", "activo" : false}, {"sede" : "BOG-NORTE", "modulo" : "rocakids", "activo" : false}, {"sede" : "MED", "modulo" : "personas", "activo" : true}, {"sede" : "MED", "modulo" : "organizacion", "activo" : true}, {"sede" : "MED", "modulo" : "identidad", "activo" : true}, {"sede" : "MED", "modulo" : "cumplimiento", "activo" : true}, {"sede" : "MED", "modulo" : "crm", "activo" : true}, {"sede" : "MED", "modulo" : "grupos", "activo" : true}, {"sede" : "MED", "modulo" : "asistencia", "activo" : true}, {"sede" : "MED", "modulo" : "formacion", "activo" : true}, {"sede" : "MED", "modulo" : "talento", "activo" : true}, {"sede" : "MED", "modulo" : "consejeria", "activo" : false}, {"sede" : "MED", "modulo" : "aportes", "activo" : false}, {"sede" : "PTY", "modulo" : "personas", "activo" : true}, {"sede" : "PTY", "modulo" : "organizacion", "activo" : true}, {"sede" : "PTY", "modulo" : "identidad", "activo" : true}, {"sede" : "PTY", "modulo" : "cumplimiento", "activo" : true}, {"sede" : "PTY", "modulo" : "crm", "activo" : true}, {"sede" : "PTY", "modulo" : "grupos", "activo" : true}, {"sede" : "PTY", "modulo" : "asistencia", "activo" : true}, {"sede" : "PTY", "modulo" : "formacion", "activo" : true}, {"sede" : "PTY", "modulo" : "talento", "activo" : true}, {"sede" : "PTY", "modulo" : "consejeria", "activo" : false}, {"sede" : "PTY", "modulo" : "aportes", "activo" : false}, {"sede" : "PTY", "modulo" : "rocakids", "activo" : false}, {"sede" : "BCN", "modulo" : "personas", "activo" : true}, {"sede" : "BCN", "modulo" : "organizacion", "activo" : true}, {"sede" : "BCN", "modulo" : "identidad", "activo" : true}, {"sede" : "BCN", "modulo" : "cumplimiento", "activo" : true}, {"sede" : "BCN", "modulo" : "crm", "activo" : true}, {"sede" : "BCN", "modulo" : "grupos", "activo" : true}, {"sede" : "BCN", "modulo" : "asistencia", "activo" : true}, {"sede" : "BCN", "modulo" : "formacion", "activo" : true}, {"sede" : "BCN", "modulo" : "talento", "activo" : true}, {"sede" : "BCN", "modulo" : "consejeria", "activo" : false}, {"sede" : "BCN", "modulo" : "aportes", "activo" : false}, {"sede" : "BCN", "modulo" : "rocakids", "activo" : false}, {"sede" : "CHIA", "modulo" : "personas", "activo" : true}, {"sede" : "CHIA", "modulo" : "organizacion", "activo" : true}, {"sede" : "CHIA", "modulo" : "identidad", "activo" : true}, {"sede" : "CHIA", "modulo" : "cumplimiento", "activo" : true}, {"sede" : "CHIA", "modulo" : "crm", "activo" : true}, {"sede" : "CHIA", "modulo" : "grupos", "activo" : true}, {"sede" : "CHIA", "modulo" : "asistencia", "activo" : true}, {"sede" : "MED", "modulo" : "rocakids", "activo" : true}, {"sede" : "CHIA", "modulo" : "aportes", "activo" : true}], "plantillas" : [{"codigo" : "FILIAL", "nombre" : "Filial nacional", "desc" : "Operación completa de una sede en Colombia.", "modulos" : 12}, {"codigo" : "INTERNAC", "nombre" : "Filial internacional", "desc" : "Igual que la filial, pero migra en la última ola por GDPR y husos horarios.", "modulos" : 12}, {"codigo" : "MAESTRA", "nombre" : "Sede maestra", "desc" : "Todos los módulos. Es la que gobierna el ecosistema.", "modulos" : 12}, {"codigo" : "PLANTACION", "nombre" : "Plantación", "desc" : "Arranque mínimo: personas, seguimiento y grupos. Sin aportes ni menores hasta consolidarse.", "modulos" : 7}], "segmentos" : [{"ministerio" : "RocaKids", "nombre" : "Bebés", "edad_min" : 0, "edad_max" : 2, "orden" : 1}, {"ministerio" : "RocaKids", "nombre" : "Pequeños", "edad_min" : 3, "edad_max" : 5, "orden" : 2}, {"ministerio" : "RocaKids", "nombre" : "Exploradores", "edad_min" : 6, "edad_max" : 8, "orden" : 3}, {"ministerio" : "RocaKids", "nombre" : "Aventureros", "edad_min" : 9, "edad_max" : 11, "orden" : 4}, {"ministerio" : "tMt · jóvenes 11-25", "nombre" : "Pulso", "edad_min" : 11, "edad_max" : 14, "orden" : 1}, {"ministerio" : "tMt · jóvenes 11-25", "nombre" : "Eco", "edad_min" : 15, "edad_max" : 18, "orden" : 2}, {"ministerio" : "tMt · jóvenes 11-25", "nombre" : "Legado", "edad_min" : 19, "edad_max" : 25, "orden" : 3}]};
+const INI = {ver:'V',crear:'C',editar:'E',anular:'N',exportar:'X',administrar:'A'};
+const modByCode = Object.fromEntries(D.modulos.map(m=>[m.codigo,m]));
+const rolByCode = Object.fromEntries(D.roles.map(r=>[r.codigo,r]));
+const hab = {};
+D.habilitacion.forEach(h=>{ (hab[h.sede] ||= {})[h.modulo] = h.activo; });
+const mat = {};
+D.matriz.forEach(m=>{ (mat[m.rol] ||= {})[m.modulo] = m.acciones; });
+
+/* ── pestañas ── */
+document.querySelectorAll('nav button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected', x===b));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on', p.id==='p-'+b.dataset.p));
+  });
+});
+
+/* ── iglesias ── */
+document.getElementById('churches').innerHTML = D.iglesias.map(ig=>{
+  const h = hab[ig.codigo] || {};
+  const chips = D.modulos.map(m=>{
+    if(!(m.codigo in h)) return `<span class="m off" title="No incluido en la plantilla">${m.nombre}</span>`;
+    if(h[m.codigo])      return `<span class="m on" title="Encendido">${m.nombre}</span>`;
+    return `<span class="m wait" title="Apagado: espera la compuerta legal">${m.nombre}</span>`;
+  }).join('');
+  const badge = ig.maestra ? '<span class="badge master">Maestra</span>'
+    : (ig.tipo==='plantacion' ? '<span class="badge plant">Plantación</span>' : '');
+  return `<article class="ch ${ig.maestra?'is-master':''}">
+    <div class="top"><div><span class="code">${ig.codigo}</span><div class="nm">${ig.nombre}</div></div>${badge}</div>
+    <div class="meta">${ig.ciudad} · ${ig.pais}${ig.ola?' · ola '+ig.ola:''}</div>
+    <div class="mods">${chips}</div>
+    <div class="foot"><span>${ig.activos} encendidos</span>
+      ${ig.legal>0?`<span style="color:var(--wait)">${ig.legal} esperando compuerta legal</span>`:''}
+      <span>${ig.roles} con rol</span></div>
+  </article>`;
+}).join('');
+
+/* ── matriz ── */
+document.getElementById('legend').innerHTML =
+  D.acciones.map(a=>`<span><i class="a ${a.sensible?'s':''}">${INI[a.codigo]}</i>${a.nombre}</span>`).join('')
+  + '<span style="color:var(--ink-3)">Rojo = acción sensible</span>';
+
+const th = D.modulos.map(m=>`<th title="${m.desc}">${m.nombre}<br><span style="opacity:.65">N${m.nivel}</span></th>`).join('');
+const rows = D.roles.map(r=>{
+  const tds = D.modulos.map(m=>{
+    const acts = (mat[r.codigo]||{})[m.codigo];
+    if(!acts) return '<td class="dash">—</td>';
+    const sens = new Set(D.acciones.filter(a=>a.sensible).map(a=>a.codigo));
+    return '<td><div class="acts">'+acts.map(a=>
+      `<i class="a ${sens.has(a)?'s':''}" title="${a}">${INI[a]}</i>`).join('')+'</div></td>';
+  }).join('');
+  return `<tr><th>${r.nombre}<span class="roleceil">techo N${r.techo} · ${r.alcance}</span></th>${tds}</tr>`;
+}).join('');
+document.getElementById('matriz').innerHTML =
+  `<thead><tr><th>Rol</th>${th}</tr></thead><tbody>${rows}</tbody>`;
+
+const sinExport = D.modulos.filter(m=>!D.matriz.some(x=>x.modulo===m.codigo && x.acciones.includes('exportar')));
+document.getElementById('matrix-note').innerHTML =
+  `<b>${D.matriz.length}</b> combinaciones de rol y módulo declaradas sobre ${D.roles.length} roles y ${D.modulos.length} módulos. `+
+  `Ningún rol puede exportar de <b>${sinExport.map(m=>m.nombre).join(', ')}</b> — incluido RocaKids, que era una de las dos preguntas que el taller H-01 debe contestar por escrito.`;
+
+/* ── simulador ── */
+const selRol = document.getElementById('selRol'), selSede = document.getElementById('selSede');
+selRol.innerHTML = D.roles.map(r=>`<option value="${r.codigo}">${r.nombre}</option>`).join('');
+selSede.innerHTML = D.iglesias.map(i=>`<option value="${i.codigo}">${i.nombre}${i.maestra?' (maestra)':''}</option>`).join('');
+
+function simular(){
+  const r = rolByCode[selRol.value], sedeCode = selSede.value;
+  const ig = D.iglesias.find(i=>i.codigo===sedeCode);
+  const h = hab[sedeCode] || {};
+  let ok=0;
+  const filas = D.modulos.map(m=>{
+    const acts = (mat[r.codigo]||{})[m.codigo];
+    let estado, why, cls;
+    if(!acts){ estado='sin permiso'; cls='no'; why='La matriz no le concede ninguna acción en este módulo.'; }
+    else if(!(m.codigo in h)){ estado='módulo ausente'; cls='no'; why='La plantilla de esta iglesia no incluye el módulo.'; }
+    else if(!h[m.codigo]){ estado='módulo apagado'; cls='wait'; why='Encendido pendiente de la compuerta legal (H-02).'; }
+    else if(r.techo < m.nivel){ estado='nivel insuficiente'; cls='no'; why=`El rol llega hasta N${r.techo} y el módulo maneja dato N${m.nivel}.`; }
+    else { estado='permitido'; cls='yes'; ok++; why='Puede: '+acts.map(a=>a).join(', ')+'.'; }
+    return `<div class="vrow ${cls==='yes'?'':'no'}">
+      <div class="mn">${m.nombre}<span class="why">${why}</span></div>
+      <span class="state ${cls}">${estado}</span>
+      <span class="mono" style="color:var(--ink-3);font-size:.72rem">N${m.nivel}</span></div>`;
+  }).join('');
+  document.getElementById('simSum').innerHTML =
+    `<b>${r.nombre}</b> en <b>${ig.nombre}</b>: opera <b>${ok}</b> de ${D.modulos.length} módulos. `+
+    `Alcance máximo <span class="mono">${r.alcance}</span>, techo de sensibilidad <span class="mono">N${r.techo}</span>.`;
+  document.getElementById('simOut').innerHTML = filas;
+}
+selRol.addEventListener('change',simular); selSede.addEventListener('change',simular); simular();
+
+
+/* ── cadena de mando ── */
+const ORDEN = ['organizacion','sede','ministerio','segmento','grupo','caso_propio','persona_propia'];
+const ETIQ = {organizacion:'Organización',sede:'Sede',ministerio:'Ministerio',segmento:'Segmento',
+              grupo:'Grupo',caso_propio:'Caso propio',persona_propia:'Ficha propia'};
+const NUEVOS = new Set(['DIRECTOR_SEGMENTO','COORDINADOR_SEGMENTO','COORDINADOR_NUEVOS']);
+document.getElementById('cadena').innerHTML = D.roles
+  .slice().sort((a,b)=>ORDEN.indexOf(a.alcance)-ORDEN.indexOf(b.alcance) || b.techo-a.techo)
+  .map(r=>`<div class="esl ${NUEVOS.has(r.codigo)?'nuevo':''}">
+      <span class="lvl">${ETIQ[r.alcance]||r.alcance}</span>
+      <span class="nm">${r.nombre}${NUEVOS.has(r.codigo)?'<span class="tag">nuevo</span>':''}
+        <span class="ds">${r.desc||''}</span></span>
+      <span class="tc">techo N${r.techo}</span></div>`).join('');
+
+/* ── segmentos ── */
+const porMin = {};
+(D.segmentos||[]).forEach(s=>{ (porMin[s.ministerio] ||= []).push(s); });
+document.getElementById('segs').innerHTML = Object.entries(porMin).map(([min,lista])=>
+  `<article class="ch"><div class="top"><div><span class="code">Ministerio</span>
+     <div class="nm">${min}</div></div></div>
+   <div class="mods">${lista.map(s=>`<span class="m on">${s.nombre}${
+     s.edad_min!=null?` · ${s.edad_min}-${s.edad_max}`:''}</span>`).join('')}</div>
+   <div class="foot"><span>${lista.length} segmentos</span></div></article>`).join('')
+  || '<p class="hint">Sin segmentos cargados.</p>';
+
+/* ── plantillas ── */
+document.getElementById('tpls').innerHTML = D.plantillas.map(t=>
+  `<div class="t"><span class="c">${t.codigo}</span><span class="n">${t.nombre}</span>
+   <p>${t.desc}</p><p style="color:var(--ink-3)">${t.modulos} módulos</p></div>`).join('');
+</script>

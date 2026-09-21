@@ -1,0 +1,150 @@
+/* ============================================================
+   CASA ROCA · CONSEJERÍA — CAPA MÓVIL DEDICADA  (consejeria-mobile.css)
+   ------------------------------------------------------------
+   Se enlaza DESPUÉS de mobile.css SOLO en las apps de consejería.
+   Arregla lo que la capa móvil genérica no cubría bien aquí:
+
+   1) Las tablas anchas de consejería (bandeja, consejerías, analítica)
+      tenían reglas de ESCRITORIO (table-layout:fixed, anchos %, max-width:0,
+      overflow:hidden) que seguían aplicando en modo "tarjeta" y recortaban
+      los valores dejando huecos enormes. Aquí se neutralizan y se arman
+      tarjetas limpias, con la persona como título y las acciones a lo ancho.
+   2) La tabla dinámica del Explorador (.cs-piv) NO debe volverse tarjetas:
+      se mantiene como tabla con scroll lateral.
+   3) El botón flotante del asistente (FAB) se eleva por encima de la barra
+      inferior. Buscadores y selects a ancho completo.
+
+   Punto de quiebre: 760px (estándar del proyecto).
+   ============================================================ */
+
+@media (max-width: 760px) {
+
+  /* ============================================================
+     0. Buscadores, selects y filtros a ancho cómodo
+     ============================================================ */
+  body.cs .dr-search { max-width: 100% !important; width: 100%; }
+  body.cs .dr-filtros { flex-wrap: wrap; gap: 8px; }
+  body.cs .cs-explorer__ctl,
+  body.cs .cs-explorer__ctl .dr-select,
+  body.cs .cs-pivpanel__row .dr-select { min-width: 0; width: 100%; }
+  body.cs .cs-explorer__ctl { flex: 1 1 100%; }
+
+  /* ============================================================
+     1. TABLAS ANCHAS  ->  TARJETAS LIMPIAS
+        (todas las .dr-table de consejería MENOS el pivote)
+     ============================================================ */
+
+  /* 1a. Neutralizar el layout de escritorio que rompía las celdas */
+  body.cs .dr-table:not(.cs-piv),
+  body.cs .cs-tabla-bandeja:not(.cs-piv) {
+    table-layout: auto !important;
+    width: 100% !important;
+    font-size: var(--tx-base) !important;
+  }
+  body.cs .dr-table:not(.cs-piv) tbody td {
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    vertical-align: middle;
+    gap: 16px;
+  }
+  body.cs .dr-table:not(.cs-piv) tbody td > * { white-space: normal; }
+  body.cs .dr-table:not(.cs-piv) tbody td a { word-break: break-word !important; }
+  /* el valor (derecha) puede crecer y mantenerse legible */
+  body.cs .dr-table:not(.cs-piv) tbody td { text-align: right; }
+  body.cs .dr-table:not(.cs-piv) tbody td::before {
+    flex: 0 0 auto; max-width: 42%; white-space: normal;
+  }
+
+  /* 1b. Tarjeta por fila bien presentada */
+  body.cs .dr-table:not(.cs-piv) tbody tr {
+    padding: 4px 15px 8px;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px -3px rgba(13, 26, 56, 0.10);
+    margin-bottom: 12px;
+  }
+
+  /* 1c. La PERSONA (col 1, sin cédula) es el título de la tarjeta */
+  body.cs .cs-tabla-bandeja tbody td:nth-child(1),
+  body.cs .cs-tabla-crm tbody td:nth-child(1) {
+    justify-content: flex-start;
+    text-align: left;
+    padding: 12px 0 11px !important;
+    border-bottom: 2px solid var(--borde) !important;
+  }
+  body.cs .cs-tabla-bandeja tbody td:nth-child(1)::before,
+  body.cs .cs-tabla-crm tbody td:nth-child(1)::before { content: none; }
+  body.cs .cs-tabla-bandeja tbody td:nth-child(1) b,
+  body.cs .cs-tabla-crm tbody td:nth-child(1) b { font-size: 16px; letter-spacing: -0.01em; }
+
+  /* 1d. Ocultar columnas de ruido en celular (siguen visibles en "Ver registro"/"Gestionar") */
+  /* Bandeja (sin cédula): 4 Edad · 5 Género · 9 Solicitó */
+  body.cs .cs-tabla-bandeja tbody td:nth-child(4),
+  body.cs .cs-tabla-bandeja tbody td:nth-child(5),
+  body.cs .cs-tabla-bandeja tbody td:nth-child(9) { display: none !important; }
+  /* Consejerías (sin cédula): 2 Edad · 3 Género */
+  body.cs .cs-tabla-crm tbody td:nth-child(2),
+  body.cs .cs-tabla-crm tbody td:nth-child(3) { display: none !important; }
+
+  /* 1e. Celda de ACCIÓN (última) a lo ancho, botones cómodos */
+  body.cs .dr-table:not(.cs-piv) tbody td:last-child {
+    flex-wrap: wrap; justify-content: stretch; gap: 8px;
+    padding-top: 11px !important; text-align: center;
+  }
+  body.cs .dr-table:not(.cs-piv) tbody td:last-child::before { content: none; }
+  body.cs .dr-table:not(.cs-piv) tbody td:last-child .dr-btn {
+    flex: 1 1 auto; min-width: 120px; justify-content: center;
+    font-size: 13px !important; padding: 10px 12px !important; margin: 0 !important;
+  }
+
+  /* 1f. Estado vacío de la tabla: tarjeta centrada simple */
+  body.cs .dr-table:not(.cs-piv) tbody td[colspan] {
+    text-align: center; padding: 6px 0 !important;
+  }
+
+  /* ============================================================
+     2. PIVOTE DEL EXPLORADOR  ->  tabla con scroll lateral
+        (NO convertir a tarjetas; conserva su matriz)
+     ============================================================ */
+  body.cs .cs-piv { display: table !important; width: auto !important; min-width: 100%; table-layout: auto !important; font-size: 12px; }
+  body.cs .cs-piv thead { display: table-header-group !important; }
+  body.cs .cs-piv tbody { display: table-row-group !important; }
+  body.cs .cs-piv tbody tr {
+    display: table-row !important;
+    background: none !important; border: none !important;
+    box-shadow: none !important; margin: 0 !important; padding: 0 !important; border-radius: 0 !important;
+  }
+  body.cs .cs-piv thead th,
+  body.cs .cs-piv tbody td {
+    display: table-cell !important; width: auto !important; max-width: none !important;
+    white-space: nowrap !important; text-align: right; padding: 7px 9px !important;
+    border-bottom: 1px solid var(--borde-sutil) !important;
+  }
+  body.cs .cs-piv thead { display: table-header-group !important; }
+  body.cs .cs-piv tbody td::before,
+  body.cs .cs-piv thead th::before { content: none !important; }
+  body.cs .cs-piv .cs-piv__rh { text-align: left; }
+
+  /* ============================================================
+     3. FAB del asistente por ENCIMA de la barra inferior
+     ============================================================ */
+  body.cs .csa-fab {
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 14px !important;
+  }
+
+  /* ============================================================
+     4. Calendario grande: celdas más compactas en celular
+     ============================================================ */
+  body.cs .cs-cal--grande .dr-cal__cell { min-height: 56px; }
+  body.cs .cs-cal--grande .dr-cal__bar b { font-size: 13px; }
+
+  /* ============================================================
+     5. Tableros / rejillas densas a 1 columna
+     ============================================================ */
+  body.cs .cs-casos { grid-template-columns: 1fr !important; }
+  body.cs .cs-charts { grid-template-columns: 1fr !important; }
+}

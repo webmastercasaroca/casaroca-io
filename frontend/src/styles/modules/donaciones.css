@@ -1,0 +1,21 @@
+/* ============================================================
+   donaciones.css · Tablas de aportes, estados e inmutabilidad
+   del Módulo de Donaciones.
+   ============================================================ */
+.cr-donaciones .cr-tabla td.cr-monto { text-align: right; font-variant-numeric: tabular-nums; font-weight: var(--cr-peso-medio); }
+.cr-estado-aporte[data-estado="REGISTRADO"]  { background: var(--cr-superficie-2); color: var(--cr-texto-suave); }
+.cr-estado-aporte[data-estado="CONFIRMADO"]  { background: var(--cr-exito-bg);     color: var(--cr-exito); }
+.cr-estado-aporte[data-estado="CERTIFICADO"] { background: var(--cr-info-bg);      color: var(--cr-info); }
+.cr-estado-aporte[data-estado="ANULADO"]     { background: var(--cr-peligro-bg);   color: var(--cr-peligro); text-decoration: line-through; }
+
+/* ⛔ Inmutable: un aporte certificado no se edita. La fila lo dice con
+   un candado y sin controles de edición; el botón ni siquiera aparece. */
+.cr-fila-inmutable td { color: var(--cr-texto-suave); }
+.cr-fila-inmutable td:first-child::before { content: "🔒 "; }
+.cr-fila-inmutable .cr-editar { display: none; }
+
+.cr-totales {
+  display: flex; flex-wrap: wrap; gap: var(--cr-sp-5); padding: var(--cr-sp-4);
+  background: var(--cr-azul-50); border-radius: var(--cr-radio-md); margin-bottom: var(--cr-sp-4);
+}
+.cr-totales__cifra { font-size: var(--cr-tx-xl); font-weight: var(--cr-peso-bold); color: var(--cr-azul-900); font-variant-numeric: tabular-nums; }

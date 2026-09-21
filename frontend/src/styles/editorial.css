@@ -1,0 +1,364 @@
+/* ============================================================
+   editorial.css · La capa de ESTÉTICA sobre los tokens de marca
+   Estilo: remix «Terracotta editorial × identidad CasaRoca».
+   De Terracotta se toma la ESTRUCTURA: superficie crema cálida en
+   vez de gris frío, titulares en serif de display, etiquetas en
+   monoespaciada, escala tipográfica generosa y un solo acento.
+   De la iglesia se conserva la PALETA: azul de confianza #134291
+   y mostaza de calidez #E3A52C, que ya son suyos.
+   ⛔ Nada de gradiente morado ni de Inter por defecto: esto tiene
+      que parecer de esta iglesia y de ninguna otra.
+   ============================================================ */
+/* ⛔ 20 sep 2026 · AQUI HABIA UN @import A GOOGLE FONTS, y se quita.
+
+   Cada carga de la aplicacion hacia que el navegador de un maestro de
+   RocaKids, o de una secretaria mirando una ficha de consejeria, pidiera
+   la tipografia a un servidor de Google, con su direccion IP y la
+   direccion de la pagina que la pedia. En un sistema que guarda datos de
+   MENORES y de consejeria pastoral, eso es una transferencia de datos a
+   un tercero que nadie autorizo y que no esta en ningun consentimiento.
+   No es una interpretacion exotica: las autoridades europeas ya han
+   multado sitios por exactamente esto, y la sede de Barcelona esta bajo
+   GDPR. Ademas, sin internet la aplicacion se quedaba esperando.
+
+   Las dos fuentes (Fraunces y JetBrains Mono) son libres (SIL OFL) y se
+   pueden SERVIR DESDE AQUI. El dia que la iglesia quiera exactamente
+   esas, se ponen los .woff2 en `frontend/fonts/` y se enlaza
+   `src/styles/marca-tipografias.css`, igual que con Geomanist.
+
+   Mientras tanto, la pila cae a un serif y un monoespaciado que estan en
+   todos los sistemas. La estetica editorial se sostiene: lo que la
+   define es la escala, el papel calido y el acento unico, no el nombre
+   de la fuente. */
+
+/* ⛔ 20 de septiembre de 2026, por la tarde. Daniel abrió la aplicación
+   en el teléfono y la vio en MARRÓN OSCURO con titulares en serif, y
+   preguntó por qué no tenía «el visual que venimos trabajando». Tenía
+   razón: eran dos sistemas de diseño distintos dentro del mismo
+   producto.
+
+   LA REGLA, que ahora vive escrita en `docs/DISENO.md` y manda sobre
+   este fichero: la consola del Sistema Master es OTRA plataforma y no se
+   le parece en el contenido, pero LAS DOS comparten tema, colores,
+   formas, encuadre y letra. Esa uniformidad es la que enganchó a la
+   iglesia, y no se toca sin cambiar la regla primero.
+
+   Aquí se abandona el papel cálido del remix editorial y se adopta el
+   MISMO tema que `master/estilo.css`: blanco, densidad de Linear, azul
+   de la marca, cero sombras y cifras tabulares. La paleta de la iglesia
+   no cambia; cambian la superficie y la tipografía. */
+:root {
+  --cr-fondo:        #F7F7F8;
+  --cr-superficie:   #FFFFFF;
+  --cr-superficie-2: #FAFAFB;
+  --cr-borde:        #E8E8EA;
+  --cr-borde-fuerte: #D8D8DC;
+  --cr-texto:        #17171A;
+  --cr-texto-suave:  #55555C;
+  /* Medido: 5,3:1 sobre blanco. Las etiquetas van pequeñas y en
+     mayúsculas, que es donde peor se lee. */
+  --cr-texto-tenue:  #75757E;
+
+  /* ⛔ Sin serif de display: la misma pila que la consola. Lo que da
+     carácter es la escala y el acento único, no una fuente distinta en
+     cada mitad del producto. */
+  --cr-fuente-display: var(--cr-fuente);
+  --cr-fuente-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* Los mismos radios que la consola: 6 y 8. */
+  --cr-radio-sm: 6px; --cr-radio-md: 8px; --cr-radio-lg: 8px;
+  /* ⛔ Cero sombras: el relieve lo dan los filetes, como en la consola. */
+  --cr-sombra-sm: none;
+  --cr-sombra-md: none;
+  --cr-sombra-lg: none;
+  --cr-foco: 0 0 0 2px rgba(19,66,145,.55);
+}
+
+/* ⛔ AQUÍ HABÍA UN TEMA OSCURO AUTOMÁTICO, y se quita. Con él, la
+   aplicación cambiaba de aspecto según cómo tuviera el teléfono cada
+   persona: en la misma iglesia, unos la veían blanca y otros marrón
+   oscuro, y la consola del Sistema Master siempre blanca. La uniformidad
+   no es un capricho estético: es lo que permite que dos personas hablen
+   de la misma pantalla, y es lo que la iglesia aprobó. Un solo tema. */
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--cr-fondo); color: var(--cr-texto);
+  font-family: var(--cr-fuente); font-size: var(--cr-tx-base); line-height: var(--cr-linea);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { font-family: var(--cr-fuente); font-weight: 600; letter-spacing: -0.012em; margin: 0 0 var(--cr-sp-3); }
+h1 { font-size: clamp(1.5rem, 4vw, 2.0625rem); line-height: 1.15; }
+h2 { font-size: clamp(1.2rem, 3vw, 1.625rem); line-height: 1.2; }
+h3 { font-size: var(--cr-tx-md); }
+
+.etiqueta {
+  font-family: var(--cr-fuente-mono); font-size: 0.6875rem; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--cr-texto-tenue); font-weight: 500;
+}
+
+/* ── Foco visible SIEMPRE. Accesibilidad AA no es opcional. ── */
+:focus-visible { outline: none; box-shadow: var(--cr-foco); border-radius: var(--cr-radio-sm); }
+.salto-al-contenido {
+  position: absolute; left: -9999px; top: 0; background: var(--cr-azul-700); color: #fff;
+  padding: var(--cr-sp-3) var(--cr-sp-4); z-index: 100; border-radius: 0 0 var(--cr-radio-md) 0;
+}
+.salto-al-contenido:focus { left: 0; }
+
+/* ── Estructura ── */
+.marco { min-height: 100dvh; display: flex; flex-direction: column; }
+/* ⛔ Sin esto, en movil y con poco contenido la barra de navegacion quedaba
+   flotando a media pantalla con un hueco debajo: `.nav` es sticky bottom
+   pero `.columna` no estiraba dentro de `.marco`. Se veia roto. */
+.marco > .columna { flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0; }
+.cabecera {
+  display: flex; align-items: center; gap: var(--cr-sp-3);
+  padding: var(--cr-sp-3) var(--cr-sp-4);
+  background: var(--cr-superficie); border-bottom: 1px solid var(--cr-borde);
+  position: sticky; top: 0; z-index: 20;
+}
+.cabecera__marca { font-family: var(--cr-fuente); font-weight: 600; font-size: var(--cr-tx-base); letter-spacing: -0.01em; }
+.cabecera__sede { color: var(--cr-texto-suave); font-size: var(--cr-tx-sm); }
+.cabecera__derecha { margin-left: auto; display: flex; align-items: center; gap: var(--cr-sp-2); }
+
+.contenido { flex: 1; padding: var(--cr-sp-4); max-width: 1100px; width: 100%; margin: 0 auto; }
+
+/* Navegación: abajo en móvil (el pulgar llega), al lado en escritorio.
+   ⛔ El `order: 2` no es decorativo: en el marcado la navegación va PRIMERO
+   para que el teclado y el lector de pantalla la encuentren al entrar, y
+   visualmente va ABAJO porque es donde llega el pulgar de quien registra
+   de pie en el pasillo, con una mano y un niño en la otra. */
+.nav {
+  order: 2;
+  display: flex; gap: 2px; background: var(--cr-superficie);
+  border-top: 1px solid var(--cr-borde); position: sticky; bottom: 0; z-index: 20;
+  padding: var(--cr-sp-1); padding-bottom: max(var(--cr-sp-1), env(safe-area-inset-bottom));
+  overflow-x: auto;
+  /* ⛔ 20 sep 2026 · Con nueve secciones, en un telefono de 375 px caben
+     cinco y las otras cuatro quedaban fuera SIN NINGUNA SEÑAL de que la
+     barra se desplaza. Una funcion que no se ve es una funcion que no
+     existe, y «Consejeria» y «Talento» quedaban invisibles.
+     El arreglo son tres cosas a la vez: los botones se estrechan para que
+     el siguiente ASOME (esa mitad de boton es la que dice «hay mas»), el
+     desplazamiento se engancha por boton, y se desvanece el borde derecho. */
+  overflow-x: hidden;
+}
+/* Móvil: cuatro fijas y «Más». Escritorio: la columna completa. */
+.nav__pocas { display: flex; gap: 2px; flex: 1; }
+.nav__todas { display: none; }
+.columna { order: 1; }
+.nav__item {
+  flex: 1 0 auto; min-width: 68px; min-height: var(--cr-tactil-min);
+  scroll-snap-align: start;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  border: 0; background: transparent; color: var(--cr-texto-suave); cursor: pointer;
+  font: inherit; font-size: 0.6875rem; border-radius: var(--cr-radio-md); padding: var(--cr-sp-2);
+}
+.nav__item[aria-current="page"] { background: var(--cr-azul-50); color: var(--cr-azul-700); font-weight: 600; }
+.nav__icono { font-size: 1.1rem; line-height: 1; }
+
+@media (min-width: 860px) {
+  .marco { flex-direction: row; }
+  .nav {
+    order: 0;
+    /* En escritorio la barra es una columna completa: ni mascara ni enganche. */
+    -webkit-mask-image: none; mask-image: none; scroll-snap-type: none;
+    flex-direction: column; border-top: 0; border-right: 1px solid var(--cr-borde);
+    width: 210px; position: sticky; top: 0; height: 100dvh; padding: var(--cr-sp-3) var(--cr-sp-2);
+  }
+  /* ⛔ `flex: 1` en columna hace que cada botón CREZCA hasta llenar la
+     altura: con dos secciones, la segunda queda al fondo de la pantalla.
+     En la barra de abajo del móvil sí se quiere que crezcan; aquí no. */
+  .nav__pocas { display: none; }
+  .nav__todas { display: flex; flex-direction: column; gap: 2px; width: 100%; }
+  .nav__item { flex: 0 0 auto; flex-direction: row; justify-content: flex-start;
+               gap: var(--cr-sp-3); font-size: var(--cr-tx-sm); text-align: left; }
+  .nav__item span:last-child { flex: 1; }
+  .columna { order: 1; flex: 1; display: flex; flex-direction: column; min-width: 0; }
+}
+
+/* ── Tarjetas y tablas ── */
+.tarjeta {
+  background: var(--cr-superficie); border: 1px solid var(--cr-borde);
+  border-radius: var(--cr-radio-lg); padding: var(--cr-sp-4); box-shadow: var(--cr-sombra-sm);
+}
+.rejilla { display: grid; gap: var(--cr-sp-3); grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+
+.tabla { width: 100%; border-collapse: collapse; font-size: var(--cr-tx-sm); }
+.tabla th {
+  text-align: left; font-family: var(--cr-fuente-mono); font-size: 0.6875rem;
+  text-transform: uppercase; letter-spacing: .06em; color: var(--cr-texto-tenue);
+  padding: var(--cr-sp-2); border-bottom: 1px solid var(--cr-borde-fuerte); font-weight: 500;
+}
+.tabla td { padding: var(--cr-sp-3) var(--cr-sp-2); border-bottom: 1px solid var(--cr-borde); }
+.tabla tr:last-child td { border-bottom: 0; }
+@media (max-width: 640px) {
+  .tabla, .tabla tbody, .tabla tr, .tabla td { display: block; width: 100%; }
+  .tabla thead { display: none; }
+  .tabla tr { border: 1px solid var(--cr-borde); border-radius: var(--cr-radio-md); margin-bottom: var(--cr-sp-3); padding: var(--cr-sp-2); }
+  .tabla td { border: 0; padding: var(--cr-sp-1) var(--cr-sp-2); display: flex; justify-content: space-between; gap: var(--cr-sp-3); }
+  .tabla td::before { content: attr(data-th); font-family: var(--cr-fuente-mono); font-size: .6875rem; text-transform: uppercase; color: var(--cr-texto-tenue); }
+}
+
+/* ── Controles ── */
+.campo { display: flex; flex-direction: column; gap: var(--cr-sp-1); margin-bottom: var(--cr-sp-3); }
+.campo > label { font-weight: 500; font-size: var(--cr-tx-sm); }
+.campo > .ayuda { color: var(--cr-texto-suave); font-size: var(--cr-tx-xs); }
+input, select, textarea {
+  font: inherit; color: inherit; background: var(--cr-superficie);
+  border: 1px solid var(--cr-borde-fuerte); border-radius: var(--cr-radio-md);
+  padding: 0.65rem 0.8rem; min-height: var(--cr-tactil-min); width: 100%;
+}
+input[aria-invalid="true"] { border-color: var(--cr-peligro); }
+
+.boton {
+  font: inherit; font-weight: 600; cursor: pointer; min-height: var(--cr-tactil-min);
+  padding: 0.65rem 1.1rem; border-radius: var(--cr-radio-md);
+  border: 1px solid transparent; background: var(--cr-azul-700); color: #fff;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--cr-sp-2);
+  transition: filter var(--cr-transicion);
+}
+.boton:hover:not(:disabled) { filter: brightness(1.08); }
+.boton:disabled { opacity: .55; cursor: not-allowed; }
+.boton--suave { background: var(--cr-superficie-2); color: var(--cr-texto); border-color: var(--cr-borde-fuerte); }
+.boton--peligro { background: var(--cr-peligro); }
+.boton--ancho { width: 100%; }
+
+/* ── Distintivos de sensibilidad. El color dice cuánto pesa el dato. ── */
+.distintivo {
+  display: inline-flex; align-items: center; gap: 4px; font-family: var(--cr-fuente-mono);
+  font-size: .6875rem; padding: 2px 8px; border-radius: var(--cr-radio-full);
+  background: var(--cr-superficie-2); color: var(--cr-texto-suave); border: 1px solid var(--cr-borde);
+}
+.distintivo--n3 { background: #F3EDFB; color: #5B3B93; border-color: #E0D2F5; }
+.distintivo--n4 { background: var(--cr-peligro-bg); color: var(--cr-peligro); border-color: #F3CFC9; }
+.distintivo--ok { background: var(--cr-exito-bg); color: var(--cr-exito); border-color: #C6E7D5; }
+.distintivo--aviso { background: var(--cr-aviso-bg); color: var(--cr-aviso); border-color: #F0DFB4; }
+
+/* ── Estados: vacío, carga, error. Los tres, en cada vista. ── */
+.estado { text-align: center; padding: var(--cr-sp-8) var(--cr-sp-4); color: var(--cr-texto-suave); }
+.estado__icono { font-size: 2rem; margin-bottom: var(--cr-sp-3); opacity: .75; }
+.estado__titulo { font-family: var(--cr-fuente); font-size: var(--cr-tx-lg); color: var(--cr-texto); margin-bottom: var(--cr-sp-2); }
+.estado--error { color: var(--cr-peligro); }
+
+.esqueleto {
+  background: linear-gradient(90deg, var(--cr-superficie-2) 25%, var(--cr-borde) 50%, var(--cr-superficie-2) 75%);
+  background-size: 200% 100%; animation: brillo 1.4s infinite; border-radius: var(--cr-radio-sm); height: 1rem;
+}
+@keyframes brillo { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .esqueleto { animation: none; } * { transition: none !important; } }
+
+/* ── Aviso de sin conexión: el domingo el wifi del templo falla ── */
+.sin-conexion {
+  background: var(--cr-aviso-bg); color: var(--cr-aviso); border-bottom: 1px solid #F0DFB4;
+  padding: var(--cr-sp-2) var(--cr-sp-4); font-size: var(--cr-tx-sm); text-align: center;
+}
+.sin-conexion strong { font-weight: 600; }
+
+.aviso { padding: var(--cr-sp-3); border-radius: var(--cr-radio-md); margin-bottom: var(--cr-sp-3); font-size: var(--cr-tx-sm); }
+.aviso--error { background: var(--cr-peligro-bg); color: var(--cr-peligro); }
+.aviso--ok { background: var(--cr-exito-bg); color: var(--cr-exito); }
+.aviso--info { background: var(--cr-info-bg); color: var(--cr-info); }
+/* ⛔ 20 sep 2026 · `avisar()` llamaba a estas tres y NO EXISTIAN: el aviso
+   salia sin fondo, del color del texto normal, y un error de guardado se
+   veia igual que una confirmacion. Los nombres que usa el codigo son los
+   que tiene que haber aqui. */
+.aviso--exito { background: var(--cr-exito-bg); color: var(--cr-exito); }
+.aviso--aviso { background: var(--cr-aviso-bg, var(--cr-info-bg)); color: var(--cr-aviso, var(--cr-info)); }
+
+/* Fila de tabla que abre una ficha. Se marca como pulsable de verdad:
+   cursor, foco visible y realce, porque una fila que responde al clic sin
+   parecerlo es una funcion que nadie encuentra. */
+.fila--pulsable { cursor: pointer; }
+.fila--pulsable:hover { background: var(--cr-superficie-2); }
+.fila--pulsable:focus-visible { outline: 2px solid var(--cr-azul-700); outline-offset: -2px; }
+
+/* Los formularios plegables de cada modulo. */
+details.tarjeta > summary { list-style: none; }
+details.tarjeta > summary::-webkit-details-marker { display: none; }
+details.tarjeta > summary::before { content: '＋ '; color: var(--cr-azul-700); }
+details.tarjeta[open] > summary::before { content: '－ '; }
+details.tarjeta > summary:focus-visible { outline: 2px solid var(--cr-azul-700); outline-offset: 3px; border-radius: 4px; }
+
+.pie { padding: var(--cr-sp-3) var(--cr-sp-4); color: var(--cr-texto-tenue); font-size: var(--cr-tx-xs); text-align: center; }
+.pie code { font-family: var(--cr-fuente-mono); }
+
+/* ── Entrar: pantalla aparte, centrada ── */
+.entrar { min-height: 100dvh; display: grid; place-items: center; padding: var(--cr-sp-4); }
+.entrar__caja { width: 100%; max-width: 420px; }
+.entrar__marca { text-align: center; margin-bottom: var(--cr-sp-5); }
+.entrar__marca h1 { margin-bottom: var(--cr-sp-1); }
+.entrar__marca p { color: var(--cr-texto-suave); margin: 0; font-size: var(--cr-tx-sm); }
+
+
+/* ── Banda de MODO DEMOSTRACIÓN ──────────────────────────────────────
+   ⛔ Deliberadamente fea y deliberadamente fija. Un sistema que guarda
+   datos de menores no puede parecerse a su demostración sin que se note:
+   la peor confusión posible es creer que se está mirando la realidad. */
+.banda-demo {
+  position: sticky; top: 0; z-index: 50;
+  background: #7A1F12; color: #FFF6F2;
+  padding: .55rem var(--cr-sp-4); font-size: var(--cr-tx-xs);
+  letter-spacing: .02em; text-align: center; line-height: 1.35;
+  border-bottom: 2px solid #4E130B;
+}
+.banda-demo strong { color: #FFD9CF; }
+
+
+/* ── La hoja de «Más»: todas las secciones, en el móvil ──────────────
+   ⛔ Existe porque la barra de abajo no puede crecer: con veintidós
+   módulos, una barra que se desplaza esconde funciones enteras sin que
+   nadie sepa que están ahí. Cuatro a la mano y el resto en una lista que
+   se abre: lo que se usa un domingo de pie no es lo mismo que lo que se
+   usa un martes sentado. */
+.hoja[hidden] { display: none; }
+.hoja { position: fixed; inset: 0; z-index: 60; display: flex; align-items: flex-end; }
+.hoja__fondo { position: absolute; inset: 0; background: rgba(28,26,23,.45); }
+.hoja__panel {
+  position: relative; width: 100%; max-height: 78dvh; overflow-y: auto;
+  background: var(--cr-superficie); border-top-left-radius: var(--cr-radio-lg);
+  border-top-right-radius: var(--cr-radio-lg); box-shadow: var(--cr-sombra-md);
+  padding: var(--cr-sp-3); padding-bottom: max(var(--cr-sp-4), env(safe-area-inset-bottom));
+}
+.hoja__cabecera {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: var(--cr-sp-3); padding-bottom: var(--cr-sp-2);
+  border-bottom: 1px solid var(--cr-borde);
+}
+.hoja__lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--cr-sp-2); }
+.hoja__item {
+  display: flex; align-items: center; gap: var(--cr-sp-3);
+  min-height: var(--cr-tactil-min); padding: var(--cr-sp-3);
+  border: 1px solid var(--cr-borde); border-radius: var(--cr-radio-md);
+  background: var(--cr-superficie); color: var(--cr-texto);
+  font: inherit; font-size: var(--cr-tx-sm); text-align: left; cursor: pointer;
+}
+.hoja__item:hover { background: var(--cr-superficie-2); }
+.hoja__item[aria-current="page"] { background: var(--cr-azul-50); color: var(--cr-azul-700); font-weight: 600; }
+.hoja__item:focus-visible { outline: 2px solid var(--cr-azul-700); outline-offset: 2px; }
+@media (min-width: 860px) { .hoja { display: none; } }
+
+
+/* ---------------- el enlace que abre una fila ----------------
+   ⛔ Regla de `docs/DISENO.md`: la acción de una tabla va en la PRIMERA
+   celda. En un teléfono, la última columna de una tabla que se desplaza
+   de lado empieza fuera de la pantalla: el botón existe, responde y no
+   se ve. Pasó el 20 de septiembre de 2026 y el reporte fue «no me abre
+   nada». */
+.enlace-fila {
+  color: var(--cr-azul-700); text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.enlace-fila:hover { border-bottom-color: currentColor; }
+.enlace-fila:focus-visible {
+  outline: 2px solid var(--cr-azul-700); outline-offset: 2px; border-radius: 3px;
+}
+@media (max-width: 720px) {
+  /* La primera celda se queda fija: el enlace SIEMPRE se ve. */
+  .tabla td:first-child, .tabla th:first-child {
+    position: sticky; left: 0; background: var(--cr-superficie); z-index: 1;
+  }
+  .tabla thead th:first-child { background: var(--cr-superficie-2); }
+}

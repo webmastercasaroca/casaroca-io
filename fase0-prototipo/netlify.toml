@@ -1,0 +1,45 @@
+# Casa Roca AI System — Prototipo Fase 0 (borrador / demo)
+# Sitio estático: no requiere build. Netlify sirve la carpeta tal cual.
+[build]
+  publish = "."
+  command = ""
+
+# Página de entrada: el Hub (mapa con todas las páginas).
+# El index del prototipo sigue accesible en /index.html
+[[redirects]]
+  from = "/"
+  to = "/hub.html"
+  status = 302
+  force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # Borrador: pedir a buscadores que NO lo indexen
+    X-Robots-Tag = "noindex, nofollow"
+
+# ------------------------------------------------------------
+# CACHÉ · por qué está esto aquí, con fecha
+# El 11 de septiembre de 2026 un panel siguió enseñando todas sus
+# pestañas después de que el centro de mando le quitara los módulos.
+# No fallaba el permiso: el navegador tenía guardado el HTML viejo,
+# el de antes de que existiera el puente de permisos, y no volvió a
+# pedirlo nunca. Un permiso que no llega por caché se ve igual que un
+# permiso roto, y cuesta lo mismo diagnosticarlo.
+#
+# El HTML es la pieza que DECIDE qué scripts se cargan, así que se
+# revalida siempre. Los assets sí se cachean fuerte, porque van
+# sellados con ?v= y ese sello cambia cuando cambian (ver sellar.sh).
+# ------------------------------------------------------------
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"

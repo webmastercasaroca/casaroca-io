@@ -1,0 +1,116 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Acta de construccion y publicacion · Frontend</title><style>
+@page { size: A4; margin: 20mm 18mm; }
+* { print-color-adjust: exact; -webkit-print-color-adjust: exact; box-sizing: border-box; }
+body { font-family: Georgia,"Times New Roman",serif; font-size:10.2pt; line-height:1.55; color:#1a1a1a; margin:0; }
+h1 { font-family:-apple-system,"Helvetica Neue",Arial,sans-serif; font-size:18pt; font-weight:600;
+     color:#0d2b4e; border-bottom:2px solid #0d2b4e; padding-bottom:.3em; margin:0 0 .6em; page-break-after:avoid; }
+h2 { font-family:-apple-system,"Helvetica Neue",Arial,sans-serif; font-size:12.6pt; font-weight:600;
+     color:#0d2b4e; margin:1.7em 0 .45em; page-break-after:avoid; }
+h3 { font-family:-apple-system,"Helvetica Neue",Arial,sans-serif; font-size:10.8pt; font-weight:600;
+     color:#24405e; margin:1.3em 0 .35em; page-break-after:avoid; }
+p { margin:0 0 .75em; text-align:justify; hyphens:auto; orphans:3; widows:3; }
+ul,ol { margin:0 0 .85em; padding-left:1.4em; } li { margin-bottom:.25em; }
+code { font-family:"SF Mono",Menlo,Consolas,monospace; font-size:.86em; background:#f2f4f7;
+       padding:.08em .3em; border-radius:3px; color:#12355b; }
+strong { font-weight:700; color:#000; }
+hr { border:none; border-top:1px solid #d4d9e0; margin:1.9em 0; }
+table { width:100%; border-collapse:collapse; margin:.6em 0 1.1em; font-size:9pt;
+        font-family:-apple-system,Arial,sans-serif; page-break-inside:avoid; }
+th { background:#0d2b4e; color:#fff; text-align:left; padding:.45em .6em; font-weight:600; }
+td { padding:.4em .6em; border-bottom:1px solid #e3e7ec; vertical-align:top; }
+tbody tr:nth-child(even) td { background:#f7f9fb; }
+td:not(:first-child) { text-align:right; } th:not(:first-child) { text-align:right; }
+pre { background:#f7f9fb; border:1px solid #e3e7ec; border-left:3px solid #0d2b4e;
+      padding:.7em .9em; margin:.6em 0 1.1em; border-radius:3px; overflow:hidden;
+      page-break-inside:avoid; }
+pre code { font-family:"SF Mono",Menlo,Consolas,monospace; font-size:8.6pt; line-height:1.45;
+      background:none; padding:0; color:#12355b; white-space:pre-wrap; word-break:break-word; }
+.pie { margin-top:2.2em; padding-top:.7em; border-top:1px solid #d4d9e0; font-size:8.4pt;
+       color:#5a6472; font-family:-apple-system,Arial,sans-serif; }
+</style></head><body>
+<h1>Acta de construcción y publicación · Frontend</h1>
+<table><thead><tr><th>Campo</th><th>Dato</th></tr></thead><tbody>
+<tr><td>Proyecto</td><td>CasaRoca System · Sistema 100p</td></tr>
+<tr><td>Componente</td><td>Frontend (prototipo navegable y sitio web)</td></tr>
+<tr><td>Fecha de corte</td><td>11 de septiembre de 2026</td></tr>
+<tr><td>Repositorio</td><td><code>github.com/100p-NANO/ecosistema-cr</code>, carpetas <code>fase0-prototipo/</code> y <code>web/</code></td></tr>
+<tr><td>Estado</td><td>Construido y publicado</td></tr>
+</tbody></table>
+<hr>
+<h2>1. Objeto de este documento</h2>
+<p>Dejar constancia formal de qué se construyó en la capa visible del Sistema 100p y qué quedó publicado en el repositorio de la iglesia.</p>
+<p>A diferencia del backend, esta capa no se mide en pruebas automáticas sino en <strong>pantallas que se pueden abrir y recorrer</strong>. Por eso el criterio de esta acta es distinto: lo que se afirma aquí se comprueba navegando, y la sección 6 explica cómo hacerlo en cualquier computador.</p>
+<h2>2. Por qué existe esta capa</h2>
+<p>El prototipo no es una maqueta decorativa. Cumple tres funciones concretas en el proyecto:</p>
+<ol>
+<li><strong>Es el acuerdo visual con la iglesia.</strong> Las 19 modificaciones que pidió el pastor sobre el prototipo quedaron implementadas y verificadas una a una. El prototipo es el documento donde se ve qué se acordó, sin necesidad de leer una especificación.</li>
+<li><strong>Es lo que permite que la dirección evalúe el sistema sin ser técnica.</strong> El Pastor Director General puede abrir la aplicación y recorrerla, en lugar de opinar sobre un diagrama.</li>
+<li><strong>Es la referencia de comportamiento para el desarrollo.</strong> Cuando se construya la interfaz definitiva sobre el backend, el prototipo dice qué debe hacer cada pantalla.</li>
+</ol>
+<h2>3. Publicación en el repositorio</h2>
+<table><thead><tr><th>Concepto</th><th>Dato</th></tr></thead><tbody>
+<tr><td>Repositorio</td><td><code>github.com/100p-NANO/ecosistema-cr</code></td></tr>
+<tr><td>Carpetas</td><td><code>fase0-prototipo/</code> (231 archivos) y <code>web/</code> (77 archivos)</td></tr>
+<tr><td>Visibilidad</td><td>Privado, por invitación</td></tr>
+<tr><td>Commit del corte</td><td><code>745b20f</code></td></tr>
+</tbody></table>
+<p><strong>Este es el punto más importante de esta acta.</strong> Hasta el 11 de septiembre de 2026, el prototipo era la única pieza del proyecto que <strong>no tenía copia en ningún servidor</strong>: existía solamente en un computador. Un daño de disco lo habría borrado por completo, con las 19 modificaciones del pastor incluidas. Con esta publicación, esa exposición quedó cerrada.</p>
+<h2>4. Qué quedó construido</h2>
+<h3>4.1 El prototipo navegable</h3>
+<table><thead><tr><th>Elemento</th><th>Cantidad</th></tr></thead><tbody>
+<tr><td>Pantallas HTML</td><td>48</td></tr>
+<tr><td>Archivos JavaScript</td><td>127</td></tr>
+<tr><td>Hojas de estilo</td><td>45</td></tr>
+<tr><td>Líneas del motor (<code>assets/js</code>)</td><td>26.075 en 42 archivos</td></tr>
+</tbody></table>
+<p>Está construido en HTML, CSS y JavaScript sin marcos de trabajo ni compilación: se abre directamente en el navegador. Es una decisión deliberada de la Fase 0, para que cualquiera de la mesa pueda abrirlo sin instalar nada.</p>
+<h3>4.2 Las pantallas por rol</h3>
+<p>La aplicación reproduce la jerarquía pastoral, de la sede madre al grupo pequeño:</p>
+<table><thead><tr><th>Pantalla</th><th>Rol al que sirve</th></tr></thead><tbody>
+<tr><td><code>central.html</code></td><td>Pastor Director General. Administración de las 36 sedes</td></tr>
+<tr><td><code>pastor.html</code></td><td>Pastor Congregacional. Operación completa de su sede</td></tr>
+<tr><td><code>director.html</code></td><td>Director de Ministerio</td></tr>
+<tr><td><code>lider.html</code></td><td>Líder de grupo</td></tr>
+<tr><td><code>nicodemo.html</code></td><td>Seguimiento de personas nuevas</td></tr>
+<tr><td><code>rocakids-domingo.html</code> y <code>rocakids-director.html</code></td><td>Ministerio de niños: entrada, entrega y dirección</td></tr>
+<tr><td><code>consejeria-solicitud / -consejero / -coordinador / -director</code></td><td>Los cuatro roles del proceso de consejería</td></tr>
+<tr><td><code>experiencia.html</code>, <code>-v2</code>, <code>-v3</code></td><td>Páginas públicas. El recorrido Conoce, Conéctate, Crece, Sirve</td></tr>
+<tr><td><code>hub.html</code></td><td>Mapa de entrada a todo el sistema</td></tr>
+</tbody></table>
+<p>Los motores principales, por si la revisión técnica quiere entrar directo:</p>
+<pre><code>assets/js/pastor.js                 3.036 líneas · 17 vistas
+assets/js/director.js               1.426 líneas
+assets/js/consejeria-coordinador.js 1.332 líneas
+assets/js/landing-v2.js             1.104 líneas
+assets/js/central.js                1.100 líneas
+assets/js/landing-v3.js             1.098 líneas
+assets/js/pastor-data.js              975 líneas</code></pre>
+<h3>4.3 El sitio web</h3>
+<p>En <code>web/publico/</code>: 17 páginas HTML, 42 archivos JavaScript y 15 hojas de estilo. Reúne en un solo despliegue lo que antes vivía en dos sitios separados.</p>
+<p>La unificación resolvió un defecto real: el panel del pastor abre la consejería dentro de un marco del mismo origen, pero las páginas de consejería estaban en otro despliegue, de modo que el marco devolvía «página no encontrada». Apuntar a otro dominio tampoco funcionaba, porque el navegador bloquea el marco cruzado. Publicarlas juntas era la única salida.</p>
+<h3>4.4 Las dos copias de entrega</h3>
+<p>El repositorio incluye dos versiones preparadas para entregar a la iglesia con la aplicación <strong>vacía</strong>, sin datos de demostración: una para el Pastor Congregacional y otra para la Dirección General. Sirven para que el sistema se pueble con datos reales desde cero.</p>
+<h2>5. Estado actual y límites de esta capa</h2>
+<p>Debe quedar explícito para que nadie tome el prototipo por más de lo que es:</p>
+<ul>
+<li><strong>Los datos son de demostración y no salen del navegador.</strong> El prototipo guarda su información en el almacenamiento local del navegador de cada persona. No hay servidor detrás, no se comparte entre equipos y no se sincroniza.</li>
+<li><strong>El ingreso es una selección de rol, no una autenticación.</strong> No hay contraseñas reales ni control de sesión. La privacidad que se ve en pantalla es de presentación, no está impuesta por un motor.</li>
+<li><strong>La conexión con el backend está pendiente.</strong> El backend descrito en el acta correspondiente ya impone las reglas de verdad (aislamiento por sede, protección de menores, consentimiento). El paso siguiente del proyecto es que esta capa consuma esos servicios en lugar de sus datos de demostración.</li>
+</ul>
+<p>Ninguno de estos tres puntos es un defecto: son el alcance acordado para la Fase 0. Se dejan escritos para que la mesa evalúe el prototipo por lo que es.</p>
+<h2>6. Cómo abrirlo y recorrerlo</h2>
+<p><strong>Opción sencilla, sin instalar nada.</strong> Descargar la carpeta <code>fase0-prototipo</code> del repositorio y abrir el archivo <code>hub.html</code> con doble clic. Desde ahí se llega a las 48 pantallas.</p>
+<p><strong>Opción con servidor local</strong>, recomendada para revisión técnica porque reproduce el comportamiento real de las páginas anidadas:</p>
+<pre><code>cd fase0-prototipo
+python3 -m http.server 5300 --bind 127.0.0.1</code></pre>
+<p>Luego abrir <code>http://127.0.0.1:5300/hub.html</code> en el navegador.</p>
+<p>Para revisar el sitio web, el mismo procedimiento sobre la carpeta <code>web/publico</code>.</p>
+<p>El código no se compila: al guardar un archivo basta recargar el navegador para ver el cambio.</p>
+<h2>7. Asuntos abiertos que requieren decisión de la mesa</h2>
+<ol>
+<li><strong>Conectar el prototipo con el backend.</strong> Es el paso natural del proyecto y define el cronograma de la Fase 1. Requiere decidir qué pantallas se conectan primero.</li>
+<li><strong>Identidad y autenticación.</strong> El ingreso por selección de rol debe reemplazarse por autenticación real antes de cualquier uso con datos de personas.</li>
+<li><strong>Alcance de la interfaz definitiva.</strong> Hay que decidir si la interfaz de producción se construye sobre este código o se rehace con el marco de trabajo que adopte el equipo. El prototipo conserva su valor como referencia de comportamiento en cualquiera de los dos casos.</li>
+</ol>
+<p class="pie">Documento de la mesa de trabajo · CasaRoca System · Fase 1.</p>
+</body></html>

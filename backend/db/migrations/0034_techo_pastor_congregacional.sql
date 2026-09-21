@@ -1,0 +1,36 @@
+-- =====================================================================
+-- Migración 0034 — EL TECHO DEL PASTOR CONGREGACIONAL SUBE A N4
+--
+-- Decisión de Daniel, 11 de septiembre de 2026. El detonante fue real:
+-- el pastor de una iglesia local no veía RocaKids de su propia sede, y
+-- él es el responsable de ese ministerio ante la iglesia y ante la ley.
+--
+-- ⚠️ SE DEJA ESCRITO LO QUE ESTO ARRASTRA, porque no es solo RocaKids.
+-- El techo es un escalar: al subirlo, el rol alcanza TODOS los módulos
+-- de ese nivel, no solo el que motivó el cambio. En concreto:
+--
+--   · ROCAKIDS (N4) — lo que se buscaba.
+--   · APORTES (N3)  — efecto colateral. El pastor de sede pasa a ver
+--     cuánto aporta cada persona de su iglesia.
+--   · TALENTO (N3), ORACIÓN (N3), LEGAL (N3) — también entran.
+--
+-- ⛔ Esto contradice una regla que la arquitectura del proyecto tenía
+-- escrita: «Diezmos por persona: solo Pastor Director General». Queda
+-- anotado aquí para que la mesa lo revise a conciencia, no para que
+-- aparezca un día sin que nadie sepa de dónde salió.
+--
+-- La alternativa que NO se tomó, y que sigue disponible, era una
+-- concesión acotada por módulo (una fila en matriz_permisos con su
+-- nivel_max y su acta), como se hizo con la consejería en la 0030. Esa
+-- vía da RocaKids sin dar aportes. Revertir esto es una línea:
+--   -- ⛔ EL CAMBIO NO VA AQUÍ, y esto lo comprobé chocándome dos veces.
+-- `identidad.roles` lo puebla un SEED (001_catalogos), y los seeds corren
+-- DESPUÉS de las migraciones. Una migración que actualice o referencie
+-- roles no encuentra nada y aborta; al abortar, los seeds no corren y la
+-- base queda a medias.
+--
+-- Es la misma lección que quedó escrita en la 0033 y que yo mismo volví
+-- a saltarme: las migraciones definen ESTRUCTURA, los seeds el CONTENIDO
+-- que depende de catálogos.
+--
+-- 👉 El cambio de techo vive en `db/seeds/010_techo_pastor.sql`.

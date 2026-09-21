@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Casa Roca · Sistema Master</title>
+  <meta name="description" content="Sistema master de Casa Sobre la Roca: gobierno de roles, permisos y accesos de toda la red." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/master.css?v=1789560580" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23E3A52C'/%3E%3Ctext x='16' y='22' font-size='18' text-anchor='middle' fill='%23071D44' font-family='Arial' font-weight='bold'%3ECR%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+  <div id="app"></div>
+  <script src="assets/js/master-identidad.js?v=1789560580"></script>
+  <script src="assets/js/master-store.js?v=1789560580"></script>
+  <script src="assets/js/master.js?v=1789560580"></script>
+  <!-- ⭐ EL PUENTE CON LA API, al final a propósito: el master ya se
+       dibujó con lo que tenía y esto lo sustituye por lo real cuando el
+       servidor contesta. Si no hay servidor, la pantalla lo dice y sigue
+       con el juego sembrado en vez de quedarse en blanco. -->
+  <script src="assets/js/master-api.js?v=1789560580"></script>
+  <script src="assets/js/master-arranque.js?v=1789560580"></script>
+</body>
+</html>

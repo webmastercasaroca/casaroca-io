@@ -1,0 +1,1253 @@
+openapi: 3.1.0
+info:
+  title: CasaRoca System AI · API
+  version: "1.0.0"
+  description: |
+    API del sistema eclesial de Casa Sobre la Roca: una central y 36 sedes.
+
+    ESTE ARCHIVO SE GENERA. No lo edite a mano: corra `scripts/generar-openapi.js`.
+    La verificacion de entrega compara lo generado con lo versionado.
+
+    Autenticacion: token de portador (Bearer). El token dice que sesion DICE ser;
+    quien decide es la base, que en cada peticion responde si esa sesion sigue viva.
+    Por eso cerrar una sesion surte efecto en el instante.
+servers:
+  - url: https://api.casaroca.org
+    description: produccion
+  - url: https://api.staging.casaroca.org
+    description: pruebas
+  - url: http://127.0.0.1:3000
+    description: desarrollo
+components:
+  securitySchemes:
+    portador:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      type: object
+      properties:
+        error: { type: boolean }
+        mensaje: { type: string, description: "En castellano y con la accion siguiente. Nunca filtra la estructura interna." }
+        peticionId: { type: string, description: "Identificador de traza. El usuario lo lee por telefono al soporte." }
+security:
+  - portador: []
+paths:
+  /api/v1/administracion/alertas:
+    get:
+      summary: "Quien esta probando contrasenas"
+      description: "Intentos fallidos agrupados por usuario y direccion."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/auditoria:
+    get:
+      summary: "Quien hizo que"
+      description: "La auditoria. ⛔ Se lee por funcion, no por permiso de tabla: conceder SELECT sobre la auditoria a la aplicacion la haria legible por cualquier sesion."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/catalogo:
+    get:
+      summary: "Catalogo de gobierno"
+      description: "Lo que la consola necesita en UNA peticion para pintar las casillas: modulos con su nivel de dato, acciones (las seis generales y las propias de cada modulo), roles con su techo y su alcance, niveles de sensibilidad y tipos de documento vigentes. Los tipos de documento salen del catalogo, no de una lista escrita en el frontend: la central los cambia sin desplegar."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/cuentas/:id/desbloquear:
+    post:
+      summary: "Desbloquear una cuenta"
+      description: "Para quien se equivoco cinco veces."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/cuentas/:id/reiniciar-clave:
+    post:
+      summary: "Reiniciar la contrasena"
+      description: "Genera una provisional nueva y CIERRA todas sus sesiones: si no, quien tuviera la sesion abierta con la clave vieja seguiria dentro."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/cuentas/:id/reiniciar-segundo-factor:
+    post:
+      summary: "Reiniciar el segundo factor"
+      description: "Para quien perdio el telefono. ⛔ NO le quita la exigencia: su rol lo sigue necesitando."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/cuentas:
+    get:
+      summary: "Las cuentas que uno alcanza"
+      description: "Con su estado, su segundo factor, su ultimo ingreso y sus roles. Avisa de las bloqueadas y de las que tienen el segundo factor sin activar."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+    post:
+      summary: "Crear una cuenta"
+      description: "Devuelve una contrasena provisional UNA vez y no se vuelve a mostrar: se entrega en persona o por canal seguro, y el sistema obliga a cambiarla al entrar."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/iglesias:
+    post:
+      summary: "Desplegar una iglesia"
+      description: "Una sola operacion crea la sede colgada de la maestra, le aplica los modulos de su plantilla, deja apagados los de compuerta legal y le asigna su pastor. Exige alcance de organizacion: una sede no crea otra sede."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/lecturas:
+    get:
+      summary: "Quien MIRO los datos sensibles"
+      description: "La bitacora de lectura existe para que mirar por curiosidad tenga nombre y hora."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/matriz:
+    get:
+      summary: "Que puede hacer un rol, casilla por casilla"
+      description: "Devuelve TODAS las combinaciones posibles de modulo x accion para ese rol, marcadas o no. La columna `por_encima` avisa de un permiso que engana: existe en la tabla y no sirve, porque el modulo guarda datos mas sensibles que el techo del rol."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+    post:
+      summary: "Marcar o desmarcar una casilla"
+      description: "Otorga o quita UNA cosa que un rol puede hacer. Desmarcar borra la fila: un permiso que no esta es un permiso que no existe, no uno apagado. Exige alcance de organizacion."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/organigrama:
+    get:
+      summary: "El organigrama"
+      description: "La central, sus regiones, sus direcciones y sus equipos, con cuantas sedes alcanza cada uno."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/personas/:id:
+    get:
+      summary: "Ficha completa de una persona"
+      description: "Su cuenta, sus roles vigentes con el acta que los autoriza y los equipos a los que pertenece. Es lo que se abre al pulsar a alguien en la consola."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/personas:
+    post:
+      summary: "Registrar a una persona"
+      description: "El otro despliegue del comando central. Despues se le crea cuenta y se le otorgan roles."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/plantillas/:codigo/borrar:
+    post:
+      summary: "Borrar una plantilla"
+      description: "Se niega si ya se desplego alguna iglesia con ella: borrarla dejaria sin explicacion por que esa iglesia nacio como nacio."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/plantillas/:codigo/modulos:
+    post:
+      summary: "Marcar un modulo en la plantilla"
+      description: "Se niega a quitar un modulo de nucleo: sin el, una iglesia nueva no podria ni registrar personas."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/plantillas:
+    get:
+      summary: "Las plantillas de iglesia"
+      description: "Que modulos trae una iglesia nueva segun su tipo. Los de compuerta legal nacen apagados."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+    post:
+      summary: "Crear o renombrar una plantilla"
+      description: "Una plantilla responde a con que modulos nace una iglesia nueva de ese tipo."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/recertificar/:asignacionId:
+    post:
+      summary: "Recertificar un acceso"
+      description: "La puerta que NO existia: `identidad.recertificaciones` llevaba desde la migracion 0045 sin que nadie escribiera en ella, asi que la pantalla del comite trimestral era una lista que no se podia tachar y los dias sin revisar solo podian crecer. Exige veredicto (se_mantiene, se_reduce, se_revoca) y una nota firmada. Un veredicto de «se_revoca» NO se queda en una nota: revoca de verdad."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/recertificar:
+    get:
+      summary: "Accesos por recertificar"
+      description: "Un permiso que nadie revisa es un permiso que nadie quito."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/roles:
+    post:
+      summary: "Crear o cambiar un rol"
+      description: "Lo que no se manda NO SE TOCA: omitir la descripcion no la borra y omitir `activo` no resucita un rol descontinuado. Bajar el techo o descontinuar el rol queda escrito en la bitacora con a cuantas personas afecta."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/sedes/:id/modulos:
+    get:
+      summary: "Los modulos de una sede"
+      description: "Cuales estan encendidos y cual es su evidencia legal. Avisa de los encendidos con compuerta legal y sin referencia juridica."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+    post:
+      summary: "Encender o apagar un modulo"
+      description: "La base impone las reglas: un modulo de nucleo no se apaga, uno con compuerta legal no se enciende sin evidencia, y uno no se enciende si su dependencia esta apagada."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/sedes/:id:
+    get:
+      summary: "Ficha completa de una iglesia"
+      description: "Cuanta gente tiene, cuantos grupos, cuantos modulos encendidos, quien la pastorea y que unidades la alcanzan. Avisa en rojo si no tiene pastor: una sede sin pastor no se opera sola."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/sesiones/:id/cerrar:
+    post:
+      summary: "Cerrarle la sesion a alguien"
+      description: "«Sesiones y alertas» era de SOLO LECTURA: se veia quien estaba dentro y no habia forma de echarlo. Exige motivo escrito y surte efecto en el instante, no cuando expire el token. Va por una funcion aparte con guardia, porque la que usa `/auth/salir` no comprueba quien llama (existe para cerrar la propia)."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/sesiones:
+    get:
+      summary: "Quien esta dentro ahora"
+      description: "Sesiones abiertas, desde cuando, desde que direccion y cuanto les queda."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/unidades/:id/miembros/:personaId/salir:
+    post:
+      summary: "Sacar a alguien de un equipo"
+      description: "Surte efecto ya, sin esperar a manana, y exige motivo."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/unidades/:id/miembros:
+    post:
+      summary: "Meter a alguien en un equipo"
+      description: "Hereda los roles del equipo desde ese instante."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/unidades/:id/roles:
+    post:
+      summary: "Otorgar un rol AL EQUIPO"
+      description: "Es la pieza que convierte «un grupo de personas» en «Tesoreria»: lo heredan sus integrantes mientras esten dentro y se les cae al salir. Exige el acta que lo autoriza."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/unidades/:id:
+    get:
+      summary: "La ficha de un equipo"
+      description: "Sus integrantes, sus roles y las sedes que alcanza por esa via."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/unidades/roles/:asignacionId/revocar:
+    post:
+      summary: "Quitarle el rol al equipo"
+      description: "Se corta para todos sus integrantes en el instante."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/administracion/unidades:
+    get:
+      summary: "Los equipos de la central"
+      description: "Contabilidad, Tesoreria, Pastoral, regiones. Avisa de los equipos sin ningun rol: existen pero no pueden hacer nada."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+    post:
+      summary: "Crear un equipo"
+      description: "El proposito es obligatorio: un equipo sin proposito escrito es un equipo que nadie sabe por que tiene los permisos que tiene."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/aportes/:id/confirmar:
+    post:
+      summary: "Confirmar un aporte"
+      description: "Parte de la conciliacion: quien recibe no es quien concilia."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/aportes/certificados/:id/anular:
+    post:
+      summary: "Anular un certificado"
+      description: "No se borra: se anula, con motivo."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/aportes/certificados/:id/documento:
+    get:
+      summary: "Documento del certificado"
+      description: "La descarga queda en la bitacora de lectura."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/aportes/certificados/:id:
+    get:
+      summary: "Un certificado"
+      description: "undefined"
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/aportes/certificados:
+    post:
+      summary: "Emitir un certificado"
+      description: "Se emite contra la reconciliacion: si no cuadra al peso, no se emite."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/aportes/pagos-sin-dueno:
+    get:
+      summary: "Pagos sin persona"
+      description: "Lo que entro por pasarela y todavia no se sabe de quien es. La cola de trabajo de tesoreria."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/aportes/pagos/:id/emparejar:
+    post:
+      summary: "Emparejar un pago con su persona"
+      description: "undefined"
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/aportes/pasarela/webhook:
+    post:
+      summary: "Aviso de la pasarela de pagos"
+      description: "Verifica la firma y la ventana de tiempo, y es idempotente: el mismo aviso dos veces no cobra dos veces."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/aportes:
+    get:
+      summary: "Aportes de la sede"
+      description: "El pastor congregacional ve habito de aporte SIN ninguna columna de monto: es una decision del modelo, no del frontend."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+    post:
+      summary: "Registrar un aporte"
+      description: "Idempotente: un doble clic no crea dos aportes."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/asistencia/servicios/:id/conteo:
+    post:
+      summary: "Reportar el conteo de la puerta"
+      description: "Se puede corregir: el primer numero de un domingo siempre es el que alguien grito desde la puerta. Devuelve la diferencia con la lista y la explica."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/asistencia/servicios/:id/marcados:
+    get:
+      summary: "Quien esta marcado"
+      description: "La lista, para el seguimiento pastoral."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/asistencia/servicios/:id/marcar:
+    post:
+      summary: "Marcar asistencia"
+      description: "IDEMPOTENTE: marcar dos veces a la misma persona no la cuenta dos veces."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/asistencia/servicios:
+    get:
+      summary: "Los servicios y su asistencia"
+      description: "Trae los DOS numeros: «contados» es el de la puerta y «marcados» es la lista. Una sede que cuenta 600 y marca 12 no esta fallando: esta contando como se puede."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+    post:
+      summary: "Abrir un servicio"
+      description: "Sin servicio abierto no se marca a nadie. Uno por sede, fecha, hora y tipo."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/auth/cambiar-clave:
+    post:
+      summary: "Cambiar la contrasena"
+      description: "Cierra las demas sesiones abiertas."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/auth/entrar:
+    post:
+      summary: "Entrar al sistema"
+      description: "Devuelve token de acceso y de refresco. Si el rol alcanza datos N3 o N4 y el segundo factor no esta activo, devuelve un token limitado que solo sirve para configurarlo."
+      security: []
+      responses:
+        "200": { description: correcto }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/auth/quien-soy:
+    get:
+      summary: "Quien soy y que alcanzo"
+      description: "El alcance se deriva de la base, nunca de lo que envie el cliente."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/auth/refrescar:
+    post:
+      summary: "Renovar el acceso"
+      description: "El token de refresco se ROTA: usarlo dos veces lo invalida, porque es la senal clasica de un token robado."
+      security: []
+      responses:
+        "200": { description: correcto }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/auth/salir-de-todo:
+    post:
+      summary: "Cerrar todas las sesiones"
+      description: "Para cuando alguien pierde el telefono."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/auth/salir:
+    post:
+      summary: "Cerrar esta sesion"
+      description: "Surte efecto en el instante, no cuando expire el token."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/auth/segundo-factor/activar:
+    post:
+      summary: "Activar el segundo factor"
+      description: "Confirma que el telefono y el servidor estan sincronizados."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/auth/segundo-factor/iniciar:
+    post:
+      summary: "Empezar a configurar el segundo factor"
+      description: "Devuelve el secreto y el texto del codigo QR."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/consejeria/casos/:id/asignar:
+    post:
+      summary: "Asignar un consejero"
+      description: "El caso pasa a «en proceso». Un caso sin nadie detras es una persona esperando."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/consejeria/casos/:id/cerrar:
+    post:
+      summary: "Cerrar o derivar"
+      description: "Derivar EXIGE decir a donde. Cerrar el caso cierra tambien las asignaciones vivas."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/consejeria/casos/:id/notas:
+    post:
+      summary: "Escribir una nota"
+      description: "Va aparte a proposito: no viaja en ninguna lista, solo se ve dentro de la ficha."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/consejeria/casos/:id/sesiones:
+    post:
+      summary: "Registrar una sesion"
+      description: "Fecha, duracion, modalidad y si la persona asistio."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/consejeria/casos/:id:
+    get:
+      summary: "La ficha del caso"
+      description: "Aqui SI van las notas, y entrar deja rastro en la bitacora de lectura, con nombre y hora. Saberlo es la mitad de la proteccion."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/consejeria/casos:
+    get:
+      summary: "La bandeja de casos"
+      description: "⛔ SIN notas y SIN el detalle: solo lo que permite priorizar. Una lista que trae las notas de paso las reparte por accidente."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+    post:
+      summary: "Abrir un caso"
+      description: "Consultante, sede y topico."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/consejeria/topicos:
+    get:
+      summary: "Los topicos"
+      description: "Para que nadie escriba «problema familiar» de doce formas distintas. Marca los que exigen profesional."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/cumplimiento/consentimientos/:personaId:
+    get:
+      summary: "Que consentimientos tiene hoy una persona"
+      description: "Canal por canal y finalidad por finalidad, con su base legal, mas la historia completa de actos."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/cumplimiento/consentimientos/revocar:
+    post:
+      summary: "Revocar un consentimiento"
+      description: "Sin canal ni finalidad revoca todo lo REVOCABLE. Lo que se apoya en contrato u obligacion legal no se revoca: decir que si seria mentirle al titular sobre su propio derecho. Ademas descarta lo que ya estaba encolado."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/cumplimiento/no-atendido:
+    get:
+      summary: "Lo que el sistema decidio NO enviar"
+      description: "Con su motivo. Es la prueba de que no se contacto a quien no autorizo, y la bandeja de lo que quedo sin atender."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/cumplimiento/peticiones/:id/prorrogar:
+    post:
+      summary: "Prorrogar el plazo"
+      description: "La base exige un motivo de verdad y recalcula el vencimiento. Avisa si la prorroga todavia NO se le ha informado al titular, que es lo que obliga la ley."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/cumplimiento/peticiones/:id/responder:
+    post:
+      summary: "Responder y cerrar"
+      description: "Deja la respuesta escrita y avisa si se respondio DESPUES del vencimiento. Una respuesta tardia sigue siendo un incumplimiento y el registro tiene que poder demostrarlo."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/cumplimiento/peticiones/:id/suprimir:
+    post:
+      summary: "Ejecutar la supresion"
+      description: "Irreversible. Exige confirmacion explicita (\"SUPRIMIR\") y nivel N4, porque puede tocar datos de menores y de consejeria."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/cumplimiento/peticiones:
+    get:
+      summary: "La bandeja de peticiones"
+      description: "Lo abierto primero y lo vencido arriba. Si hay vencidas lo dice en un aviso: una peticion vencida es un incumplimiento en curso, no un dato de una columna."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+    post:
+      summary: "Radicar una peticion del titular"
+      description: "Consulta, reclamo, supresion, revocacion o actualizacion. La base calcula el vencimiento en DIAS HABILES con los festivos de Colombia y devuelve el radicado. Exige N3: una peticion trae nombre, documento y contacto de una persona."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/formacion/cohortes/:id/inscribir:
+    post:
+      summary: "Inscribir a alguien"
+      description: "Si pasa el cupo se inscribe IGUAL y se avisa: negarlo dejaria a la persona en la puerta por un numero, y quien decide si caben es el docente."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/formacion/cohortes/:id:
+    get:
+      summary: "La ficha de la cohorte"
+      description: "Quien esta inscrito, como va y quien pago."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/formacion/cohortes:
+    get:
+      summary: "Las cohortes"
+      description: "Son de cada sede: cada una abre su grupo cuando puede y con el docente que tiene. Avisa de las que pasaron el cupo."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+    post:
+      summary: "Abrir una cohorte"
+      description: "Curso, sede, codigo, modalidad y fechas."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/formacion/cursos:
+    get:
+      summary: "Los cursos"
+      description: "Con su programa, su semestre y su prerequisito."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/formacion/inscripciones/:id/calificar:
+    post:
+      summary: "Calificar"
+      description: "Nota final y estado (aprobado, reprobado, retirado…)."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/formacion/programas:
+    get:
+      summary: "Los programas de la red"
+      description: "El catalogo lo define la central una vez y lo usan las 36 sedes."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/grupos/:id/miembros/:personaId/salir:
+    post:
+      summary: "Sacar a alguien"
+      description: "EXIGE motivo: «se fue» no le dice nada al que viene detras."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/grupos/:id/miembros:
+    post:
+      summary: "Agregar a alguien"
+      description: "Idempotente: si ya esta activo, lo dice y no duplica."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/grupos/:id/reuniones:
+    post:
+      summary: "Reportar una reunion"
+      description: "Es lo que convierte una lista en un grupo vivo. Una por grupo y dia."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/grupos/:id:
+    get:
+      summary: "La ficha del grupo"
+      description: "Quien esta, quien se fue y con que motivo, y las ultimas veinticuatro reuniones."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/grupos:
+    get:
+      summary: "Los grupos"
+      description: "Ordenados por el que lleva mas tiempo sin reportar reunion: lo que hay que mirar primero no es el grupo grande, es el callado."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+    post:
+      summary: "Crear un grupo"
+      description: "Tipo, dia, hora y cupo. El ministerio y el segmento son opcionales."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/identidad/asignaciones/:id:
+    delete:
+      summary: "Revocar un permiso"
+      description: "Surte efecto en el instante, no al final del dia, y exige motivo escrito."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/identidad/atributos:
+    get:
+      summary: "Catalogo de casillas propias"
+      description: "Cada una con su modulo dueno y su nivel de sensibilidad."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+    post:
+      summary: "Declarar una casilla nueva"
+      description: "Sin migracion y sin despliegue. Quien la crea tiene que declarar que tan sensible es lo que va a guardar."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/identidad/catalogos/:catalogo/valores/:codigo/retirar:
+    post:
+      summary: "Retirar un valor"
+      description: "Retira, no borra: las filas historicas siguen legibles y lo que se impide es usarlo en filas nuevas. Exige motivo."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/identidad/catalogos/:catalogo/valores:
+    get:
+      summary: "Valores de un catalogo"
+      description: "Incluye los retirados, que siguen siendo legibles para la historia."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+    post:
+      summary: "Agregar un valor"
+      description: "Sin migracion y sin despliegue. Exige alcance de organizacion. Una maquina de estados lo rechaza y dice por que."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/identidad/catalogos:
+    get:
+      summary: "Catalogos de la red"
+      description: "Los que se pueden ampliar y los cerrados a proposito, estos ultimos con su motivo escrito."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/identidad/matriz:
+    get:
+      summary: "Matriz de permisos"
+      description: "Modulo por accion por rol. Se lee para pintar el menu; escribirla esta cerrado desde la migracion 0031."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/identidad/modulos:
+    get:
+      summary: "Modulos del sistema"
+      description: "El manifiesto: nivel de dato, si es de nucleo, de que depende y si exige compuerta legal."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/identidad/personas/:id/asignaciones:
+    get:
+      summary: "Permisos asignados a una persona"
+      description: "Los directos y los heredados de sus equipos, con la columna que dice de donde viene cada uno."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/identidad/personas/:id/efectivo:
+    get:
+      summary: "Permiso efectivo"
+      description: "Rol por alcance por nivel por vigencia, ya resuelto."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/identidad/personas/:id/otorgar:
+    post:
+      summary: "Otorgar un permiso"
+      description: "Exige alcance de organizacion. Un rol de menores se rechaza sin antecedentes vigentes."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/identidad/roles:
+    get:
+      summary: "Los roles de la red"
+      description: "Con su techo de nivel y su alcance maximo."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/modelo100p/:tabla:
+    get:
+      summary: "Una vista del modelo 100p"
+      description: "undefined"
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/modelo100p:
+    get:
+      summary: "Vistas del Drive «Sistema 100p»"
+      description: "Los mismos datos publicados con los nombres del documento del equipo."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/notificaciones/procesar:
+    post:
+      summary: "Procesar la cola de avisos"
+      description: "Tarea programada. Respeta el consentimiento por canal: sin registro, no se contacta."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/nuevos/:id/convertir-miembro:
+    post:
+      summary: "Convertir un registro en persona"
+      description: "No duplica si la persona ya existe, y no se puede convertir dos veces."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/nuevos/:id/historial:
+    get:
+      summary: "Historial de contactos con un nuevo"
+      description: "undefined"
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/nuevos/:id/registrar-contacto:
+    post:
+      summary: "Registrar un contacto"
+      description: "Con la reaccion de la persona, que alimenta el recorrido."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/nuevos/dashboard:
+    get:
+      summary: "Bandeja de seguimiento"
+      description: "Con los atrasados marcados: que nadie se pierda es el trabajo del modulo."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/nuevos/registrar:
+    post:
+      summary: "Registrar a alguien que llega"
+      description: "Puerta publica del formulario de la sede. Exige al menos una forma de contacto y deja el consentimiento registrado."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/organizacion/ministerios:
+    get:
+      summary: "Catalogo de ministerios de la red"
+      description: "Cada ministerio arrastra su nivel de dato: RocaKids nace N4 y Consejeria N3."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/organizacion/sedes/:id/ministerios/:min:
+    put:
+      summary: "Encender o apagar un ministerio en una sede"
+      description: "Los modulos con compuerta legal (Aportes, RocaKids) exigen evidencia registrada: la base lo rechaza sin ella."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/organizacion/sedes/:id/ministerios:
+    get:
+      summary: "Ministerios encendidos en una sede"
+      description: "Lo que la sede tiene activo hoy."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/organizacion/sedes:
+    get:
+      summary: "Las sedes que alcanzo"
+      description: "Solo las que el permiso vigente alcanza. Una sede que no alcanzo no aparece."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+    post:
+      summary: "Dar de alta una sede"
+      description: "Desde plantilla y con bitacora: nadie crea una iglesia a mano. Exige alcance de organizacion."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/personas/:id/atributos/:codigo:
+    put:
+      summary: "Escribir una casilla propia"
+      description: "El nivel de la casilla lo declaro quien la creo; escribir por encima del nivel de la sesion se rechaza."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/personas/:id/atributos:
+    get:
+      summary: "Casillas propias de una persona"
+      description: "Los atributos extensibles declarados desde la consola, con su nivel."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/personas/:id/duplicados:
+    get:
+      summary: "Quien podria ser la misma persona"
+      description: "Candidatos a duplicado con puntaje y motivo: mismo documento, misma fecha de nacimiento, nombre parecido. Con 36 fuentes migrando, los duplicados son certeza."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/personas/:id/linea-tiempo:
+    get:
+      summary: "Historia de una persona"
+      description: "Todo lo que los modulos publicaron sobre ella, en orden. Filtrada por nivel de sensibilidad."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/personas/:id:
+    get:
+      summary: "Ficha de una persona"
+      description: "Los campos por encima del nivel de la sesion no se devuelven, y la lectura de datos N3 o N4 queda en la bitacora."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+    put:
+      summary: "Actualizar una persona"
+      description: "Exige membresia VIGENTE en una sede alcanzada. La sede de origen puede ver a quien se traslado, pero ya no lo edita."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/personas/por-atributo:
+    get:
+      summary: "Personas que cumplen una casilla"
+      description: "Es como se arrastra gente a un modulo nuevo sin migrar nada."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/personas:
+    get:
+      summary: "Buscar personas"
+      description: "Tolera errores de digitacion, tildes, documento, telefono y correo. Respeta la seguridad por fila: lo que no alcanza la sesion no sale."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/rocakids/checkin:
+    post:
+      summary: "Registrar la entrada de un menor"
+      description: "Devuelve el codigo UNA vez; despues solo existe cifrado. IDEMPOTENTE por menor, sala y dia: la cola sin conexion puede reintentar sin duplicar el ingreso."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/rocakids/entregar:
+    post:
+      summary: "Entregar al menor"
+      description: "La base verifica acudiente autorizado Y codigo. Un intento fallido queda registrado con hora y nombre."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/rocakids/menores/:id/acudientes:
+    get:
+      summary: "Quien puede entregar y retirar a este menor"
+      description: "La pantalla ofrece esta lista, no un campo de texto libre: un texto libre convierte la salvaguarda en una formalidad."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/rocakids/salas/:id/entrar-a-servir:
+    post:
+      summary: "Entrar a servir en una sala"
+      description: "La base rechaza a quien no tenga antecedentes de salvaguarda vigentes."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/rocakids/salas/:id/roster:
+    get:
+      summary: "Censo de la sala"
+      description: "Quien puede entrar hoy: nombre, edad y si ya esta dentro. NO devuelve condiciones medicas ni codigos: esto se guarda en el equipo para trabajar sin conexion, y lo que se guarda en un equipo se pierde con el equipo."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/rocakids/salas/:id/servidores:
+    get:
+      summary: "Quien sirve hoy en la sala"
+      description: "Es la respuesta a «quien estaba con los ninos ese dia», la primera pregunta de cualquier incidente."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/rocakids/salas:
+    get:
+      summary: "Salas de ninos y su estado de ahora"
+      description: "Con cuantos ninos hay dentro y si se cumple la regla de dos adultos. Exige N4."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/sesion/yo:
+    get:
+      summary: "Mi sesion y lo que alcanzo"
+      description: "Quien soy, que sedes alcanzo, hasta que nivel de sensibilidad y que modulos veo. El panel se pinta contra esto y no contra una lista cableada en el cliente."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/talento/antecedentes/:personaId:
+    get:
+      summary: "Los antecedentes de alguien"
+      description: "Dice si esta apto para estar con menores y QUE le falta exactamente."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/talento/antecedentes:
+    post:
+      summary: "Registrar un antecedente"
+      description: "Es lo que abre (o cierra) la puerta de RocaKids: la base rechaza el rol sin antecedentes vigentes."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/talento/cargos:
+    get:
+      summary: "Los cargos"
+      description: "Con su area y el nivel de dato que manejan."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/talento/contratos:
+    get:
+      summary: "Los contratos"
+      description: "Avisa de los que vencen en menos de treinta dias."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/talento/voluntariados/:id/terminar:
+    post:
+      summary: "Terminar un voluntariado"
+      description: "Exige motivo."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /api/v1/talento/voluntariados:
+    get:
+      summary: "Los voluntariados"
+      description: "⛔ Lo primero que se ve son los voluntarios ACTIVOS con menores y SIN antecedentes vigentes. No es una metrica: es una lista de salas que hay que cubrir antes del domingo."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+    post:
+      summary: "Registrar un voluntariado"
+      description: "Persona, sede, ministerio y funcion."
+      responses:
+        "200": { description: correcto }
+        "401": { description: "sin sesion valida", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /salud/detalle:
+    get:
+      summary: "Salud detallada"
+      description: "Base, particiones, fugas de lectura y ultimo mantenimiento."
+      security: []
+      responses:
+        "200": { description: correcto }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /salud:
+    get:
+      summary: "Salud para el balanceador"
+      description: "Comprueba la base de verdad."
+      security: []
+      responses:
+        "200": { description: correcto }
+        "429": { description: "demasiadas peticiones" }
+        "500": { description: "error inesperado", content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }

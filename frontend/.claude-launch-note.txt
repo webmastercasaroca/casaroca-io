@@ -1,0 +1,1 @@
+Servidor estático para desarrollo. La API va aparte, en el puerto 3000.

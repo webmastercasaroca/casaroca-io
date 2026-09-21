@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+        "target": "ES2022",
+    "lib": ["ES2022"],
+    "moduleResolution": "node16",
+    "module": "node16",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "dist",
+    "rootDir": ".",
+    "sourceMap": true
+  },
+  "include": ["src/**/*", "test/**/*"]
+}

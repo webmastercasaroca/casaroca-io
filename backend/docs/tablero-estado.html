@@ -1,0 +1,476 @@
+<title>Estado del Backend CasaRoca</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+  :root{
+    --ground:#EDF0F3;
+    --surface:#FFFFFF;
+    --surface-2:#F5F7F9;
+    --line:#D3DAE1;
+    --line-soft:#E4E9ED;
+    --ink:#12202E;
+    --ink-2:#43566A;
+    --ink-3:#71838F;
+    --accent:#1F6F5C;
+    --accent-soft:#DFEDE8;
+    --amber:#9C6212;
+    --amber-soft:#F6EBDA;
+    --oxide:#9B2F2A;
+    --oxide-soft:#F6E2E0;
+    --shadow:0 1px 2px rgba(18,32,46,.06), 0 8px 24px -16px rgba(18,32,46,.28);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0C161D;
+      --surface:#132330;
+      --surface-2:#182C3A;
+      --line:#26404F;
+      --line-soft:#1D3241;
+      --ink:#E4EDF3;
+      --ink-2:#9FB4C2;
+      --ink-3:#71899A;
+      --accent:#57B195;
+      --accent-soft:#123329;
+      --amber:#D9A05B;
+      --amber-soft:#33240F;
+      --oxide:#DE8079;
+      --oxide-soft:#361B19;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0C161D;
+    --surface:#132330;
+    --surface-2:#182C3A;
+    --line:#26404F;
+    --line-soft:#1D3241;
+    --ink:#E4EDF3;
+    --ink-2:#9FB4C2;
+    --ink-3:#71899A;
+    --accent:#57B195;
+    --accent-soft:#123329;
+    --amber:#D9A05B;
+    --amber-soft:#33240F;
+    --oxide:#DE8079;
+    --oxide-soft:#361B19;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--ground); color:var(--ink);
+    font-family:"Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+    font-size:16px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:40px 24px 80px; display:flex; flex-direction:column; gap:44px}
+  @media (max-width:640px){ .wrap{padding:28px 16px 56px; gap:34px} }
+
+  h1,h2,h3{font-family:"Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif; text-wrap:balance; margin:0}
+  h1{font-size:clamp(1.9rem,4.4vw,2.9rem); font-weight:800; letter-spacing:-.022em; line-height:1.08}
+  h2{font-size:1.32rem; font-weight:600; letter-spacing:-.012em}
+  h3{font-size:1.02rem; font-weight:600; letter-spacing:-.006em}
+  p{margin:0}
+  code, .mono{font-family:"IBM Plex Mono", ui-monospace, monospace; font-size:.87em; font-variant-numeric:tabular-nums}
+  code{background:var(--surface-2); border:1px solid var(--line-soft); padding:.06em .34em; border-radius:4px; color:var(--ink)}
+
+  .eyebrow{
+    font-family:"IBM Plex Mono", monospace; font-size:.685rem; font-weight:600;
+    letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3);
+  }
+
+  header{display:flex; flex-direction:column; gap:14px}
+  .lede{font-size:1.06rem; color:var(--ink-2); max-width:62ch}
+  .stamp{
+    display:inline-flex; align-items:center; gap:8px; align-self:flex-start;
+    font-family:"IBM Plex Mono", monospace; font-size:.7rem; letter-spacing:.06em;
+    color:var(--ink-3); border:1px solid var(--line); border-radius:999px; padding:5px 12px;
+    background:var(--surface);
+  }
+  .stamp b{color:var(--accent); font-weight:600}
+
+  .counters{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+  .counter{background:var(--surface); padding:18px 20px; display:flex; flex-direction:column; gap:3px}
+  .counter .n{
+    font-family:"Bricolage Grotesque", sans-serif; font-weight:800;
+    font-size:2.05rem; line-height:1; letter-spacing:-.03em; font-variant-numeric:tabular-nums;
+  }
+  .counter .n.ok{color:var(--accent)}
+  .counter .lbl{font-size:.83rem; color:var(--ink-2)}
+  .counter .sub{font-size:.74rem; color:var(--ink-3)}
+
+  section{display:flex; flex-direction:column; gap:16px}
+  .shead{display:flex; flex-direction:column; gap:5px; border-top:2px solid var(--ink); padding-top:12px}
+  .snote{font-size:.95rem; color:var(--ink-2); max-width:66ch}
+
+  .ledger{border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--surface); box-shadow:var(--shadow)}
+  .lrow{
+    display:grid; grid-template-columns:56px 1.15fr 2.1fr 62px;
+    gap:14px; align-items:baseline; padding:13px 18px;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .lrow:last-child{border-bottom:none}
+  .lrow:nth-child(even){background:var(--surface-2)}
+  .lrow .id{font-family:"IBM Plex Mono",monospace; font-size:.8rem; font-weight:600; color:var(--accent)}
+  .lrow .nm{font-weight:600; font-size:.96rem}
+  .lrow .gr{font-size:.9rem; color:var(--ink-2)}
+  .lrow .tb{
+    font-family:"IBM Plex Mono",monospace; font-size:.8rem; color:var(--ink-3);
+    text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;
+  }
+  .lhead{
+    display:grid; grid-template-columns:56px 1.15fr 2.1fr 62px; gap:14px;
+    padding:9px 18px; background:var(--ink); color:var(--surface);
+    font-family:"IBM Plex Mono",monospace; font-size:.66rem; letter-spacing:.11em; text-transform:uppercase;
+  }
+  .lhead .tb{text-align:right; color:var(--surface)}
+  @media (max-width:720px){
+    .lhead{display:none}
+    .lrow{grid-template-columns:52px 1fr 54px; row-gap:4px}
+    .lrow .gr{grid-column:2 / -1}
+  }
+
+  .cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(268px,1fr)); gap:14px}
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:10px;
+    padding:18px 20px; display:flex; flex-direction:column; gap:9px; box-shadow:var(--shadow);
+  }
+  .card .where{font-size:.9rem; color:var(--ink-2)}
+  .card ul{margin:0; padding-left:17px; display:flex; flex-direction:column; gap:5px; font-size:.9rem; color:var(--ink-2)}
+  .card li::marker{color:var(--ink-3)}
+  .card .url{font-family:"IBM Plex Mono",monospace; font-size:.76rem; color:var(--accent); word-break:break-all}
+
+  .pend{display:flex; flex-direction:column; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden; box-shadow:var(--shadow)}
+  .p{
+    background:var(--surface); padding:15px 18px;
+    display:grid; grid-template-columns:auto 1fr auto; gap:14px; align-items:start;
+  }
+  .p .body{display:flex; flex-direction:column; gap:4px}
+  .p .t{font-weight:600; font-size:.97rem}
+  .p .d{font-size:.89rem; color:var(--ink-2)}
+  .chip{
+    font-family:"IBM Plex Mono",monospace; font-size:.65rem; font-weight:600;
+    letter-spacing:.07em; text-transform:uppercase; padding:4px 9px; border-radius:5px;
+    white-space:nowrap; align-self:start;
+  }
+  .chip.stop{background:var(--oxide-soft); color:var(--oxide)}
+  .chip.wait{background:var(--amber-soft); color:var(--amber)}
+  .chip.go{background:var(--accent-soft); color:var(--accent)}
+  .who{
+    font-family:"IBM Plex Mono",monospace; font-size:.68rem; color:var(--ink-3);
+    letter-spacing:.05em; white-space:nowrap; align-self:start; padding-top:3px;
+  }
+  @media (max-width:640px){
+    .p{grid-template-columns:auto 1fr}
+    .who{grid-column:2; padding-top:0}
+  }
+
+  .moves{display:flex; flex-direction:column; gap:12px}
+  .move{
+    background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--accent);
+    border-radius:8px; padding:17px 20px; display:flex; flex-direction:column; gap:7px; box-shadow:var(--shadow);
+  }
+  .move .when{font-family:"IBM Plex Mono",monospace; font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--accent)}
+  .move p{font-size:.93rem; color:var(--ink-2)}
+  .move .why{font-size:.87rem; color:var(--ink-3); font-style:italic}
+
+  .flag{
+    background:var(--amber-soft); border:1px solid var(--amber); border-radius:9px;
+    padding:16px 19px; display:flex; flex-direction:column; gap:6px;
+  }
+  .flag .t{font-weight:600; color:var(--amber); font-size:.96rem}
+  .flag p{font-size:.92rem; color:var(--ink-2)}
+
+  footer{border-top:1px solid var(--line); padding-top:16px; font-size:.82rem; color:var(--ink-3); display:flex; flex-direction:column; gap:4px}
+</style>
+
+<div class="wrap">
+
+  <header>
+    <span class="eyebrow">CasaRoca System · Fase 1 · Backend</span>
+    <h1>Estado del backend</h1>
+    <p class="lede">La arquitectura dejó de ser documento y pasó a ser una base de datos que corre,
+      con un banco de pruebas que demuestra cada garantía que se prometió en la mesa.
+      Esto es lo que hay, lo que falta y por dónde seguir.</p>
+    <span class="stamp">Actualizado el <b>24 de agosto de 2026</b></span>
+  </header>
+
+  <div class="counters">
+    <div class="counter"><span class="n">19</span><span class="lbl">migraciones</span><span class="sub">SQL plano, revisable</span></div>
+    <div class="counter"><span class="n">55</span><span class="lbl">tablas</span><span class="sub">en 12 esquemas</span></div>
+    <div class="counter"><span class="n ok">46</span><span class="lbl">pruebas</span><span class="sub">46 pasan · 0 fallan</span></div>
+    <div class="counter"><span class="n">12</span><span class="lbl">de 12 esquemas</span><span class="sub">el modelo, completo</span></div>
+  </div>
+
+  <section>
+    <div class="shead">
+      <span class="eyebrow">Lo construido</span>
+      <h2>Los doce esquemas y la regla que cada uno hace cumplir</h2>
+      <p class="snote">La numeración es la del Documento 4, para que las dos conversaciones —la de la
+        mesa y la del código— hablen de lo mismo. Cada esquema aplica sus reglas en la base, no en la
+        pantalla: la pantalla se salta, la base no.</p>
+    </div>
+
+    <div class="ledger">
+      <div class="lhead"><span>Nº</span><span>Esquema</span><span>La regla que impone</span><span class="tb">Tablas</span></div>
+
+      <div class="lrow"><span class="id">—</span><span class="nm">Plataforma</span>
+        <span class="gr">Clasificación N0–N4 que activa controles, Habeas Data append-only, auditoría inmutable y bitácora de <em>lectura</em>.</span><span class="tb">8</span></div>
+
+      <div class="lrow"><span class="id">00</span><span class="nm">Núcleo · persona</span>
+        <span class="gr">Nadie existe sin sede. La edad se deriva, nunca se almacena. El correo es opcional.</span><span class="tb">5</span></div>
+
+      <div class="lrow"><span class="id">01</span><span class="nm">Organización</span>
+        <span class="gr">Las sedes son entidad de primera clase y no se pueden borrar: son referencia histórica.</span><span class="tb">4</span></div>
+
+      <div class="lrow"><span class="id">02</span><span class="nm">Identidad y acceso</span>
+        <span class="gr">Permiso = rol × alcance × sensibilidad × vigencia. Ninguna asignación supera el techo de su rol.</span><span class="tb">2</span></div>
+
+      <div class="lrow"><span class="id">03</span><span class="nm">Grupos y hogares</span>
+        <span class="gr">Una persona vive en un hogar a la vez. La fecha de ingreso es obligatoria: es la antigüedad del recorrido 4C.</span><span class="tb">5</span></div>
+
+      <div class="lrow"><span class="id">04</span><span class="nm">CRM pastoral · 4C</span>
+        <span class="gr">Una sola etapa abierta por persona. El embudo no admite estar en dos sitios a la vez.</span><span class="tb">6</span></div>
+
+      <div class="lrow"><span class="id">05</span><span class="nm">Asistencia</span>
+        <span class="gr">El conteo agregado y la entrada por persona son cosas distintas y no se pueden sumar juntas.</span><span class="tb">3</span></div>
+
+      <div class="lrow"><span class="id">06</span><span class="nm">RocaKids · N4</span>
+        <span class="gr">Entregar a un niño exige tres cosas a la vez: acudiente con permiso, código correcto y quién autorizó.</span><span class="tb">6</span></div>
+
+      <div class="lrow"><span class="id">07</span><span class="nm">Consejería · N3</span>
+        <span class="gr">El acceso es por caso asignado, no por sede. Las notas no se editan ni se borran.</span><span class="tb">5</span></div>
+
+      <div class="lrow"><span class="id">08</span><span class="nm">Aportes · N3</span>
+        <span class="gr">La suma migrada debe cuadrar al peso con el cierre de tesorería. Un peso de diferencia detiene la compuerta.</span><span class="tb">3</span></div>
+
+      <div class="lrow"><span class="id">09</span><span class="nm">Formación</span>
+        <span class="gr">Un curso con valor exige declarar el pago. No se certifica a quien no aprobó.</span><span class="tb">5</span></div>
+
+      <div class="lrow"><span class="id">10</span><span class="nm">Talento y voluntariado</span>
+        <span class="gr">Nadie sirve con menores sin antecedentes verificados <em>y vigentes</em>: caducan a los dos años.</span><span class="tb">3</span></div>
+    </div>
+
+    <div class="flag">
+      <span class="t">Son 55 tablas, no las ~126 que proyecta el Documento 4</span>
+      <p>Está en pie el <strong>núcleo de cada dominio</strong>: lo que sostiene las reglas y el
+        aislamiento. Faltan tablas de detalle que se añaden sin rediseñar nada —la línea de tiempo es
+        polimórfica y el modelo se amplía por los bordes—. Ninguna de las que faltan bloquea la carga
+        de datos.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="shead">
+      <span class="eyebrow">La evidencia</span>
+      <h2>Qué demuestran las 46 pruebas</h2>
+      <p class="snote">No son pruebas de que el código compile: son pruebas de que la base
+        <em>rechaza</em> lo que debe rechazar. Corren con tres comandos sobre PostgreSQL 16.</p>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <span class="eyebrow">16 · invariantes del núcleo</span>
+        <ul>
+          <li>Un menor sin acudiente <strong>hace fallar la transacción</strong>.</li>
+          <li>Sin consentimiento registrado, no se puede contactar. El silencio nunca es un sí.</li>
+          <li>El registro de consentimiento resiste un borrado.</li>
+          <li>El código de entrega se cifra y solo se verifica: nunca se devuelve.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="eyebrow">9 · aislamiento entre sedes</span>
+        <ul>
+          <li>Panamá pide <em>todas</em> las personas sin filtro y recibe solo las suyas.</li>
+          <li>Sin contexto de sede, la sesión no ve absolutamente nada.</li>
+          <li>El contexto no se filtra entre transacciones del <em>pool</em>.</li>
+          <li>Corren <strong>como la aplicación</strong>: un superusuario salta las políticas siempre.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="eyebrow">21 · invariantes de módulo</span>
+        <ul>
+          <li>La reconciliación de aportes cuadra; con un peso de más, no.</li>
+          <li>Retiro sin permiso o con código equivocado: rechazado, y queda el rastro.</li>
+          <li>Voluntario con antecedentes vencidos: rechazado.</li>
+          <li>Certificado sin aprobar el curso: rechazado.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shead">
+      <span class="eyebrow">Tu pregunta</span>
+      <h2>¿Está todo esto documentado en el Drive?</h2>
+      <p class="snote">En parte, y a propósito. El Drive es de la iglesia y sirve para lo que se
+        discute; el código necesita un sitio donde se pueda leer línea por línea, que es lo que pidió
+        el CTO. Esto es lo que hay en cada lugar.</p>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <span class="eyebrow">Drive · Sistema 100p</span>
+        <p class="where">Dos documentos nuestros, subidos como Google Docs para que el equipo comente
+          dentro de ellos.</p>
+        <ul>
+          <li><strong>01 Estructura Datos</strong> — «Observaciones al Modelo de Personas (v1.1)»: las 14 divergencias.</li>
+          <li><strong>04 Infraestructura Operación</strong> — «Modelo Financiero Recalculado sobre GCP».</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="eyebrow">GitHub · privado</span>
+        <p class="where">Todo el código, con historia. Es la vía para que Jhon revise el SQL como
+          pidió el comité.</p>
+        <span class="url">github.com/D-ANK-LC/casaroca-backend</span>
+        <ul>
+          <li>19 migraciones, 3 bancos de prueba, 3 scripts.</li>
+          <li>Barrido de credenciales hecho antes de publicar.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="eyebrow">Este Mac</span>
+        <p class="where">Ya no hay nada crítico que exista solo aquí — que era el riesgo de las
+          semanas anteriores.</p>
+        <ul>
+          <li>Los PDF con formato de tabla de los dos documentos.</li>
+          <li>La base de desarrollo, que se recrea con un comando.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shead">
+      <span class="eyebrow">Lo que falta</span>
+      <h2>Pendientes, y de quién depende cada uno</h2>
+      <p class="snote">Ordenados por lo que bloquean. Los tres primeros no los podemos resolver
+        nosotros: dependen de una persona concreta.</p>
+    </div>
+
+    <div class="pend">
+      <div class="p">
+        <span class="chip stop">Bloquea</span>
+        <div class="body">
+          <span class="t">El usuario de GitHub de Jhon</span>
+          <span class="d">Sin él no puedo invitarlo al repositorio, y sin repositorio la revisión de código que pidió el comité no ocurre. Es una línea de WhatsApp.</span>
+        </div>
+        <span class="who">Daniel</span>
+      </div>
+
+      <div class="p">
+        <span class="chip stop">Bloquea</span>
+        <div class="body">
+          <span class="t">H-04 · Cómo exporta la plataforma actual</span>
+          <span class="d">Pendiente desde el 30 de julio. Es la tarea más barata del proyecto —unas horas— y la que más incertidumbre elimina: decide si la migración son 7 semanas automáticas o 10 asistidas.</span>
+        </div>
+        <span class="who">Daniel · sem. 1</span>
+      </div>
+
+      <div class="p">
+        <span class="chip stop">Bloquea</span>
+        <div class="body">
+          <span class="t">H-01 · Taller de la matriz de permisos</span>
+          <span class="d">Tres horas con la Dirección General para firmar los 14 roles. Los permisos no se migran: se deciden. Es entrada del proyecto, no resultado.</span>
+        </div>
+        <span class="who">Ps. Director General</span>
+      </div>
+
+      <div class="p">
+        <span class="chip wait">Espera</span>
+        <div class="body">
+          <span class="t">Respuesta del equipo 100p a las 14 divergencias</span>
+          <span class="d">Tres son bloqueantes: <code>personas</code> sin <code>sede_id</code>, la falta de linaje de migración, y el acudiente escrito en tres sitios a la vez. Cada día que la tabla crece sin <code>sede_id</code> encarece el arreglo.</span>
+        </div>
+        <span class="who">Jhon · equipo 100p</span>
+      </div>
+
+      <div class="p">
+        <span class="chip wait">Espera</span>
+        <div class="body">
+          <span class="t">La cláusula de residencia de datos</span>
+          <span class="d">GCP no tiene región en Colombia. Elegir São Paulo en vez de <code>us-east1</code> cuesta <strong>575.000 COP/mes</strong>. Hay que releer lo que cerró el Documento 1 antes de aprovisionar.</span>
+        </div>
+        <span class="who">Comité de Tecnología</span>
+      </div>
+
+      <div class="p">
+        <span class="chip wait">Espera</span>
+        <div class="body">
+          <span class="t">H-02 legal y H-03 guardia operativa</span>
+          <span class="d">Política de datos, registro SIC y contrato de encargo; y una guardia con nombre y teléfono. La compuerta legal va entre la etapa 4 y la 5 de la carga: sin ella no entran aportes ni menores.</span>
+        </div>
+        <span class="who">Legal · CTO</span>
+      </div>
+
+      <div class="p">
+        <span class="chip go">Nuestro</span>
+        <div class="body">
+          <span class="t">La API todavía no existe</span>
+          <span class="d">Lo construido es la base de datos y sus garantías. El backend NestJS que la expone —el motor de políticas, los endpoints— está diseñado pero no escrito. Es el trabajo grande que sigue.</span>
+        </div>
+        <span class="who">Aivor</span>
+      </div>
+
+      <div class="p">
+        <span class="chip go">Nuestro</span>
+        <div class="body">
+          <span class="t">Contar cuántos menores no tienen acudiente registrado</span>
+          <span class="d">Una consulta de una tarde sobre la plataforma actual. Es la única sorpresa capaz de detener el corte de migración, porque la base rechaza a todo menor sin acudiente.</span>
+        </div>
+        <span class="who">Aivor · con acceso</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shead">
+      <span class="eyebrow">Cómo avanzar</span>
+      <h2>Tres movimientos, en este orden</h2>
+      <p class="snote">El orden no es de importancia: es de dependencia. Cada uno abre el siguiente.</p>
+    </div>
+
+    <div class="moves">
+      <div class="move">
+        <span class="when">Esta semana · desbloquear</span>
+        <h3>Pedir el usuario de GitHub y hacer H-04</h3>
+        <p>Invitar a Jhon al repositorio y verificar cómo exporta la plataforma actual. Las dos cosas
+          juntas suman menos de un día de trabajo.</p>
+        <p class="why">Sin lo primero, las 14 divergencias siguen siendo una opinión en un documento en
+          vez de una revisión de código. Sin lo segundo, el calendario entero está sin confirmar.</p>
+      </div>
+
+      <div class="move">
+        <span class="when">Siguiente · el punto de encuentro</span>
+        <h3>Construir el Módulo de Nuevos sobre este esquema</h3>
+        <p>Jhon ya escribió su especificación —flujo, modelo y cinco endpoints— y nosotros ya tenemos
+          el CRM 4C y el núcleo de persona funcionando debajo. Levantar la API NestJS con ese módulo
+          como primer caso real es la forma natural de que los dos trabajos se encuentren.</p>
+        <p class="why">Es el módulo más pequeño con valor completo: entra una persona por el formulario
+          público y sale un seguimiento pastoral. Si eso funciona de punta a punta, el resto es repetir.</p>
+      </div>
+
+      <div class="move">
+        <span class="when">Después · la carga real</span>
+        <h3>Cargar las 36 sedes y ensayar la migración</h3>
+        <p>La etapa 1 es bloqueante: ninguna fila existe antes que su sede. Con el catálogo real
+          cargado se puede hacer el ensayo de migración con datos <strong>anonimizados</strong> —una
+          copia de datos reales sigue siendo datos reales— y ver si la reconciliación de aportes cuadra
+          al peso.</p>
+        <p class="why">Ese ensayo es el que convierte el plan en una fecha defendible.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Documento de la mesa de trabajo · CasaRoca System · Fase 1.</p>
+    <p>Las cifras de pruebas y tablas salen de una ejecución real sobre PostgreSQL 16.14; las de costo
+      son precios de lista de agosto de 2026 y hay que reproducirlas en el calculador de GCP antes de
+      llevarlas a comité.</p>
+  </footer>
+
+</div>

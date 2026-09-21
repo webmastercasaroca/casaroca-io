@@ -1,0 +1,29 @@
+# =====================================================================
+# CasaRoca System · sitio unificado
+#
+# Reúne lo que estaba en dos despliegues separados: el ecosistema y el
+# hub de consejería. Estaban partidos, y eso rompía el panel anidado del
+# pastor: sus iframes apuntaban a archivos que en el otro sitio daban 404.
+# Co-desplegarlos es lo que lo arregla.
+# =====================================================================
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/"
+  to = "/hub.html"
+  status = 302
+  force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # El panel del pastor embebe consejería en un iframe del MISMO origen.
+    # Con los dos sitios unidos, SAMEORIGIN ya no bloquea nada.
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    # ⚠️ Sigue marcado como borrador. Quitar esta línea el día que la
+    #    iglesia decida que el sitio es público.
+    X-Robots-Tag = "noindex, nofollow"

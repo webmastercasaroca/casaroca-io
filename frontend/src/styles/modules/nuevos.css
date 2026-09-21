@@ -1,0 +1,29 @@
+/* ============================================================
+   nuevos.css · Modal de registro (casaroca.org) y tablero del
+   coordinador (casaroca.io) del Módulo de Nuevos.
+   ============================================================ */
+.cr-modal-fondo {
+  position: fixed; inset: 0; background: rgba(7,29,68,.55);
+  display: grid; place-items: center; padding: var(--cr-sp-4); z-index: 50;
+}
+.cr-modal {
+  width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto;
+  background: var(--cr-superficie); border-radius: var(--cr-radio-lg);
+  box-shadow: var(--cr-sombra-lg); padding: var(--cr-sp-6);
+}
+.cr-modal__recaptcha { font-size: var(--cr-tx-xs); color: var(--cr-texto-tenue); margin-top: var(--cr-sp-3); }
+.cr-modal__acciones { display: flex; gap: var(--cr-sp-3); justify-content: flex-end; margin-top: var(--cr-sp-5); }
+
+/* Tablero: tres columnas en escritorio, una en celular. */
+.cr-nuevos-tablero { display: grid; gap: var(--cr-sp-5); grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.cr-nuevo-fila {
+  display: grid; gap: var(--cr-sp-1); padding: var(--cr-sp-3) var(--cr-sp-4);
+  border-left: 4px solid var(--cr-borde-fuerte); background: var(--cr-superficie);
+  border-radius: var(--cr-radio-sm); margin-bottom: var(--cr-sp-2);
+}
+/* La prioridad y lo atrasado se ven sin leer: el borde lo dice. */
+.cr-nuevo-fila[data-prioridad="alta"]  { border-left-color: var(--cr-peligro); }
+.cr-nuevo-fila[data-prioridad="media"] { border-left-color: var(--cr-mostaza-500); }
+.cr-nuevo-fila[data-prioridad="baja"]  { border-left-color: var(--cr-azul-500); }
+.cr-nuevo-fila[data-accion="ATRASADO"] { background: var(--cr-peligro-bg); }
+.cr-nuevo-fila__meta { font-size: var(--cr-tx-xs); color: var(--cr-texto-suave); }

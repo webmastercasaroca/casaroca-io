@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0E367A" />
+  <title>Casa Roca · Mapa del sistema — Todas las páginas</title>
+  <meta name="description" content="Acceso rápido a todas las páginas y apps del prototipo Casa Roca AI System: landings públicos, apps por rol y RocaKids." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/tokens.css?v=1789560580" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23E3A52C'/%3E%3Ctext x='16' y='22' font-size='18' text-anchor='middle' fill='%230A2A5E' font-family='Arial' font-weight='bold'%3ECR%3C/text%3E%3C/svg%3E" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:'Inter',system-ui,sans-serif;
+      background:var(--blanco-calido,#F5F6F8);
+      color:var(--texto,#161D2E);
+      line-height:1.5;
+      -webkit-font-smoothing:antialiased;
+      min-height:100vh;
+    }
+    .skip{position:absolute;left:-999px;top:0;background:#fff;padding:.6rem 1rem;border-radius:8px;z-index:10}
+    .skip:focus{left:1rem;top:1rem}
+
+    .hero{
+      background:linear-gradient(135deg,var(--azul-900,#0A2A5E),var(--azul-700,#134291));
+      color:#fff;padding:2.4rem 1.25rem 2rem;
+    }
+    .hero__wrap{max-width:1040px;margin:0 auto}
+    .brand{display:flex;align-items:center;gap:.7rem;margin-bottom:1.1rem}
+    .brand__logo{width:38px;height:38px;border-radius:9px;background:var(--mostaza-500,#E3A52C);
+      display:grid;place-items:center;color:var(--azul-900,#0A2A5E);font-weight:800;font-size:1rem;flex:none}
+    .brand__name{font-weight:700;font-size:.95rem;letter-spacing:.2px}
+    .brand__name small{display:block;font-weight:400;opacity:.75;font-size:.78rem}
+    h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:clamp(1.7rem,5vw,2.5rem);line-height:1.12;letter-spacing:-.5px}
+    .hero p{margin-top:.6rem;max-width:48ch;opacity:.9;font-size:1rem}
+    .hero__meta{margin-top:1.1rem;display:flex;flex-wrap:wrap;gap:.5rem}
+    .pill{font-size:.78rem;font-weight:600;padding:.3rem .7rem;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18)}
+
+    main{max-width:1040px;margin:0 auto;padding:1.6rem 1.25rem 3rem}
+    .section{margin-top:2rem}
+    .section:first-child{margin-top:.4rem}
+    .section__head{display:flex;align-items:baseline;gap:.6rem;margin-bottom:.9rem;flex-wrap:wrap}
+    .section__head h2{font-size:1.05rem;font-weight:800;letter-spacing:.2px}
+    .section__head span{font-size:.85rem;color:var(--texto-suave,#58617A)}
+
+    .grid{display:grid;gap:.85rem;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+
+    .card{
+      display:flex;flex-direction:column;gap:.45rem;
+      background:var(--superficie,#fff);border:1px solid var(--borde,#E6E8EE);
+      border-radius:14px;padding:1.05rem 1.05rem 1.1rem;
+      text-decoration:none;color:inherit;
+      transition:transform .14s ease,box-shadow .14s ease,border-color .14s ease;
+      position:relative;min-height:120px;
+    }
+    .card:hover,.card:focus-visible{
+      transform:translateY(-3px);
+      box-shadow:0 10px 26px -12px rgba(10,42,94,.35);
+      border-color:var(--azul-300,#92B3E8);outline:none;
+    }
+    .card:focus-visible{outline:2px solid var(--azul-500,#2A66C4);outline-offset:2px}
+    .card__top{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+    .ico{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:1.05rem;flex:none}
+    .tag{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:.2rem .5rem;border-radius:6px}
+    .card h3{font-size:1rem;font-weight:700;letter-spacing:-.2px}
+    .card p{font-size:.85rem;color:var(--texto-suave,#58617A);margin:0}
+    .card__file{margin-top:auto;font-size:.74rem;color:var(--texto-tenue,#8A92A6);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .card__go{position:absolute;top:1.05rem;right:1.05rem;color:var(--texto-tenue,#8A92A6);transition:transform .14s,color .14s}
+    .card:hover .card__go{transform:translateX(3px);color:var(--azul-600,#1B53AD)}
+
+    /* acentos por capa */
+    .a-azul .ico{background:var(--azul-100,#E4ECFA);color:var(--azul-700,#134291)}
+    .a-azul .tag{background:var(--azul-100,#E4ECFA);color:var(--azul-700,#134291)}
+    .a-mostaza .ico{background:var(--mostaza-100,#FDF4DE);color:var(--mostaza-700,#A86E12)}
+    .a-mostaza .tag{background:var(--mostaza-100,#FDF4DE);color:var(--mostaza-700,#A86E12)}
+    .a-verde .ico{background:var(--exito-bg,#E5F5EC);color:var(--exito,#1E8A55)}
+    .a-verde .tag{background:var(--exito-bg,#E5F5EC);color:var(--exito,#1E8A55)}
+
+    footer{max-width:1040px;margin:0 auto;padding:1.5rem 1.25rem 2.5rem;color:var(--texto-tenue,#8A92A6);font-size:.8rem;border-top:1px solid var(--borde,#E6E8EE)}
+    footer code{background:var(--superficie-2,#F1F2F5);padding:.1rem .4rem;border-radius:5px;font-size:.78rem}
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip">Saltar al contenido</a>
+
+  <header class="hero">
+    <div class="hero__wrap">
+      <div class="brand">
+        <div class="brand__logo">CR</div>
+        <div class="brand__name">Casa Roca · AI System
+          <small>una casa cálida y segura</small>
+        </div>
+      </div>
+      <h1>Mapa del sistema</h1>
+      <p>Acceso rápido a todas las páginas y apps del prototipo. Toca cualquier tarjeta para abrirla.</p>
+      <div class="hero__meta">
+        <span class="pill">12 páginas</span>
+        <span class="pill">Fase 0 · prototipo</span>
+        <span class="pill">Mobile-first</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ============ SISTEMA MASTER · CONTROL TOWER ============
+         Va primero y solo en su sección a propósito: no es una app
+         más de la lista. Es de donde salen todas las demás, porque
+         aquí se crean las personas, las iglesias y los permisos que
+         deciden qué ve cada panel. Entrar por otra tarjeta sin pasar
+         por aquí es ver el sistema sin gobierno. -->
+    <section class="section">
+      <div class="section__head">
+        <h2>Centro de mando</h2>
+        <span>De aquí sale todo lo demás: personas, iglesias, roles y permisos</span>
+      </div>
+      <div class="grid">
+        <a class='card a-azul' href='/master'>
+          <span class="card__go" aria-hidden="true">→</span>
+          <div class="card__top"><div class="ico">🛰️</div><span class="tag">Dirección General</span></div>
+          <h3>Sistema Master · Control Tower</h3>
+          <p>El cascarón total. Se crean pastores, directores, líderes y consejeros; se abren
+             iglesias con su plantilla; y se decide módulo por módulo qué ve cada sede. Los paneles
+             de abajo abren con lo que aquí se les otorgue, y con nada más.</p>
+          <span class="card__file">master.html</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ============ LANDINGS PÚBLICOS ============ -->
+    <section class="section">
+      <div class="section__head">
+        <h2>Landings públicos</h2>
+        <span>La experiencia que ve la persona: Conoce · Conéctate · Crece · Sirve</span>
+      </div>
+      <div class="grid">
+        <a class='card a-mostaza' href='/experiencia-v3'>
+          <span class="card__go" aria-hidden="true">→</span>
+          <div class="card__top"><div class="ico">✨</div><span class="tag">v3 · actual</span></div>
+          <h3>Experiencia v3</h3>
+          <p>"Aquí tienes un lugar". Versión más reciente del landing público con inscripción.</p>
+          <span class="card__file">experiencia-v3.html</span>
+        </a>
+        <a class='card a-mostaza' href='/experiencia-v2'>
+          <span class="card__go" aria-hidden="true">→</span>
+          <div class="card__top"><div class="ico">🎞️</div><span class="tag">v2</span></div>
+          <h3>Experiencia v2</h3>
+          <p>Segunda versión del landing con el recorrido de las 4 C.</p>
+          <span class="card__file">experiencia-v2.html</span>
+        </a>
+        <a class='card a-mostaza' href='/experiencia'>
+          <span class="card__go" aria-hidden="true">→</span>
+          <div class="card__top"><div class="ico">🌱</div><span class="tag">v1</span></div>
+          <h3>Experiencia v1</h3>
+          <p>Primera versión del landing público. Conoce, conéctate, crece y sirve.</p>
+          <span class="card__file">experiencia.html</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ============ APPS POR ROL ============ -->
+    <section class="section">
+      <div class="section__head">
+        <h2>Apps por rol</h2>
+        <span>Cada capa de la jerarquía pastoral, de la sede madre al grupo pequeño</span>
+      </div>
+      <div class="grid">
+        <a class='card a-azul' href='/central'>
+          <span class="card__go" aria-hidden="true">→</span>
+          <div class="card__top"><div class="ico">🌐</div><span class="tag">Capa 4 · Global</span></div>
+          <h3>Dirección General</h3>
+          <p>Pastor Central Administrativo. 36 sedes agregadas, ERP corporativo y filiales.</p>
+          <span class="card__file">central.html</span>
+        </a>
+        <a class='card a-azul' href='/pastor'>
+          <span class="card__go" aria-hidden="true">→</span>
+          <div class="card__top"><div class="ico">⛪</div><span class="tag">Capa 3 · Sede</span></div>
+          <h3>Pastor de iglesia local</h3>
+          <p>Pastor Congregacional. Administración local + todos los ministerios de su sede.</p>
+          <span class="card__file">pastor.html</span>
+        </a>
+        <a class='card a-azul' href='/director'>
+          <span class="card__go" aria-hidden="true">→</span>
+          <div class="card__top"><div class="ico">🧭</div><span class="tag">Capa 2 · Ministerio</span></div>
+          <h3>Dirección de Ministerio</h3>
+          <p>Director de Ministerio. Divisiones, grupos, voluntarios y temáticas.</p>
+          <span class="card__file">director.html</span>
+        </a>
+        <a class='card a-azul' href='/lider'>
+          <span class="card__go" aria-hidden="true">→</span>
+          <div class="card__top"><div class="ico">🤝</div><span class="tag">Capa 1 · Grupo</span></div>
+          <h3>Panel del Líder</h3>
+          <p>Líder de grupo pequeño. Acompaña a su gente: datos, contacto, cumpleaños y más.</p>
+          <span class="card__file">lider.html</span>
+        </a>
+        <a class='card a-mostaza' href='/nicodemo'>
+          <span class="card__go" aria-hidden="true">→</span>
+          <div class="card__top"><div class="ico">🌟</div><span class="tag">Equipo de Nuevos</span></div>
+          <h3>Nicodemo</h3>
+          <p>Ministerio de Nuevos. Funnels, seguimiento y asignación a ministerios.</p>
+          <span class="card__file">nicodemo.html</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ============ ROCAKIDS ============ -->
+    <section class="section">
+      <div class="section__head">
+        <h2>RocaKids</h2>
+        <span>Ministerio de niños: app del domingo y panel de dirección</span>
+      </div>
+      <div class="grid">
+        <a class='card a-verde' href='/rocakids-domingo'>
+          <span class="card__go" aria-hidden="true">→</span>
+          <div class="card__top"><div class="ico">🧒</div><span class="tag">Domingo</span></div>
+          <h3>RocaKids · App del Domingo</h3>
+          <p>Check-in y entrega segura con código. Para el equipo en el servicio.</p>
+          <span class="card__file">rocakids-domingo.html</span>
+        </a>
+        <a class='card a-verde' href='/rocakids-director'>
+          <span class="card__go" aria-hidden="true">→</span>
+          <div class="card__top"><div class="ico">📊</div><span class="tag">Dirección</span></div>
+          <h3>RocaKids · Dirección</h3>
+          <p>Panel del director: asistencia, análisis por edad y por servicio.</p>
+          <span class="card__file">rocakids-director.html</span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    Casa Roca · AI System — Fase 0 (prototipo). Para correr localmente:
+    <code>cd prototipo &amp;&amp; python3 -m http.server 5173</code> y abre <code>localhost:5173/hub.html</code>.
+  </footer>
+</body>
+</html>

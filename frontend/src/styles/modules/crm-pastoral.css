@@ -1,0 +1,27 @@
+/* ============================================================
+   crm-pastoral.css · Seguimiento 4C y notas confidenciales
+   ============================================================ */
+.cr-4c { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--cr-sp-2); }
+@media (max-width: 640px) { .cr-4c { grid-template-columns: repeat(2, 1fr); } }
+.cr-4c__etapa {
+  padding: var(--cr-sp-3); border-radius: var(--cr-radio-sm); background: var(--cr-superficie-2);
+  border-top: 4px solid var(--cr-borde-fuerte); font-size: var(--cr-tx-sm);
+}
+.cr-4c__etapa[data-etapa="cuidado"]       { border-top-color: var(--cr-4c-cuidado); }
+.cr-4c__etapa[data-etapa="consolidacion"] { border-top-color: var(--cr-4c-consolidacion); }
+.cr-4c__etapa[data-etapa="crecimiento"]   { border-top-color: var(--cr-4c-crecimiento); }
+.cr-4c__etapa[data-etapa="compromiso"]    { border-top-color: var(--cr-4c-compromiso); }
+.cr-4c__etapa[aria-current="step"]        { background: var(--cr-superficie); box-shadow: var(--cr-sombra-md); }
+
+/* ⛔ Una nota confidencial se reconoce antes de leerla: franja N3 y
+   rótulo. Nunca se imprime (una hoja impresa no tiene RLS). */
+.cr-nota-confidencial {
+  position: relative; padding: var(--cr-sp-4) var(--cr-sp-4) var(--cr-sp-4) var(--cr-sp-5);
+  background: var(--cr-superficie); border: 1px solid var(--cr-borde); border-radius: var(--cr-radio-sm);
+}
+.cr-nota-confidencial::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: var(--cr-n3); border-radius: var(--cr-radio-sm) 0 0 var(--cr-radio-sm);
+}
+.cr-nota-confidencial__rotulo { font-size: var(--cr-tx-xs); color: var(--cr-n3); font-weight: var(--cr-peso-bold); text-transform: uppercase; }
+@media print { .cr-nota-confidencial { display: none; } }

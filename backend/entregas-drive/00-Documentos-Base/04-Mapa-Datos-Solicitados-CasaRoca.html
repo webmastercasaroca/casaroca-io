@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapa de Datos Solicitados · CasaRoca System</title>
+<style>
+:root{
+  --ink:#04122E; --ink2:#071D44; --ink3:#0A2A5E;
+  --azul:#2A66C4; --azul-2:#5589DA; --azul-3:#92B3E8;
+  --mostaza:#E3A52C; --verde:#1E8A55; --rojo:#C13A2B; --morado:#7E57C2; --teal:#0F766E;
+  --blanco:#FFFFFF; --hueso:#EEF2F9; --tenue:#9DAEC9; --linea:rgba(146,179,232,.22);
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--sans); color:var(--hueso); background:var(--ink);
+  overflow:hidden; -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(1100px 620px at 12% -8%, rgba(42,102,196,.30), transparent 62%),
+    radial-gradient(900px 560px at 96% 106%, rgba(227,165,44,.14), transparent 60%),
+    linear-gradient(160deg,#04122E 0%,#071D44 52%,#04122E 100%);
+}
+
+/* ---------- motor de presentación ---------- */
+#deck{position:fixed;inset:0;overflow:hidden;z-index:1}
+#track{display:flex;height:100%;width:100%;transition:transform .62s cubic-bezier(.66,.02,.24,1);will-change:transform}
+.slide{
+  flex:0 0 100vw; height:100vh; padding:clamp(28px,4.4vh,54px) clamp(28px,5vw,92px) clamp(58px,7vh,74px);
+  display:flex; flex-direction:column; gap:clamp(10px,1.6vh,20px); overflow-y:auto; overflow-x:hidden;
+}
+.slide::-webkit-scrollbar{width:6px}
+.slide::-webkit-scrollbar-thumb{background:rgba(146,179,232,.3);border-radius:9px}
+
+/* ---------- tipografía ---------- */
+.eyebrow{font-size:clamp(10px,1.05vw,12.5px);letter-spacing:.20em;text-transform:uppercase;color:var(--mostaza);font-weight:700}
+h1{font-size:clamp(34px,5.4vw,74px);line-height:1.02;letter-spacing:-.028em;font-weight:800;color:#fff}
+h2{font-size:clamp(23px,3.1vw,42px);line-height:1.1;letter-spacing:-.022em;font-weight:750;color:#fff}
+h3{font-size:clamp(14px,1.35vw,18px);font-weight:700;color:#fff;letter-spacing:-.01em}
+p,li{font-size:clamp(12.5px,1.13vw,16px);line-height:1.55;color:#D3DEEF}
+.lead{font-size:clamp(14px,1.42vw,20px);color:#C3D3EA;max-width:82ch;line-height:1.5}
+.small{font-size:clamp(10.5px,.94vw,13px);color:var(--tenue);line-height:1.5}
+strong{color:#fff;font-weight:700}
+code,.mono{font-family:var(--mono);font-size:.88em;color:#BFE3FF}
+.hi{color:var(--mostaza)}
+
+/* ---------- retícula y tarjetas ---------- */
+.g{display:grid;gap:clamp(10px,1.15vw,17px)}
+.g2{grid-template-columns:repeat(2,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)} .g5{grid-template-columns:repeat(5,1fr)}
+.g6{grid-template-columns:repeat(6,1fr)}
+.gA{grid-template-columns:1.15fr .85fr;align-items:start}
+.gB{grid-template-columns:.8fr 1.2fr;align-items:start}
+@media (max-width:980px){.g3,.g4,.g5,.g6,.gA,.gB{grid-template-columns:repeat(2,1fr)}}
+.card{
+  background:linear-gradient(168deg,rgba(255,255,255,.075),rgba(255,255,255,.028));
+  border:1px solid var(--linea); border-radius:14px; padding:clamp(12px,1.25vw,20px);
+  display:flex; flex-direction:column; gap:7px;
+}
+.card.acc{border-color:rgba(227,165,44,.44);background:linear-gradient(168deg,rgba(227,165,44,.14),rgba(227,165,44,.035))}
+.card.dgr{border-color:rgba(193,58,43,.46);background:linear-gradient(168deg,rgba(193,58,43,.15),rgba(193,58,43,.04))}
+.card.ok{border-color:rgba(30,138,85,.46);background:linear-gradient(168deg,rgba(30,138,85,.14),rgba(30,138,85,.04))}
+.num{font-family:var(--mono);font-size:clamp(10px,.92vw,12px);color:var(--azul-3);letter-spacing:.09em}
+.kpi{font-size:clamp(26px,3.5vw,50px);font-weight:800;letter-spacing:-.035em;color:#fff;line-height:1}
+.kpi.m{color:var(--mostaza)} .kpi.v{color:#5FD79B} .kpi.r{color:#FF8A78}
+.tag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;padding:3px 8px;border-radius:999px;border:1px solid var(--linea);color:var(--azul-3);text-transform:uppercase}
+.tag.m{border-color:rgba(227,165,44,.5);color:var(--mostaza)}
+.tag.v{border-color:rgba(30,138,85,.5);color:#5FD79B}
+.tag.r{border-color:rgba(193,58,43,.5);color:#FF8A78}
+ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+ul li{position:relative;padding-left:16px}
+ul li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:5px;border-radius:50%;background:var(--azul-2)}
+ul.m li::before{background:var(--mostaza)}
+ol{padding-left:1.15em;display:flex;flex-direction:column;gap:6px}
+ol li::marker{color:var(--mostaza);font-weight:700;font-family:var(--mono);font-size:.85em}
+
+/* ---------- tablas ---------- */
+.tw{overflow-x:auto;border-radius:12px;border:1px solid var(--linea);background:rgba(255,255,255,.035)}
+table{border-collapse:collapse;width:100%;min-width:620px}
+th,td{text-align:left;padding:8px 12px;font-size:clamp(10.5px,1vw,13.5px);border-bottom:1px solid rgba(146,179,232,.13);vertical-align:top;line-height:1.42}
+th{color:var(--mostaza);font-weight:700;text-transform:uppercase;letter-spacing:.09em;font-size:clamp(9px,.82vw,11px);background:rgba(4,18,46,.5);position:sticky;top:0}
+td{color:#CBD9EC} tbody tr:last-child td{border-bottom:none}
+td.k{color:#fff;font-weight:650} td.n{font-family:var(--mono);text-align:right;white-space:nowrap}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.dot.v{background:#3FBF7F}.dot.a{background:var(--mostaza)}.dot.r{background:#E0574A}.dot.g{background:#7A8CA8}
+
+/* ---------- lienzo de diagramas (siempre claro: legible en pantalla y al imprimir) ---------- */
+.canvas{background:#F7F9FC;border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:clamp(10px,1.2vw,18px);box-shadow:0 18px 44px -22px rgba(0,0,0,.7)}
+.canvas svg{display:block;width:100%;height:auto}
+.canvas .cap{font-size:11.5px;color:#5A6B85;margin-top:7px;font-family:var(--mono);letter-spacing:.03em}
+svg text{font-family:var(--sans)}
+svg .t{font-size:11.5px;fill:#0E2444;font-weight:650}
+svg .ts{font-size:9.5px;fill:#5A6B85}
+svg .tw_{font-size:11.5px;fill:#fff;font-weight:700}
+svg .tws{font-size:9.5px;fill:rgba(255,255,255,.8)}
+svg .th_{font-size:10px;fill:#134291;font-weight:800;letter-spacing:.1em}
+svg .mono{font-family:var(--mono);font-size:9.5px;fill:#41597A}
+
+/* ---------- portadas ---------- */
+.cover{justify-content:center;gap:clamp(14px,2vh,26px)}
+.rule{height:3px;width:96px;background:linear-gradient(90deg,var(--mostaza),transparent);border-radius:3px}
+.sig{display:flex;gap:clamp(14px,2.4vw,40px);flex-wrap:wrap;padding-top:6px;border-top:1px solid var(--linea);margin-top:6px}
+.sig div{display:flex;flex-direction:column;gap:1px}
+.sig b{color:#fff;font-size:13px} .sig span{color:var(--tenue);font-size:11px}
+.chapter{justify-content:center;align-items:flex-start;gap:16px}
+.chapter .big{font-family:var(--mono);font-size:clamp(58px,11vw,150px);font-weight:800;color:rgba(146,179,232,.13);line-height:.85;letter-spacing:-.05em}
+
+/* ---------- barra inferior ---------- */
+#bar{position:fixed;left:0;right:0;bottom:0;height:46px;z-index:6;display:flex;align-items:center;gap:14px;
+  padding:0 clamp(18px,3vw,34px);background:linear-gradient(0deg,rgba(4,18,46,.94),rgba(4,18,46,.24));
+  border-top:1px solid var(--linea);backdrop-filter:blur(9px)}
+#bar .wm{font-size:11px;font-weight:800;letter-spacing:.13em;color:#fff;white-space:nowrap;text-transform:uppercase}
+#bar .doc{font-size:10.5px;color:var(--tenue);letter-spacing:.11em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#prog{flex:1;height:3px;background:rgba(146,179,232,.17);border-radius:3px;overflow:hidden}
+#prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--azul),var(--mostaza));border-radius:3px;transition:width .62s cubic-bezier(.66,.02,.24,1)}
+#cnt{font-family:var(--mono);font-size:11.5px;color:var(--azul-3);letter-spacing:.08em;min-width:58px;text-align:right}
+.nav{display:flex;gap:7px}
+.nav button{width:29px;height:29px;border-radius:8px;border:1px solid var(--linea);background:rgba(255,255,255,.06);color:#DCE7F6;cursor:pointer;font-size:14px;line-height:1;transition:.16s}
+.nav button:hover{background:var(--azul);border-color:var(--azul);color:#fff}
+.nav button:disabled{opacity:.28;cursor:default}
+
+/* ---------- revelado (lo oculta el JS; sin JS todo se ve) ---------- */
+html.js .rv{opacity:0;transform:translateY(16px)}
+html.js .slide.on .rv{opacity:1;transform:none;transition:opacity .5s ease,transform .58s cubic-bezier(.2,.7,.3,1)}
+html.js .slide.on .rv:nth-child(1){transition-delay:.05s} html.js .slide.on .rv:nth-child(2){transition-delay:.11s}
+html.js .slide.on .rv:nth-child(3){transition-delay:.17s} html.js .slide.on .rv:nth-child(4){transition-delay:.23s}
+html.js .slide.on .rv:nth-child(5){transition-delay:.29s} html.js .slide.on .rv:nth-child(6){transition-delay:.35s}
+html.js .slide.on .rv:nth-child(7){transition-delay:.41s} html.js .slide.on .rv:nth-child(8){transition-delay:.47s}
+html.js .grow{transform:scaleX(0);transform-origin:left}
+html.js .slide.on .grow{transform:scaleX(1);transition:transform 1.05s cubic-bezier(.2,.75,.25,1) .3s}
+@media (prefers-reduced-motion:reduce){
+  #track{transition:none} html.js .rv,html.js .slide.on .rv{opacity:1;transform:none;transition:none}
+  html.js .grow,html.js .slide.on .grow{transform:none;transition:none}
+}
+
+/* ---------- impresión: vuelve a ser documento ---------- */
+@media print{
+  @page{size:A4 landscape;margin:11mm}
+  body{background:#fff;color:#12203A;overflow:visible}
+  body::before{display:none} #bar{display:none}
+  #deck{position:static;overflow:visible} #track{display:block;transform:none!important}
+  .slide{height:auto;min-height:auto;width:100%;page-break-after:always;padding:0 0 12mm;overflow:visible;gap:9px}
+  h1,h2,h3{color:#071D44!important} p,li,.lead,td{color:#26364F!important} strong{color:#071D44!important}
+  .small,.sig span{color:#5A6B85!important} .num,#cnt{color:#41597A!important}
+  .card{background:#F4F7FC!important;border:1px solid #D6DFEC!important;box-shadow:none}
+  .card.acc{background:#FDF6E6!important;border-color:#EBD3A0!important}
+  .card.dgr{background:#FCEDEB!important;border-color:#EDC3BC!important}
+  .card.ok{background:#EAF6EF!important;border-color:#B9DEC9!important}
+  .tw{border-color:#D6DFEC!important;background:#fff!important}
+  th{background:#EEF2F9!important;color:#134291!important;position:static}
+  .canvas{background:#fff!important;border-color:#D6DFEC!important;box-shadow:none}
+  .kpi{color:#071D44!important}.kpi.m{color:#B5790F!important}.kpi.v{color:#1E8A55!important}.kpi.r{color:#C13A2B!important}
+  .chapter .big{color:#DCE4F0!important}
+  html.js .rv{opacity:1!important;transform:none!important} html.js .grow{transform:none!important}
+}
+
+/* ---------- ajuste fino de impresión: una lámina = una página ---------- */
+@media print{
+  @page{size:A4 landscape;margin:8mm}
+  html,body{width:auto;height:auto}
+  .slide{
+    height:auto!important; min-height:0!important;
+    page-break-after:always; break-after:page;
+    page-break-inside:avoid; break-inside:avoid;
+    padding:0 0 4mm!important; gap:7px!important;
+  }
+  .slide:last-child{page-break-after:auto;break-after:auto}
+  /* la retícula NO debe colapsar al imprimir */
+  .g2{grid-template-columns:repeat(2,1fr)!important}
+  .g3{grid-template-columns:repeat(3,1fr)!important}
+  .g4{grid-template-columns:repeat(4,1fr)!important}
+  .g5{grid-template-columns:repeat(5,1fr)!important}
+  .g6{grid-template-columns:repeat(6,1fr)!important}
+  .gA{grid-template-columns:1.15fr .85fr!important}
+  .gB{grid-template-columns:.85fr 1.15fr!important}
+  h1{font-size:36pt!important;line-height:1.03}
+  h2{font-size:20pt!important;line-height:1.12}
+  h3{font-size:11pt!important}
+  .eyebrow{font-size:7pt!important;letter-spacing:.16em}
+  p,li{font-size:8.6pt!important;line-height:1.42}
+  .lead{font-size:10.5pt!important;line-height:1.42;max-width:none}
+  .small{font-size:7.6pt!important;line-height:1.4}
+  .num{font-size:6.8pt!important}.tag{font-size:6.8pt!important}
+  .kpi{font-size:24pt!important}
+  .card{padding:8px 10px!important;gap:5px!important;border-radius:8px}
+  .g{gap:8px!important}
+  ul{gap:4px}ul li{padding-left:12px}ul li::before{width:4px;height:4px;top:.55em}
+  ol{gap:4px;padding-left:1.1em}
+  table{min-width:0!important}
+  th,td{padding:3.2px 6px!important;font-size:7.8pt!important;line-height:1.34}
+  th{font-size:6.4pt!important;letter-spacing:.06em}
+  .tw{border-radius:8px}
+  .canvas{padding:8px!important;border-radius:9px}
+  .canvas .cap{font-size:6.8pt!important;margin-top:4px}
+  .rule{height:2.5px;width:80px}
+  .sig{gap:18px!important;padding-top:5px;margin-top:5px}
+  .sig b{font-size:8.6pt}.sig span{font-size:7.2pt}
+  .chapter .big{font-size:88pt!important}
+  .cover{gap:12px!important;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<div id="deck"><div id="track">
+
+<!-- ============ 01 PORTADA ============ -->
+<section class="slide cover">
+  <span class="eyebrow rv">CasaRoca System · Fase 1 · Documento 4 de 4</span>
+  <h1 class="rv">Mapa de Datos<br>Solicitados</h1>
+  <div class="rule rv grow"></div>
+  <p class="lead rv">Qué información se le pide a la organización para poner en pie el sistema, de dónde sale cada pieza, por qué se necesita y en qué orden puede entregarse. El ecosistema no se construye y luego se llena: <strong>nace del dato que se ancla</strong>, y por eso la petición tiene un orden que no se puede alterar.</p>
+  <div class="sig rv">
+    <div><b>11 dominios · ~126 tablas</b><span>Alcance del modelo de datos</span></div>
+    <div><b>5 peticiones + 1 entrada</b><span>Lo que hay que solicitar</span></div>
+    <div><b>6 de 12 esquemas</b><span>Lo que la plataforma actual alcanza a cubrir</span></div>
+    <div><b>Versión 1.0 · agosto 2026</b><span>Mesa de trabajo · Comité de Tecnología y Dirección</span></div>
+  </div>
+</section>
+
+<!-- ============ 02 QUÉ ES ============ -->
+<section class="slide">
+  <span class="eyebrow rv">Alcance</span>
+  <h2 class="rv">Qué pide este documento, y qué deliberadamente no pide</h2>
+  <p class="lead rv">Una petición de datos mal planteada es la forma más común de hundir una migración: se pide «todo», llega un Excel maquetado, y seis semanas después se descubre que faltaba el identificador interno. Este mapa evita eso siendo específico hasta el aburrimiento.</p>
+  <div class="g g3 rv">
+    <div class="card ok">
+      <span class="tag v">Sí pide</span>
+      <h3>Volcados crudos y decisiones</h3>
+      <p>Copias fieles de las bases actuales, tal como están, con sus identificadores y sus fechas. Y las decisiones de gobierno que ningún sistema puede exportar: quién puede ver qué, y qué histórico vale la pena traer.</p>
+    </div>
+    <div class="card dgr">
+      <span class="tag r">No pide</span>
+      <h3>Informes ni datos «limpios»</h3>
+      <p>Nadie debe depurar nada antes de entregarlo. Limpiar por adelantado destruye evidencia: si una ficha está duplicada, el sistema necesita ver las dos para decidir cuál manda y dejar constancia de la fusión.</p>
+    </div>
+    <div class="card acc">
+      <span class="tag m">Todavía no pide</span>
+      <h3>Datos sensibles y de menores</h3>
+      <p>Aportes, notas pastorales, consejería y todo lo de RocaKids <strong>no se cargan</strong> hasta que estén vigentes los instrumentos jurídicos. Se planifica ahora; se entrega después. La lámina 13 fija esa compuerta.</p>
+    </div>
+  </div>
+  <div class="g g2 rv">
+    <div class="card">
+      <h3>Por qué el orden importa más que la lista</h3>
+      <p>Las restricciones viven en la base de datos, no en el código. Un menor sin acudiente <strong>hace fallar la transacción</strong>; un contacto sin consentimiento no se puede usar. Eso significa que si la información llega en el orden equivocado, no entra «a medias»: es rechazada. El orden de esta petición es el orden en que la base acepta el dato.</p>
+    </div>
+    <div class="card">
+      <h3>Qué pasa si algo se cruza después</h3>
+      <p>Nada. Toda fila migrada conserva su origen y su identificador de procedencia, y la línea de tiempo es polimórfica: acepta hechos nuevos de cualquier módulo sin rediseño. <strong>Cruzar datos más adelante es barato; anclarlos sin linaje es lo que sale caro.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 DIAGRAMA A · EL ORDEN ============ -->
+<section class="slide">
+  <span class="eyebrow rv">Diagrama 1 · Secuencia</span>
+  <h2 class="rv">El orden en que la base acepta el dato</h2>
+  <div class="canvas rv">
+    <svg viewBox="0 0 1000 300" role="img" aria-label="Secuencia de seis etapas de carga de datos con una compuerta legal entre la cuarta y la quinta">
+      <defs>
+        <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+          <path d="M0,1 L8,4.5 L0,8 z" fill="#5A6B85"/>
+        </marker>
+      </defs>
+
+      <!-- etapas -->
+      <g>
+        <rect x="14" y="46" width="148" height="92" rx="10" fill="#EEF2F6" stroke="#7A8CA8" stroke-width="1.4"/>
+        <text class="th_" x="28" y="68">ETAPA 1</text>
+        <text class="t" x="28" y="88">Estructura</text>
+        <text class="ts" x="28" y="104">sedes · ministerios</text>
+        <text class="ts" x="28" y="118">catálogos · cursos</text>
+        <text class="mono" x="28" y="132">N1 · sin restricción</text>
+      </g>
+      <g>
+        <rect x="184" y="46" width="148" height="92" rx="10" fill="#E8EFFA" stroke="#2A66C4" stroke-width="1.6"/>
+        <text class="th_" x="198" y="68">ETAPA 2</text>
+        <text class="t" x="198" y="88">Personas</text>
+        <text class="ts" x="198" y="104">nombre · documento</text>
+        <text class="ts" x="198" y="118">nacimiento · sede</text>
+        <text class="mono" x="198" y="132">N2 · la raíz</text>
+      </g>
+      <g>
+        <rect x="354" y="46" width="148" height="92" rx="10" fill="#E8EFFA" stroke="#2A66C4" stroke-width="1.6"/>
+        <text class="th_" x="368" y="68">ETAPA 3</text>
+        <text class="t" x="368" y="88">Consentimiento</text>
+        <text class="ts" x="368" y="104">finalidad · canal</text>
+        <text class="ts" x="368" y="118">fecha original</text>
+        <text class="mono" x="368" y="132">habilita el contacto</text>
+      </g>
+      <g>
+        <rect x="524" y="46" width="148" height="92" rx="10" fill="#E8EFFA" stroke="#2A66C4" stroke-width="1.6"/>
+        <text class="th_" x="538" y="68">ETAPA 4</text>
+        <text class="t" x="538" y="88">Relaciones</text>
+        <text class="ts" x="538" y="104">hogares · grupos</text>
+        <text class="ts" x="538" y="118">asistencia · formación</text>
+        <text class="mono" x="538" y="132">N2</text>
+      </g>
+      <g>
+        <rect x="722" y="46" width="128" height="92" rx="10" fill="#FCEDEB" stroke="#C13A2B" stroke-width="1.6"/>
+        <text class="th_" x="736" y="68" fill="#C13A2B">ETAPA 5</text>
+        <text class="t" x="736" y="88">Sensible</text>
+        <text class="ts" x="736" y="104">aportes · notas</text>
+        <text class="ts" x="736" y="118">consejería · salud</text>
+        <text class="mono" x="736" y="132" fill="#C13A2B">N3</text>
+      </g>
+      <g>
+        <rect x="862" y="46" width="124" height="92" rx="10" fill="#FCEDEB" stroke="#C13A2B" stroke-width="1.6"/>
+        <text class="th_" x="876" y="68" fill="#C13A2B">ETAPA 6</text>
+        <text class="t" x="876" y="88">Menores</text>
+        <text class="ts" x="876" y="104">niños · acudientes</text>
+        <text class="ts" x="876" y="118">entrega · fotos</text>
+        <text class="mono" x="876" y="132" fill="#C13A2B">N4</text>
+      </g>
+
+      <!-- flechas -->
+      <line x1="164" y1="92" x2="180" y2="92" stroke="#5A6B85" stroke-width="1.5" marker-end="url(#ar)"/>
+      <line x1="334" y1="92" x2="350" y2="92" stroke="#5A6B85" stroke-width="1.5" marker-end="url(#ar)"/>
+      <line x1="504" y1="92" x2="520" y2="92" stroke="#5A6B85" stroke-width="1.5" marker-end="url(#ar)"/>
+      <line x1="852" y1="92" x2="858" y2="92" stroke="#5A6B85" stroke-width="1.5" marker-end="url(#ar)"/>
+
+      <!-- compuerta legal -->
+      <line x1="697" y1="34" x2="697" y2="152" stroke="#C13A2B" stroke-width="2" stroke-dasharray="6 5"/>
+      <rect x="612" y="10" width="170" height="22" rx="6" fill="#C13A2B"/>
+      <text class="tw_" x="626" y="25">COMPUERTA LEGAL · H-02</text>
+      <text class="ts" x="612" y="168" fill="#C13A2B">No se cruza sin política de tratamiento vigente,</text>
+      <text class="ts" x="612" y="182" fill="#C13A2B">registro ante la SIC radicado y cifrado por columna verificado.</text>
+
+      <!-- reglas duras -->
+      <rect x="14" y="196" width="656" height="88" rx="10" fill="#fff" stroke="#D6DFEC"/>
+      <text class="th_" x="30" y="218">TRES RESTRICCIONES QUE LA BASE APLICA SOLA — no son recomendaciones</text>
+      <text class="t" x="30" y="240">· Contacto sin consentimiento registrado ⇒ el sistema no permite usarlo</text>
+      <text class="t" x="30" y="258">· Persona menor de 18 sin acudiente asociado ⇒ la transacción falla</text>
+      <text class="t" x="30" y="276">· Fila sin sede ⇒ no existe: el aislamiento entre sedes es estructural</text>
+
+      <rect x="690" y="196" width="296" height="88" rx="10" fill="#FDF6E6" stroke="#EBD3A0"/>
+      <text class="th_" x="706" y="218" fill="#B5790F">CONSECUENCIA PRÁCTICA</text>
+      <text class="ts" x="706" y="238">Si el ministerio de niños no tiene registrado</text>
+      <text class="ts" x="706" y="252">al acudiente de un menor, ese menor no entra</text>
+      <text class="ts" x="706" y="266">al sistema. Conviene saberlo en la semana 1,</text>
+      <text class="ts" x="706" y="280">no en la semana 9.</text>
+    </svg>
+    <div class="cap">Fig. 1 — Seis etapas. Las cuatro primeras pueden solicitarse de inmediato; las dos últimas esperan la compuerta legal.</div>
+  </div>
+</section>
+
+<!-- ============ 04 MAPA MAESTRO ============ -->
+<section class="slide">
+  <span class="eyebrow rv">Mapa maestro</span>
+  <h2 class="rv">Los doce esquemas: qué se pide, a quién y por qué</h2>
+  <div class="tw rv">
+    <table>
+      <thead><tr><th>Esquema</th><th class="n">Tablas</th><th>Nivel</th><th>De dónde sale</th><th>Sin este dato, no funciona</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Núcleo · registro maestro de persona</td><td class="n">14</td><td>N2–N4</td><td><span class="dot v"></span>Plataforma actual · Ovejas</td><td><strong>Nada.</strong> Es la raíz: todos los demás esquemas la referencian</td></tr>
+        <tr><td class="k">01 · Organización</td><td class="n">9</td><td>N1</td><td><span class="dot a"></span>Dirección General</td><td>El aislamiento por sede: sin sede no hay dónde anclar la fila</td></tr>
+        <tr><td class="k">02 · Identidad y acceso</td><td class="n">11</td><td>N2</td><td><span class="dot g"></span>No se migra · se declara</td><td>Nadie puede entrar al sistema. Depende de la matriz de permisos</td></tr>
+        <tr><td class="k">03 · Grupos</td><td class="n">8</td><td>N2</td><td><span class="dot v"></span>Plataforma actual · Familiares y Pequeños</td><td>La etapa «Conéctate» del recorrido 4C</td></tr>
+        <tr><td class="k">04 · CRM Pastoral</td><td class="n">12</td><td>N2–N3</td><td><span class="dot v"></span>Plataforma actual · Ovejas y registro público</td><td>El seguimiento de nuevos — la tesis central del proyecto</td></tr>
+        <tr><td class="k">05 · Asistencia</td><td class="n">7</td><td>N2</td><td><span class="dot a"></span>Sedes · conteos y planillas</td><td>Analítica dominical y detección de personas que se enfrían</td></tr>
+        <tr><td class="k">06 · RocaKids</td><td class="n">9</td><td>N4</td><td><span class="dot a"></span>Dirección del ministerio</td><td>Check-in y entrega segura de menores</td></tr>
+        <tr><td class="k">07 · Consejería</td><td class="n">6</td><td>N3</td><td><span class="dot v"></span>Plataforma actual · Consejería</td><td>El histórico de casos reservados y su continuidad</td></tr>
+        <tr><td class="k">08 · Aportes</td><td class="n">11</td><td>N3</td><td><span class="dot a"></span>Tesorería y Contabilidad</td><td>El dato más restringido del sistema; y la conciliación contable</td></tr>
+        <tr><td class="k">09 · Formación</td><td class="n">10</td><td>N2</td><td><span class="dot v"></span>Plataforma actual · Cursos + Instituto</td><td>Certificados y avance en IBLI / FACTER</td></tr>
+        <tr><td class="k">10 · Talento y voluntariado</td><td class="n">12</td><td>N2–N3</td><td><span class="dot a"></span>Talento Humano</td><td>Quién sirve dónde, y la separación entre empleado y voluntario</td></tr>
+        <tr><td class="k">11 · Línea de tiempo</td><td class="n">4</td><td>—</td><td><span class="dot v"></span>Plataforma actual · Actividades</td><td>La memoria de la relación: quién habló con quién y cuándo</td></tr>
+        <tr><td class="k">Plataforma · transversal</td><td class="n">13</td><td>mixto</td><td><span class="dot v"></span><span class="dot g"></span>Consentimientos + se construye</td><td>Habeas Data, auditoría y archivos</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="g g4 rv">
+    <div class="card"><span class="dot v"></span><p class="small">Sale de la plataforma actual — <strong>6 esquemas</strong></p></div>
+    <div class="card"><span class="dot a"></span><p class="small">Lo entrega la organización — <strong>5 esquemas</strong></p></div>
+    <div class="card"><span class="dot g"></span><p class="small">Se construye, no se pide — <strong>1 esquema</strong></p></div>
+    <div class="card acc"><p class="small">Total <strong>~126 tablas en 12 esquemas.</strong> Cada esquema tiene un módulo dueño; nadie más lo escribe.</p></div>
+  </div>
+</section>
+
+<!-- ============ 05 DIAGRAMA B ============ -->
+<section class="slide">
+  <span class="eyebrow rv">Diagrama 2 · Origen</span>
+  <h2 class="rv">Quién alimenta cada dominio</h2>
+  <div class="canvas rv">
+    <svg viewBox="0 0 1000 452" role="img" aria-label="Los doce esquemas del sistema clasificados según el origen de sus datos">
+      <!-- núcleo -->
+      <rect x="16" y="14" width="968" height="72" rx="12" fill="#2A66C4"/>
+      <text class="tw_" x="36" y="42" style="font-size:14px">NÚCLEO · REGISTRO MAESTRO DE PERSONA</text>
+      <text class="tws" x="36" y="62">14 tablas · N2–N4 · una persona = una fila. Si este dominio entra mal, los once restantes heredan el error.</text>
+      <text class="tws" x="700" y="42">Origen: volcado de la plataforma actual</text>
+      <text class="tws" x="700" y="62">+ deduplicación auditable y reversible</text>
+
+      <!-- fila 1 -->
+      <g><rect x="16" y="102" width="232" height="80" rx="10" fill="#FDF6E6" stroke="#E3A52C" stroke-width="1.6"/>
+        <text class="th_" x="30" y="124" fill="#B5790F">01 · ORGANIZACIÓN</text>
+        <text class="t" x="30" y="144">sedes · ministerios · activación</text>
+        <text class="ts" x="30" y="160">9 tablas · N1</text>
+        <text class="mono" x="30" y="174" fill="#B5790F">Dirección General</text></g>
+      <g><rect x="262" y="102" width="232" height="80" rx="10" fill="#E8EFFA" stroke="#2A66C4" stroke-width="1.6"/>
+        <text class="th_" x="276" y="124">03 · GRUPOS</text>
+        <text class="t" x="276" y="144">familiares · pequeños</text>
+        <text class="ts" x="276" y="160">8 tablas · N2</text>
+        <text class="mono" x="276" y="174">Plataforma actual</text></g>
+      <g><rect x="508" y="102" width="232" height="80" rx="10" fill="#E8EFFA" stroke="#2A66C4" stroke-width="1.6"/>
+        <text class="th_" x="522" y="124">04 · CRM PASTORAL</text>
+        <text class="t" x="522" y="144">4C · seguimiento · notas</text>
+        <text class="ts" x="522" y="160">12 tablas · N2–N3</text>
+        <text class="mono" x="522" y="174">Plataforma actual</text></g>
+      <g><rect x="754" y="102" width="230" height="80" rx="10" fill="#E8EFFA" stroke="#2A66C4" stroke-width="1.6"/>
+        <text class="th_" x="768" y="124">07 · CONSEJERÍA</text>
+        <text class="t" x="768" y="144">casos reservados</text>
+        <text class="ts" x="768" y="160">6 tablas · N3</text>
+        <text class="mono" x="768" y="174">Plataforma actual</text></g>
+
+      <!-- fila 2 -->
+      <g><rect x="16" y="196" width="232" height="80" rx="10" fill="#E8EFFA" stroke="#2A66C4" stroke-width="1.6"/>
+        <text class="th_" x="30" y="218">09 · FORMACIÓN</text>
+        <text class="t" x="30" y="238">cursos · Instituto · certificados</text>
+        <text class="ts" x="30" y="254">10 tablas · N2</text>
+        <text class="mono" x="30" y="268">Plataforma actual + Moodle</text></g>
+      <g><rect x="262" y="196" width="232" height="80" rx="10" fill="#E8EFFA" stroke="#2A66C4" stroke-width="1.6"/>
+        <text class="th_" x="276" y="218">11 · LÍNEA DE TIEMPO</text>
+        <text class="t" x="276" y="238">bitácora polimórfica de todo</text>
+        <text class="ts" x="276" y="254">4 tablas particionadas</text>
+        <text class="mono" x="276" y="268">Plataforma actual · Actividades</text></g>
+      <g><rect x="508" y="196" width="232" height="80" rx="10" fill="#FDF6E6" stroke="#E3A52C" stroke-width="1.6"/>
+        <text class="th_" x="522" y="218" fill="#B5790F">05 · ASISTENCIA</text>
+        <text class="t" x="522" y="238">servicios · entradas</text>
+        <text class="ts" x="522" y="254">7 tablas · N2</text>
+        <text class="mono" x="522" y="268" fill="#B5790F">Sedes · planillas y conteos</text></g>
+      <g><rect x="754" y="196" width="230" height="80" rx="10" fill="#FCEDEB" stroke="#C13A2B" stroke-width="1.8"/>
+        <text class="th_" x="768" y="218" fill="#C13A2B">06 · ROCAKIDS</text>
+        <text class="t" x="768" y="238">menores · acudientes</text>
+        <text class="ts" x="768" y="254">9 tablas · N4</text>
+        <text class="mono" x="768" y="268" fill="#C13A2B">Dirección del ministerio</text></g>
+
+      <!-- fila 3 -->
+      <g><rect x="16" y="290" width="232" height="80" rx="10" fill="#FCEDEB" stroke="#C13A2B" stroke-width="1.8"/>
+        <text class="th_" x="30" y="312" fill="#C13A2B">08 · APORTES</text>
+        <text class="t" x="30" y="332">diezmos · pagos · fondos</text>
+        <text class="ts" x="30" y="348">11 tablas · N3</text>
+        <text class="mono" x="30" y="362" fill="#C13A2B">Tesorería y Contabilidad</text></g>
+      <g><rect x="262" y="290" width="232" height="80" rx="10" fill="#FDF6E6" stroke="#E3A52C" stroke-width="1.6"/>
+        <text class="th_" x="276" y="312" fill="#B5790F">10 · TALENTO</text>
+        <text class="t" x="276" y="332">HCM · equipos · servicio</text>
+        <text class="ts" x="276" y="348">12 tablas · N2–N3</text>
+        <text class="mono" x="276" y="362" fill="#B5790F">Talento Humano</text></g>
+      <g><rect x="508" y="290" width="232" height="80" rx="10" fill="#EEF2F6" stroke="#7A8CA8" stroke-width="1.6"/>
+        <text class="th_" x="522" y="312" fill="#5A6B85">02 · IDENTIDAD Y ACCESO</text>
+        <text class="t" x="522" y="332">roles · alcances · sesiones</text>
+        <text class="ts" x="522" y="348">11 tablas · N2</text>
+        <text class="mono" x="522" y="362" fill="#5A6B85">No se migra · se declara</text></g>
+      <g><rect x="754" y="290" width="230" height="80" rx="10" fill="#EAF6EF" stroke="#1E8A55" stroke-width="1.6"/>
+        <text class="th_" x="768" y="312" fill="#146B41">PLATAFORMA</text>
+        <text class="t" x="768" y="332">auditoría · consentimiento · archivos</text>
+        <text class="ts" x="768" y="348">13 tablas · transversal</text>
+        <text class="mono" x="768" y="362" fill="#146B41">Mixto</text></g>
+
+      <!-- leyenda -->
+      <rect x="16" y="386" width="968" height="52" rx="10" fill="#fff" stroke="#D6DFEC"/>
+      <rect x="32" y="404" width="14" height="14" rx="3" fill="#E8EFFA" stroke="#2A66C4" stroke-width="1.5"/>
+      <text class="ts" x="54" y="415">Sale de la plataforma actual — 6 esquemas, 54 tablas</text>
+      <rect x="330" y="404" width="14" height="14" rx="3" fill="#FDF6E6" stroke="#E3A52C" stroke-width="1.5"/>
+      <text class="ts" x="352" y="415">Lo entrega la organización — 3 esquemas</text>
+      <rect x="592" y="404" width="14" height="14" rx="3" fill="#FCEDEB" stroke="#C13A2B" stroke-width="1.5"/>
+      <text class="ts" x="614" y="415">Organización · sensible o menores — 2 esquemas</text>
+      <rect x="854" y="404" width="14" height="14" rx="3" fill="#EEF2F6" stroke="#7A8CA8" stroke-width="1.5"/>
+      <text class="ts" x="876" y="415">Se construye</text>
+    </svg>
+    <div class="cap">Fig. 2 — La plataforma actual cubre la mitad del modelo. La otra mitad hay que pedírsela a personas, no exportarla de un sistema.</div>
+  </div>
+</section>
+
+<!-- ============ 06 LO QUE SÍ ENTREGA ============ -->
+<section class="slide">
+  <span class="eyebrow rv">Petición 1 · Alcance</span>
+  <h2 class="rv">Lo que la plataforma actual sí entrega</h2>
+  <p class="lead rv">Seis de los doce esquemas se alimentan de un solo volcado. Esta es la correspondencia módulo por módulo, y lo que se pierde si alguno no llega completo.</p>
+  <div class="tw rv">
+    <table>
+      <thead><tr><th>Módulo de origen</th><th>Alimenta</th><th>Qué aporta que no se puede reconstruir después</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Ovejas <span class="small">(fichas de persona)</span></td><td>Núcleo · persona</td><td>Los <strong>16 tipos de documento</strong> y el identificador interno de cada ficha. Sin él no hay linaje ni reconciliación contra el origen</td></tr>
+        <tr><td class="k">Perfil <span class="small">(consentimiento por canal)</span></td><td>Plataforma · consentimiento</td><td><strong>La fecha original</strong> de cada autorización. Un consentimiento recapturado hoy no cubre el tratamiento de ayer</td></tr>
+        <tr><td class="k">Grupos Familiares</td><td>03 · Grupos + hogares</td><td>La composición del hogar y el parentesco, que es lo que une familias entre sedes</td></tr>
+        <tr><td class="k">Grupos Pequeños</td><td>03 · Grupos</td><td>Membresías con su fecha de ingreso: sin ella se pierde la antigüedad en el recorrido 4C</td></tr>
+        <tr><td class="k">Registro público <span class="small">(peticiones + nuevos)</span></td><td>04 · CRM Pastoral</td><td>La puerta de entrada de cada persona. Es el dato que hace posible medir la conversión del embudo</td></tr>
+        <tr><td class="k">Consejería <span class="small">(casos + tópicos)</span></td><td>07 · Consejería</td><td>El histórico reservado. Un caso sin su antecedente obliga al consejero a empezar de cero</td></tr>
+        <tr><td class="k">Cursos <span class="small">(formación y eventos)</span></td><td>09 · Formación</td><td>Inscripciones, avance y certificados emitidos, con cupos y valores donde los haya</td></tr>
+        <tr><td class="k">Actividades <span class="small">(bitácora polimórfica)</span></td><td>11 · Línea de tiempo</td><td><strong>La pieza más valiosa del volcado.</strong> Es la memoria de la relación con cada persona; no existe forma de reconstruirla</td></tr>
+        <tr><td class="k">Solicitudes <span class="small">(mesa de servicio)</span></td><td>Plataforma · transversal</td><td>Tickets abiertos que no pueden quedar huérfanos el fin de semana del corte</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card acc rv">
+    <p><strong>Los módulos de chat y correo de la plataforma actual no están habilitados en esta instancia</strong> — se verificó y responden con error. No hay histórico de mensajería que migrar, lo que simplifica el alcance y conviene dejarlo escrito para que nadie lo busque en la semana 7.</p>
+  </div>
+</section>
+
+<!-- ============ 07 LO QUE NO TIENE ============ -->
+<section class="slide">
+  <span class="eyebrow rv">El hallazgo que condiciona el calendario</span>
+  <h2 class="rv">Lo que la plataforma actual no tiene — y hay que pedir aparte</h2>
+  <p class="lead rv">Cinco esquemas no tienen origen digital en la plataforma que se va a reemplazar. Y no son los cinco menos importantes: entre ellos están <strong>los dos dominios más sensibles del sistema</strong>. Esta es la parte de la migración que no depende de una exportación, sino de personas y decisiones.</p>
+  <div class="g g3 rv">
+    <div class="card dgr">
+      <span class="tag r">N3 · 11 tablas</span>
+      <h3>08 · Aportes</h3>
+      <p>Diezmos, ofrendas, pactos y proyectos. No existe módulo de aportes en la plataforma actual: el dato vive en tesorería y en el sistema contable corporativo, en formatos distintos por sede.</p>
+      <p class="small"><strong>Riesgo:</strong> es el dato cuya suma debe cuadrar <strong>al peso</strong> en la reconciliación. Si llega tarde, retrasa la compuerta de migración.</p>
+    </div>
+    <div class="card dgr">
+      <span class="tag r">N4 · 9 tablas</span>
+      <h3>06 · RocaKids</h3>
+      <p>Niños, acudientes, parentesco, autorizaciones y código de entrega. Sin módulo de menores en el origen, esto sale de las planillas y del sistema propio del ministerio.</p>
+      <p class="small"><strong>Riesgo:</strong> la base rechaza a todo menor sin acudiente. Hay que medir hoy cuántos registros están incompletos, no en la semana 9.</p>
+    </div>
+    <div class="card acc">
+      <span class="tag m">N2 · 7 tablas</span>
+      <h3>05 · Asistencia</h3>
+      <p>Conteos por servicio y entradas por persona. La plataforma actual registra actividades, pero no el check-in dominical.</p>
+      <p class="small"><strong>Decisión pendiente:</strong> probablemente no hay histórico que traer. Ver la lámina 14 — puede empezar en cero sin costo.</p>
+    </div>
+    <div class="card acc">
+      <span class="tag m">N2–N3 · 12 tablas</span>
+      <h3>10 · Talento y voluntariado</h3>
+      <p>Empleados, contratos, equipos operativos y quién sirve en qué. Separado de lo pastoral por diseño.</p>
+      <p class="small"><strong>Riesgo:</strong> hoy la frontera entre «empleado» y «voluntario» suele estar solo en la cabeza de alguien. Hay que declararla.</p>
+    </div>
+    <div class="card acc">
+      <span class="tag m">N1 · 9 tablas</span>
+      <h3>01 · Organización</h3>
+      <p>Las 36 sedes con su ficha completa, qué ministerios están activos en cada una, y el organigrama por sede.</p>
+      <p class="small"><strong>Bloqueante:</strong> es la etapa 1. Ninguna fila puede cargarse antes de que exista su sede.</p>
+    </div>
+    <div class="card">
+      <h3>Por qué esto importa tanto</h3>
+      <p>Una exportación se pide una vez y llega. Estos cinco dependen de que alguien reúna información dispersa y tome decisiones. <strong>Históricamente es aquí donde se pierden las semanas</strong>, y por eso las peticiones 2 a 5 se abren en paralelo desde la semana 1, no cuando el backend esté listo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 08 LO QUE NO SE PIDE ============ -->
+<section class="slide">
+  <span class="eyebrow rv">Fuera de la petición</span>
+  <h2 class="rv">Lo que no se pide, porque se declara</h2>
+  <div class="g gA rv">
+    <div class="card">
+      <span class="tag">02 · Identidad y acceso · 11 tablas</span>
+      <h3>Los permisos no se migran: se deciden</h3>
+      <p>La plataforma actual distingue esencialmente entre administrador y miembro. El sistema nuevo trabaja con <strong>14 roles</strong>, y un permiso efectivo es la combinación de cuatro condiciones: <strong>rol × alcance × nivel de sensibilidad × vigencia</strong>. Eso no existe en el origen y no se puede deducir de un volcado.</p>
+      <p>Por eso la matriz de permisos es <strong>una entrada del proyecto, no un resultado</strong>: se produce en un taller de tres horas con la Dirección General en la semana 1, y queda firmada. Es la única pieza de esta lista que no admite aproximación: de ella depende quién puede ver un diezmo, una nota pastoral o la ficha de un menor.</p>
+    </div>
+    <div class="g rv">
+      <div class="card acc">
+        <span class="tag m">Entrada · semana 1</span>
+        <h3>Taller de matriz de permisos</h3>
+        <p class="small">Tres horas. Dirección General. Produce el documento firmado que abre la primera compuerta del proyecto.</p>
+      </div>
+      <div class="card">
+        <h3>Los 14 roles a definir</h3>
+        <p class="small">Pastor Director General · Pastor Congregacional · Director de Ministerio · Coordinador · Líder de grupo · Consejero · Maestro RocaKids · Tesorería · Contabilidad · Talento Humano · Secretaría · Miembro · Acudiente · Integración técnica.</p>
+      </div>
+      <div class="card ok">
+        <h3>Lo que el taller resuelve</h3>
+        <p class="small">Para cada rol: hasta dónde llega su alcance (organización, sede, ministerio, grupo, caso propio) y a qué nivel de dato accede. Y las dos preguntas que hoy no tienen respuesta escrita: quién puede ver el aporte por persona, y quién puede exportar datos de menores.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 09 PETICIÓN 1 ============ -->
+<section class="slide">
+  <span class="eyebrow rv">Petición 1 · Administración de la plataforma actual · semana 1</span>
+  <h2 class="rv">El volcado: seis requisitos, ninguno negociable</h2>
+  <p class="lead rv">Esta es la petición de la que dependen seis esquemas y el dimensionamiento de todo el calendario. Verificar que la plataforma puede entregarlo <strong>no cuesta dinero y toma unas horas</strong>, y decide si la migración son siete semanas automáticas o diez asistidas.</p>
+  <div class="g g3 rv">
+    <div class="card"><span class="num">01</span><h3>Crudo, no maquetado</h3><p>Una tabla por archivo, con sus nombres de campo originales. No informes, no hojas con formato, no resúmenes. Lo que se necesita es una copia fiel, no una presentación.</p></div>
+    <div class="card"><span class="num">02</span><h3>Con el identificador interno</h3><p>El número de registro de cada fila en el sistema de origen. Es lo que permite responder «esta persona vino del registro 48211» y reconciliar cuantas veces haga falta. <strong>Sin esto la migración no es auditable.</strong></p></div>
+    <div class="card"><span class="num">03</span><h3>Completo, incluidos inactivos</h3><p>Personas retiradas, grupos cerrados, cursos antiguos y registros marcados como borrados. Filtrar en el origen destruye información que después se echa de menos.</p></div>
+    <div class="card"><span class="num">04</span><h3>Con las fechas originales</h3><p>Creación, actualización y, sobre todo, <strong>la fecha de cada consentimiento</strong>. Es un requisito legal, no una comodidad técnica.</p></div>
+    <div class="card"><span class="num">05</span><h3>Con diccionario de datos</h3><p>Qué significa cada campo y cada código. Un campo llamado <span class="mono">est_2</span> con valores 1 a 7 no se puede mapear adivinando, y adivinar mal es lo que produce una migración que «cuadra» pero está mal.</p></div>
+    <div class="card acc"><span class="num">06</span><h3>Repetible</h3><p>Debe poder solicitarse otra vez el fin de semana del corte, para arrastrar lo que ocurrió durante la doble operación. Una exportación que solo se puede pedir una vez obliga a congelar el sistema durante semanas.</p></div>
+  </div>
+  <div class="card dgr rv">
+    <h3>Si la respuesta es que no se puede exportar así</h3>
+    <p>No es un bloqueo del proyecto, pero sí un cambio de plan que hay que conocer en la semana 1: se pasa a extracción asistida, la pista de backend se alarga de siete a diez semanas y el costo del período de doble operación aumenta. <strong>Lo que no se puede es descubrirlo en la semana 7.</strong></p>
+  </div>
+</section>
+
+<!-- ============ 10 PETICIÓN 2 ============ -->
+<section class="slide">
+  <span class="eyebrow rv">Petición 2 · Tesorería y Contabilidad · semana 2</span>
+  <h2 class="rv">Aportes: el dato que debe cuadrar al peso</h2>
+  <div class="g gB rv">
+    <div class="g rv">
+      <div class="card dgr"><span class="tag r">Nivel N3</span><h3>Por qué es distinto a todo lo demás</h3><p class="small">Es el único dominio cuyo criterio de aceptación es aritmético: la suma migrada debe ser <strong>idéntica al peso</strong> a la del origen. No admite «casi». Y es el dato con cifrado por columna, enmascarado por defecto y bitácora de lectura.</p></div>
+      <div class="card"><h3>Qué hace posible</h3><p class="small">Que el Pastor Director General vea el aporte por persona, que Tesorería vea el agregado de su sede sin ver el detalle, y que el pastor congregacional vea únicamente <strong>si una familia aporta y con qué frecuencia</strong>, nunca el monto. Los tres usan la misma pantalla: cambia el permiso, no el código.</p></div>
+    </div>
+    <div class="tw rv">
+      <table>
+        <thead><tr><th>Qué se pide</th><th>Por qué</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Histórico de aportes por persona</td><td>Con fecha, tipo (diezmo / ofrenda / pacto / proyecto), monto, moneda, medio de pago y sede</td></tr>
+          <tr><td class="k">La identificación de quien aporta</td><td>Documento o el identificador que se use hoy. Es lo que enlaza el aporte con la ficha de persona; sin él el registro entra como anónimo</td></tr>
+          <tr><td class="k">Aportes anónimos, marcados como tales</td><td>Deben migrarse igual: entran en la suma de control y en los totales de la sede</td></tr>
+          <tr><td class="k">Fondos y proyectos vigentes</td><td>Para que un aporte dirigido no se convierta en ofrenda general al migrar</td></tr>
+          <tr><td class="k">Correspondencia con el sistema contable</td><td>Qué cuenta contable corresponde a cada tipo de aporte, para la integración posterior</td></tr>
+          <tr><td class="k">Cierre de control por sede y mes</td><td>La suma oficial contra la cual se reconcilia. Es el único juez de si la migración quedó bien</td></tr>
+          <tr><td class="k">Hasta dónde traer el histórico</td><td><strong>Decisión de la organización.</strong> La retención contable exigible es de 10 años; traer más solo tiene sentido si se va a consultar</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card acc rv"><p class="small">⚠️ Esta petición se <strong>planifica</strong> en la semana 2 y se <strong>entrega</strong> cuando la compuerta legal esté abierta. Lo que sí puede hacerse de inmediato es confirmar en qué formato existe y quién lo custodia.</p></div>
+</section>
+
+<!-- ============ 11 PETICIÓN 3 ============ -->
+<section class="slide">
+  <span class="eyebrow rv">Petición 3 · Dirección del ministerio de niños · semana 3</span>
+  <h2 class="rv">Menores: la petición más delicada del proyecto</h2>
+  <div class="g gA rv">
+    <div class="tw rv">
+      <table>
+        <thead><tr><th>Qué se pide</th><th>Por qué</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Ficha de cada niño</td><td>Nombre, fecha de nacimiento y sede. La edad no se almacena: se deriva, para que nunca quede desactualizada</td></tr>
+          <tr><td class="k">Acudiente, con parentesco</td><td><strong>Obligatorio.</strong> La base rechaza a todo menor sin acudiente asociado; no es una validación de pantalla, es una restricción del motor</td></tr>
+          <tr><td class="k">Autorización legal del acudiente</td><td>Quién puede recoger al niño y quién no. Es el insumo de la entrega con doble verificación</td></tr>
+          <tr><td class="k">Autorizaciones de fotografía firmadas</td><td>Sin la autorización, la fotografía no puede almacenarse. Si no existen firmadas, no se migran las fotos</td></tr>
+          <tr><td class="k">Salones y etapas del ministerio</td><td>Con sus rangos, para asignar al maestro el alcance correcto sobre su salón y solo sobre su salón</td></tr>
+          <tr><td class="k">Condiciones médicas y alergias</td><td>Dato de acceso restringido dentro de un dominio ya restringido. Se pide, pero se carga cifrado y enmascarado</td></tr>
+          <tr><td class="k">Histórico de asistencia, si existe</td><td>Opcional. Si está en planillas de papel, la recomendación es no digitalizarlo: ver la lámina 14</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="g rv">
+      <div class="card dgr"><span class="tag r">Nivel N4 · el más alto</span><h3>Lo que este nivel activa solo</h3><p class="small">Acudiente obligatorio · doble verificación en la entrega · fotografía solo con autorización firmada · <strong>exportación masiva prohibida</strong> · alerta al comité ante cualquier acceso anómalo. Retención hasta dos años después de que el menor cumpla 18, y entonces reclasifica.</p></div>
+      <div class="card acc"><h3>La medición que hay que hacer ya</h3><p class="small">Antes de prometer una fecha: <strong>cuántos menores registrados hoy no tienen acudiente identificado.</strong> Ese número, y no otro, determina cuánto trabajo manual trae consigo esta migración. Es una consulta de una tarde y evita una sorpresa en la semana 9.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 12 PETICIONES 4 Y 5 ============ -->
+<section class="slide">
+  <span class="eyebrow rv">Peticiones 4 y 5</span>
+  <h2 class="rv">Estructura de la organización, y quién sirve dónde</h2>
+  <div class="g g2 rv">
+    <div class="card">
+      <span class="tag m">Petición 4 · Dirección General · semana 1 · bloqueante</span>
+      <h3>01 · Organización — las 36 sedes</h3>
+      <ul class="m">
+        <li><strong>Ficha de cada sede:</strong> nombre, ciudad, país, zona horaria y moneda. Las tres últimas no son burocracia: gobiernan a qué hora corre el domingo de cada sede y en qué moneda se registra un aporte.</li>
+        <li><strong>Qué ministerios están activos en cada sede.</strong> El catálogo es global, la activación es local: una sede pequeña puede tener cinco ministerios y la sede madre quince, sin duplicar catálogo.</li>
+        <li><strong>El organigrama por sede,</strong> con el responsable de cada ministerio y equipo. Es lo que provisiona los accesos.</li>
+        <li><strong>Las sedes internacionales, señaladas.</strong> Determinan qué parte del sistema queda bajo el marco europeo además del colombiano.</li>
+      </ul>
+      <p class="small">Es la etapa 1 de la secuencia: sin sede no hay dónde anclar ninguna fila. Por eso es la única petición marcada como bloqueante.</p>
+    </div>
+    <div class="card">
+      <span class="tag m">Petición 5 · Talento Humano · semana 4</span>
+      <h3>10 · Talento y voluntariado</h3>
+      <ul class="m">
+        <li><strong>La frontera entre empleado y voluntario.</strong> Hoy suele ser conocimiento tácito; el sistema necesita que esté declarada, porque separa un dominio N3 de uno N2.</li>
+        <li><strong>Empleados con su vínculo contractual</strong> y el área a la que pertenecen, sin mezclar con lo pastoral.</li>
+        <li><strong>Equipos operativos</strong> — alabanza, técnica, ujieres, creativo — y quién sirve en cada uno.</li>
+        <li><strong>Quién sirve en qué ministerio,</strong> que es un dato distinto de a qué ministerio pertenece una persona. Una misma persona puede asistir a uno y servir en otro.</li>
+      </ul>
+      <p class="small">No es bloqueante para el arranque, pero sí para que el sistema pueda responder «quién está sirviendo hoy» — que es una de las preguntas que motivó el proyecto.</p>
+    </div>
+  </div>
+  <div class="card rv">
+    <h3>Un patrón común a las dos</h3>
+    <p>Ninguna de estas dos peticiones se resuelve exportando algo: se resuelven <strong>escribiendo algo que hoy nadie ha escrito</strong>. Por eso se abren temprano y con un responsable con nombre, aunque el backend que las va a recibir todavía no exista.</p>
+  </div>
+</section>
+
+<!-- ============ 13 COMPUERTA LEGAL ============ -->
+<section class="slide">
+  <span class="eyebrow rv">Compuerta · hallazgo H-02</span>
+  <h2 class="rv">Qué se puede pedir hoy y qué tiene que esperar</h2>
+  <p class="lead rv">Solicitar información no es lo mismo que cargarla. La primera parte del mapa puede avanzar de inmediato; la segunda exige instrumentos jurídicos vigentes. Esta es la línea, dibujada sin ambigüedad.</p>
+  <div class="tw rv">
+    <table>
+      <thead><tr><th>Nivel</th><th>Se puede solicitar</th><th>Se puede cargar con datos reales</th><th>Condición previa</th></tr></thead>
+      <tbody>
+        <tr><td class="k">N0 · Público</td><td><span class="dot v"></span>Ya</td><td><span class="dot v"></span>Ya</td><td>Ninguna</td></tr>
+        <tr><td class="k">N1 · Interno <span class="small">estructura, catálogos</span></td><td><span class="dot v"></span>Ya</td><td><span class="dot v"></span>Ya</td><td>Ninguna</td></tr>
+        <tr><td class="k">N2 · Personal <span class="small">personas, contacto, grupos</span></td><td><span class="dot v"></span>Ya</td><td><span class="dot a"></span>Semana 7</td><td>Política de tratamiento y aviso de privacidad vigentes</td></tr>
+        <tr><td class="k">N3 · Sensible <span class="small">aportes, notas, consejería</span></td><td><span class="dot a"></span>Se planifica ya</td><td><span class="dot r"></span>Semana 7</td><td>+ registro de bases ante la SIC radicado · cifrado por columna verificado en la compuerta técnica</td></tr>
+        <tr><td class="k">N4 · Menores</td><td><span class="dot a"></span>Se planifica ya</td><td><span class="dot r"></span>Semana 7</td><td>+ autorización específica del acudiente · autorización de imagen firmada para fotografías</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="g g3 rv">
+    <div class="card acc"><h3>La trampa de la «copia de prueba»</h3><p class="small">El ensayo de migración de las semanas 4 a 6 corre sobre una copia. Pero una copia de datos reales sigue siendo datos reales: <strong>los niveles N3 y N4 deben ir anonimizados</strong> en ese ensayo. El ambiente de preproducción opera con datos anonimizados por requisito, no por prudencia.</p></div>
+    <div class="card"><h3>Qué avanza mientras tanto</h3><p class="small">Todo lo que no depende de los instrumentos: verificar la exportación, el taller de permisos, la ficha de las sedes, el diccionario de datos, el mapeo campo por campo y la medición de menores sin acudiente. <strong>La compuerta legal no detiene el proyecto; solo detiene la carga.</strong></p></div>
+    <div class="card dgr"><h3>El reloj que no controlamos</h3><p class="small">El registro ante la autoridad de protección de datos es un trámite externo con tiempos propios. Es la razón por la que la petición de instrumentos jurídicos se abre en la semana 2 y no cuando el backend esté listo: es el único elemento del calendario que no se puede comprimir con más esfuerzo.</p></div>
+  </div>
+</section>
+
+<!-- ============ 14 QUÉ NO SE MIGRA ============ -->
+<section class="slide">
+  <span class="eyebrow rv">Decisión de la organización</span>
+  <h2 class="rv">No todo se migra: tres destinos posibles</h2>
+  <p class="lead rv">La pregunta correcta no es «¿qué podemos traer?» sino «¿qué vale la pena traer?». Cada fila migrada es una fila que hay que perfilar, mapear, reconciliar y proteger durante toda la vida del sistema. Traer de más encarece la operación y aumenta la superficie de riesgo legal.</p>
+  <div class="g g3 rv">
+    <div class="card ok"><span class="tag v">Destino 1</span><h3>Se migra</h3><p>Todo lo que el sistema necesita para operar desde el primer domingo: personas activas, sus contactos y consentimientos, hogares, grupos vigentes, formación, casos de consejería abiertos, y los aportes dentro del plazo de retención contable.</p><p class="small"><strong>Criterio:</strong> ¿alguien va a consultarlo o a operar con ello?</p></div>
+    <div class="card acc"><span class="tag m">Destino 2</span><h3>Se archiva</h3><p>Histórico antiguo que hay que conservar por obligación pero que nadie consulta a diario. Se preserva en un archivo consultable y auditable, fuera de la base operativa.</p><p class="small"><strong>Criterio:</strong> obligación de conservar, sin necesidad de operar. La plataforma actual queda además en solo lectura durante 90 días tras el corte.</p></div>
+    <div class="card"><span class="tag">Destino 3</span><h3>Empieza en cero</h3><p>Lo que hoy vive en papel o no existe de forma estructurada. El caso claro es la <strong>asistencia dominical</strong>: digitalizar planillas de años anteriores cuesta mucho y aporta poco, porque la analítica de recurrencia se vuelve útil con pocos meses de datos nuevos.</p><p class="small"><strong>Criterio:</strong> el costo de digitalizar supera el valor de consultarlo.</p></div>
+  </div>
+  <div class="g g2 rv">
+    <div class="card"><h3>Las tres decisiones que hay que tomar, con nombre y fecha</h3><ol><li><strong>Profundidad del histórico de aportes</strong> — Dirección Financiera. Determina el volumen del dominio más sensible.</li><li><strong>Qué hacer con las personas inactivas desde hace años</strong> — Dirección General. Migrar, archivar o suprimir; la Ley marca un plazo de retención tras la inactividad.</li><li><strong>Si se digitaliza algún histórico en papel</strong> — Dirección General. La recomendación técnica es no hacerlo.</li></ol></div>
+    <div class="card ok"><h3>Lo que esta disciplina compra</h3><p>Una base más pequeña es más barata de operar, más rápida de reconciliar y más fácil de defender ante una auditoría. Y hace que el criterio de aceptación —cero duplicados sin resolver, sumas idénticas al peso— sea alcanzable en lugar de aspiracional.</p></div>
+  </div>
+</section>
+
+<!-- ============ 15 CRITERIOS ============ -->
+<section class="slide">
+  <span class="eyebrow rv">Aceptación</span>
+  <h2 class="rv">Cuándo se da por buena la entrega</h2>
+  <p class="lead rv">Estos criterios ya están aprobados como condición del corte. Se enumeran aquí porque son, en realidad, la especificación de la petición: <strong>lo que se pide es exactamente lo que hace falta para cumplirlos.</strong></p>
+  <div class="g g3 rv">
+    <div class="card ok"><span class="num">01</span><h3>100 % de personas activas migradas</h3><p class="small">Contadas contra el origen, no estimadas. Exige el volcado completo y el identificador interno.</p></div>
+    <div class="card ok"><span class="num">02</span><h3>Cero duplicados sin resolver</h3><p class="small">No cero duplicados: cero <em>sin resolver</em>. Cada fusión queda registrada con autor y es reversible durante 90 días.</p></div>
+    <div class="card ok"><span class="num">03</span><h3>Sumas de aportes idénticas al peso</h3><p class="small">Exige el cierre de control por sede y mes de la petición 2. Sin esa cifra oficial no hay contra qué comparar.</p></div>
+    <div class="card ok"><span class="num">04</span><h3>30 fichas auditadas a mano</h3><p class="small">Revisión humana contra el origen, campo por campo. Es lo que detecta un mapeo mal interpretado que las sumas no revelan.</p></div>
+    <div class="card ok"><span class="num">05</span><h3>Todo menor con acudiente asociado</h3><p class="small">Exige la petición 3 completa. Es el criterio con más probabilidad de fallar si la medición no se hace temprano.</p></div>
+    <div class="card ok"><span class="num">06</span><h3>Consentimientos con su fecha original</h3><p class="small">Exige el requisito 4 del volcado. No se puede reconstruir después ni sustituir por una recaptura.</p></div>
+  </div>
+  <div class="card acc rv"><h3>Si la reconciliación no cuadra</h3><p>Se vacía la carga, se corrige el mapeo y se repite. El proceso es idempotente: puede correrse las veces que haga falta sin duplicar una sola fila. Y hasta el último paso del corte, volver atrás cuesta menos de treinta minutos, porque la plataforma actual nunca se apaga ni se borra. <strong>El riesgo del corte es, por diseño, casi nulo — siempre que la petición haya llegado completa.</strong></p></div>
+</section>
+
+<!-- ============ 16 CALENDARIO ============ -->
+<section class="slide">
+  <span class="eyebrow rv">Ejecución</span>
+  <h2 class="rv">Calendario de la petición</h2>
+  <div class="tw rv">
+    <table>
+      <thead><tr><th>Sem.</th><th>Qué se solicita</th><th>A quién</th><th>Estado</th><th>Qué desbloquea</th></tr></thead>
+      <tbody>
+        <tr><td class="n">1</td><td class="k">Verificación de la exportación</td><td>Administración de la plataforma actual</td><td><span class="dot r"></span>Prioritario</td><td>El dimensionamiento de todo el calendario: 7 semanas o 10</td></tr>
+        <tr><td class="n">1</td><td class="k">Matriz de permisos de los 14 roles</td><td>Dirección General</td><td><span class="dot r"></span>Entrada</td><td>La primera compuerta del proyecto. Sin ella no arranca</td></tr>
+        <tr><td class="n">1</td><td class="k">Ficha de las 36 sedes y activación de ministerios</td><td>Dirección General</td><td><span class="dot r"></span>Bloqueante</td><td>La etapa 1: sin sede no se puede cargar nada</td></tr>
+        <tr><td class="n">2</td><td class="k">Instrumentos jurídicos y registro ante la SIC</td><td>Área Legal</td><td><span class="dot a"></span>Reloj externo</td><td>La carga de datos reales de cualquier nivel</td></tr>
+        <tr><td class="n">2</td><td class="k">Formato y custodia del histórico de aportes</td><td>Tesorería y Contabilidad</td><td><span class="dot a"></span>Planificación</td><td>El dominio con el criterio de aceptación aritmético</td></tr>
+        <tr><td class="n">3</td><td class="k">Medición de menores sin acudiente</td><td>Dirección del ministerio de niños</td><td><span class="dot a"></span>Medición</td><td>Saber cuánto trabajo manual trae la migración de menores</td></tr>
+        <tr><td class="n">3</td><td class="k">Volcado completo para el ensayo</td><td>Administración de la plataforma actual</td><td><span class="dot a"></span>Anonimizado en N3 y N4</td><td>El perfilado y el mapeo campo por campo</td></tr>
+        <tr><td class="n">4</td><td class="k">Frontera empleado / voluntario y equipos</td><td>Talento Humano</td><td><span class="dot g"></span>No bloqueante</td><td>La pregunta «quién está sirviendo hoy»</td></tr>
+        <tr><td class="n">4–5</td><td class="k">Mapeo campo por campo, para aprobación</td><td>Se produce aquí · aprueba la organización</td><td><span class="dot a"></span>Aprobación</td><td>La carga: nada se carga con un mapeo no aprobado</td></tr>
+        <tr><td class="n">5</td><td class="k">Decisiones de alcance del histórico</td><td>Dirección General y Financiera</td><td><span class="dot a"></span>Decisión</td><td>El volumen final de la base y su costo de operación</td></tr>
+        <tr><td class="n">7</td><td class="k">Entrega de datos reales, todos los niveles</td><td>Todos los anteriores</td><td><span class="dot g"></span>Tras la compuerta legal</td><td>La migración sobre datos reales y la doble operación</td></tr>
+        <tr><td class="n">Corte</td><td class="k">Segundo volcado incremental</td><td>Administración de la plataforma actual</td><td><span class="dot g"></span>Fin de semana del corte</td><td>Arrastrar lo ocurrido durante la doble operación</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="small rv">Las peticiones 2 a 5 se abren en paralelo desde el primer mes aunque el backend que las recibirá no exista todavía: reunir información dispersa y tomar decisiones de gobierno consume más tiempo que escribir el código que la va a leer.</p>
+</section>
+
+<!-- ============ 17 RESUMEN ============ -->
+<section class="slide">
+  <span class="eyebrow rv">Resumen</span>
+  <h2 class="rv">El mapa en una hoja</h2>
+  <div class="g g3 rv">
+    <div class="card"><span class="kpi m">6</span><h3>esquemas de un solo volcado</h3><p class="small">Persona, grupos, CRM, consejería, formación y línea de tiempo salen de la plataforma actual con una sola petición bien hecha.</p></div>
+    <div class="card"><span class="kpi r">5</span><h3>esquemas sin origen digital</h3><p class="small">Organización, asistencia, RocaKids, aportes y talento hay que pedírselos a personas. Entre ellos, los dos dominios más sensibles del sistema.</p></div>
+    <div class="card"><span class="kpi">1</span><h3>esquema que no se pide</h3><p class="small">Identidad y permisos no se migran: se deciden en un taller de tres horas y se firman. Es entrada del proyecto, no resultado.</p></div>
+  </div>
+  <div class="g g2 rv">
+    <div class="card acc">
+      <h3>Las tres cosas que hay que hacer esta semana</h3>
+      <ol>
+        <li><strong>Verificar si la plataforma actual puede exportar así.</strong> Unas horas, sin desembolso, y decide si la migración son siete semanas o diez.</li>
+        <li><strong>Agendar el taller de permisos.</strong> Tres horas con Dirección General; abre la primera compuerta.</li>
+        <li><strong>Contar cuántos menores no tienen acudiente registrado.</strong> Una consulta, y evita la única sorpresa capaz de detener el corte.</li>
+      </ol>
+    </div>
+    <div class="card ok">
+      <h3>El principio que gobierna todo el mapa</h3>
+      <p>Se pide poco, se pide crudo y se pide en orden. Cada fila que entra conserva de dónde vino, de modo que cualquier cruce posterior es barato y cualquier error es reversible.</p>
+      <p>Lo que no se puede arreglar después es el dato que nunca se pidió: <strong>el identificador de origen, la fecha del consentimiento y el acudiente del menor.</strong> Esos tres son los que hay que asegurar ahora.</p>
+    </div>
+  </div>
+  <div class="sig rv">
+    <div><b>Documento 4 de 4</b><span>Mapa de datos solicitados · Fase 1</span></div>
+    <div><b>Antecede a</b><span>Documento 1 · Arquitectura de backend, datos y seguridad</span></div>
+    <div><b>Se ejecuta con</b><span>Documento 3 · Plan de implementación, semanas 1 a 7</span></div>
+  </div>
+</section>
+
+</div></div>
+
+<div id="bar">
+  <span class="wm">CasaRoca System</span>
+  <span class="doc">Doc 4/4 · Mapa de Datos Solicitados · Fase 1</span>
+  <div id="prog"><i></i></div>
+  <span id="cnt">01 / 17</span>
+  <div class="nav"><button id="pv" aria-label="Anterior">‹</button><button id="nx" aria-label="Siguiente">›</button></div>
+</div>
+
+<script>
+(function(){
+  document.documentElement.classList.add('js');
+  var track=document.getElementById('track'),
+      S=Array.prototype.slice.call(document.querySelectorAll('.slide')),
+      pv=document.getElementById('pv'), nx=document.getElementById('nx'),
+      cnt=document.getElementById('cnt'), pr=document.querySelector('#prog i'), i=0;
+  function pad(n){return (n<10?'0':'')+n}
+  function go(n){
+    i=Math.max(0,Math.min(S.length-1,n));
+    track.style.transform='translateX('+(-i*100)+'vw)';
+    S.forEach(function(s,k){s.classList.toggle('on',k===i)});
+    cnt.textContent=pad(i+1)+' / '+pad(S.length);
+    pr.style.width=((i+1)/S.length*100)+'%';
+    pv.disabled=(i===0); nx.disabled=(i===S.length-1);
+    if(location.hash!=='#'+(i+1)) history.replaceState(null,'','#'+(i+1));
+  }
+  nx.onclick=function(){go(i+1)}; pv.onclick=function(){go(i-1)};
+  document.addEventListener('keydown',function(e){
+    var k=e.key;
+    if(k==='ArrowRight'||k==='PageDown'||k===' '||k==='Enter'){e.preventDefault();go(i+1)}
+    else if(k==='ArrowLeft'||k==='PageUp'){e.preventDefault();go(i-1)}
+    else if(k==='Home'){e.preventDefault();go(0)}
+    else if(k==='End'){e.preventDefault();go(S.length-1)}
+  });
+  var x0=null,y0=null;
+  document.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+  document.addEventListener('touchend',function(e){
+    if(x0===null)return;
+    var dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0;
+    if(Math.abs(dx)>58&&Math.abs(dx)>Math.abs(dy)*1.5)go(dx<0?i+1:i-1);
+    x0=null;
+  },{passive:true});
+  var lock=false;
+  document.addEventListener('wheel',function(e){
+    if(Math.abs(e.deltaX)<Math.abs(e.deltaY)*1.4||lock)return;
+    lock=true; go(e.deltaX>0?i+1:i-1); setTimeout(function(){lock=false},640);
+  },{passive:true});
+  window.addEventListener('resize',function(){track.style.transform='translateX('+(-i*100)+'vw)'});
+  var h=parseInt((location.hash||'').replace('#',''),10);
+  go(isNaN(h)?0:h-1);
+})();
+</script>
+</body>
+</html>

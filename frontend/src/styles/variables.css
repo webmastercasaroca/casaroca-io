@@ -1,0 +1,85 @@
+/* ============================================================
+   variables.css · Diccionario global (Design Tokens)
+   Estructura del documento «Arquitectura Fronted y Backed» v1.0
+   del Drive 100p (Jhon Chávez, 1 sep 2026).
+
+   ⛔ Ningún módulo escribe un color, una fuente o un tamaño suelto:
+      todo sale de aquí. Cambiar la marca es cambiar este archivo.
+   Los valores son los de la paleta institucional que ya usa el
+   prototipo (fase0-prototipo/assets/css/tokens.css): azul de
+   confianza + mostaza de calidez.
+   ============================================================ */
+
+/* ⛔ 20 sep 2026 · Las tres reglas @font-face de Geomanist vivian AQUI, y
+   los archivos no estan en el repositorio (es una fuente comercial de
+   Atipo Foundry y la licencia es de la iglesia). Resultado: TRES 404 en
+   cada carga de la pagina. No rompian nada -- la pila caia a Inter y al
+   sistema -- pero llenaban la consola de errores, y una consola con
+   errores de adorno es una consola donde el error de VERDAD no se ve.
+
+   Ahora viven en `marca-geomanist.css`, que NO se enlaza por omision. El
+   dia que la iglesia ponga sus archivos en /fonts, se añade una linea en
+   `index.html` y la marca aparece. Mientras tanto, cero peticiones fallidas.
+
+   ⛔ Y no se cargan fuentes desde Google Fonts ni desde ningun tercero: en
+   un sistema con datos de menores, cada tipografia remota es una peticion
+   del navegador de un usuario a un servidor ajeno, con su IP. La pila cae a
+   fuentes del sistema, que estan en todas partes y no cuentan nada. */
+
+:root {
+  /* ── Marca ─────────────────────────────────────────── */
+  --cr-azul-950: #071D44;
+  --cr-azul-900: #0A2A5E;
+  --cr-azul-700: #134291;   /* primario */
+  --cr-azul-500: #2A66C4;
+  --cr-azul-100: #E4ECFA;
+  --cr-azul-50:  #F1F6FD;
+  --cr-mostaza-700: #A86E12;
+  --cr-mostaza-500: #E3A52C; /* acento */
+  --cr-mostaza-100: #FDF4DE;
+
+  /* ── Superficies y texto ───────────────────────────── */
+  --cr-fondo:        #F5F6F8;
+  --cr-superficie:   #FFFFFF;
+  --cr-superficie-2: #F1F2F5;
+  --cr-borde:        #E6E8EE;
+  --cr-borde-fuerte: #D6D9E2;
+  --cr-texto:        #161D2E;
+  --cr-texto-suave:  #58617A;
+  --cr-texto-tenue:  #8A92A6;
+
+  /* ── Estados ───────────────────────────────────────── */
+  --cr-exito: #1E8A55;   --cr-exito-bg: #E5F5EC;
+  --cr-aviso: #B5790F;   --cr-aviso-bg: #FDF4DE;
+  --cr-peligro: #C13A2B; --cr-peligro-bg: #FBEAE7;
+  --cr-info: #1B53AD;    --cr-info-bg: #E4ECFA;
+
+  /* ── Las 4C del recorrido (CRM pastoral) ───────────── */
+  --cr-4c-cuidado:       #2A66C4;
+  --cr-4c-consolidacion: #7E57C2;
+  --cr-4c-crecimiento:   #1E8A55;
+  --cr-4c-compromiso:    #E3A52C;
+
+  /* ── Sensibilidad del dato (N0 a N4) ───────────────── */
+  --cr-n3: #7E57C2;   /* pastoral y financiero sensible */
+  --cr-n4: #C13A2B;   /* menores */
+
+  /* ── Tipografía ────────────────────────────────────── */
+  --cr-fuente: "Geomanist", "Inter", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  --cr-fuente-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --cr-tx-xs: 0.75rem;  --cr-tx-sm: 0.8125rem; --cr-tx-base: 0.9375rem;
+  --cr-tx-md: 1.0625rem; --cr-tx-lg: 1.3125rem; --cr-tx-xl: 1.625rem; --cr-tx-2xl: 2.0625rem;
+  --cr-peso-regular: 400; --cr-peso-medio: 500; --cr-peso-bold: 700;
+  --cr-linea: 1.55;
+
+  /* ── Espaciado (escala de 4 px), radios y sombras ─── */
+  --cr-sp-1: 0.25rem; --cr-sp-2: 0.5rem; --cr-sp-3: 0.75rem; --cr-sp-4: 1rem;
+  --cr-sp-5: 1.5rem;  --cr-sp-6: 2rem;   --cr-sp-8: 3rem;
+  --cr-radio-sm: 9px; --cr-radio-md: 13px; --cr-radio-lg: 18px; --cr-radio-full: 999px;
+  --cr-sombra-sm: 0 1px 2px rgba(13,26,56,.06), 0 1px 3px rgba(13,26,56,.04);
+  --cr-sombra-md: 0 4px 12px -2px rgba(13,26,56,.10), 0 2px 6px -2px rgba(13,26,56,.06);
+  --cr-sombra-lg: 0 18px 38px -10px rgba(13,26,56,.20);
+  --cr-foco: 0 0 0 3px rgba(227,165,44,.50);
+  --cr-transicion: 160ms cubic-bezier(0.4, 0, 0.2, 1);
+  --cr-tactil-min: 44px;
+}

@@ -1,0 +1,156 @@
+/* ============================================================
+   CASA ROCA · CONSEJERÍA — FORMULARIO PÚBLICO DE SOLICITUD
+   Página de cara al miembro. Mobile-first, accesible (WCAG 2.1 AA).
+   Reusa tokens.css + director.css + consejeria.css.
+   ============================================================ */
+
+body.sol { background: var(--blanco-calido); }
+
+.sol-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 18px 14px 64px;
+}
+@media (min-width: 640px) { .sol-wrap { padding: 28px 20px 80px; } }
+
+/* ---------- portada / hero ---------- */
+.sol-hero {
+  background: linear-gradient(135deg, var(--cs-teal-600), var(--cs-teal-900));
+  color: #fff;
+  border-radius: 18px;
+  padding: 22px 20px;
+  box-shadow: var(--cs-sombra);
+  margin-bottom: 16px;
+}
+.sol-hero__logo {
+  width: 46px; height: 46px; border-radius: 12px;
+  background: rgba(255,255,255,.16);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 18px; letter-spacing: .5px; margin-bottom: 12px;
+}
+.sol-hero h1 { font-size: 21px; line-height: 1.25; margin: 0 0 6px; font-weight: 800; }
+.sol-hero p { margin: 0; font-size: 14px; color: rgba(255,255,255,.92); }
+@media (min-width: 640px) { .sol-hero h1 { font-size: 25px; } }
+
+/* ---------- tarjetas de sección ---------- */
+.sol-card {
+  background: var(--superficie, #fff);
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  padding: 18px 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 2px rgba(16,24,40,.04);
+}
+.sol-card--banner { border-top: 5px solid var(--cs-teal); }
+.sol-section-title {
+  font-size: 12px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase;
+  color: var(--cs-teal-800); margin: 0 0 4px;
+}
+.sol-card h2 { font-size: 17px; font-weight: 700; margin: 0 0 4px; color: var(--texto); }
+.sol-card .sol-lead { font-size: 13.5px; color: var(--texto-suave); margin: 0 0 6px; line-height: 1.5; }
+
+/* ---------- preguntas ---------- */
+.sol-q { padding: 14px 0; border-top: 1px solid var(--borde-sutil); }
+.sol-q:first-of-type { border-top: 0; }
+.sol-q__label {
+  display: block; font-size: 14.5px; font-weight: 600; color: var(--texto);
+  margin-bottom: 4px; line-height: 1.45;
+}
+.sol-q__help { font-size: 12.5px; color: var(--texto-suave); margin: 0 0 10px; line-height: 1.45; }
+.sol-q__help.sol-q__help--strong { color: var(--cs-teal-800); font-weight: 600; font-style: italic; }
+.req { color: var(--peligro); font-weight: 700; }
+
+/* opciones (radio / checkbox) como filas táctiles */
+.sol-opt {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 11px 12px; border: 1px solid var(--borde);
+  border-radius: 10px; margin-bottom: 8px; cursor: pointer;
+  font-size: 14px; color: var(--texto); background: #fff;
+  transition: border-color .12s ease, background .12s ease;
+  min-height: 44px;
+}
+.sol-opt:hover { border-color: var(--cs-teal-400); background: var(--cs-teal-50); }
+.sol-opt input { margin-top: 2px; width: 18px; height: 18px; accent-color: var(--cs-teal); flex: 0 0 auto; }
+.sol-opt:has(input:checked) { border-color: var(--cs-teal); background: var(--cs-teal-bg); box-shadow: inset 0 0 0 1px var(--cs-teal); }
+.sol-opt:focus-within { outline: 3px solid var(--cs-teal-200); outline-offset: 2px; }
+.sol-opt span { line-height: 1.4; }
+
+/* grilla de opciones cortas (rango de edad, estado civil) */
+.sol-opts--grid { display: grid; grid-template-columns: 1fr; gap: 0; }
+@media (min-width: 560px) { .sol-opts--grid { grid-template-columns: 1fr 1fr; gap: 0 10px; } }
+
+/* inputs de texto */
+.sol-input, .sol-textarea, .sol-select {
+  width: 100%; border: 1px solid var(--borde-fuerte); border-radius: 10px;
+  padding: 11px 12px; font: inherit; font-size: 14px; color: var(--texto);
+  background: #fff;
+}
+.sol-input:focus, .sol-textarea:focus, .sol-select:focus {
+  outline: none; border-color: var(--cs-teal-400); box-shadow: 0 0 0 3px rgba(20,184,166,.22);
+}
+.sol-textarea { resize: vertical; min-height: 84px; }
+.sol-grid2 { display: grid; grid-template-columns: 1fr; gap: 0; }
+@media (min-width: 560px) { .sol-grid2 { grid-template-columns: 1fr 1fr; gap: 0 14px; } }
+
+/* error inline */
+.sol-q.is-error .sol-q__label { color: var(--peligro); }
+.sol-q.is-error .sol-opt, .sol-q.is-error .sol-input,
+.sol-q.is-error .sol-textarea, .sol-q.is-error .sol-select { border-color: var(--peligro-borde); }
+.sol-err { display: none; font-size: 12.5px; color: var(--peligro); font-weight: 600; margin-top: 6px; }
+.sol-q.is-error .sol-err { display: block; }
+
+/* aviso de emergencia (disclaimer) */
+.sol-alert {
+  background: var(--peligro-bg); border: 1px solid var(--peligro-borde);
+  border-radius: 12px; padding: 14px 16px; margin: 14px 0;
+  font-size: 13.5px; line-height: 1.55; color: #7A2218;
+}
+.sol-alert b { color: var(--peligro); }
+.sol-alert a { color: #7A2218; font-weight: 700; }
+
+.sol-prose { font-size: 14px; line-height: 1.6; color: var(--texto-suave); }
+.sol-prose p { margin: 0 0 10px; }
+
+/* enlaces de consentimiento */
+.sol-consent-block { margin: 8px 0 14px; padding: 12px 14px; background: var(--cs-teal-50); border: 1px solid var(--cs-teal-200); border-radius: 10px; }
+.sol-consent-block h3 { font-size: 13.5px; margin: 0 0 8px; color: var(--cs-teal-800); }
+.sol-consent-block p { margin: 0 0 8px; font-size: 13px; line-height: 1.5; color: var(--texto-suave); }
+.sol-consent-block a { font-weight: 600; word-break: break-word; }
+
+/* botón enviar */
+.sol-actions { margin-top: 18px; }
+.sol-submit {
+  width: 100%; border: 0; border-radius: 12px; padding: 15px 18px;
+  background: var(--cs-teal); color: #fff; font: inherit; font-weight: 700; font-size: 15.5px;
+  cursor: pointer; box-shadow: var(--cs-sombra); min-height: 52px;
+}
+.sol-submit:hover { background: var(--cs-teal-800); }
+.sol-submit:focus-visible { outline: 3px solid var(--cs-teal-200); outline-offset: 3px; }
+.sol-submit[disabled] { opacity: .6; cursor: not-allowed; }
+.sol-btn-ghost {
+  display: inline-block; background: transparent; border: 1px solid var(--borde-fuerte);
+  border-radius: 10px; padding: 12px 18px; font: inherit; font-weight: 600; font-size: 14px;
+  color: var(--texto); cursor: pointer; min-height: 44px;
+}
+
+/* barra de progreso (riesgo no se muestra; solo guía visual de avance) */
+.sol-note { font-size: 12px; color: var(--texto-tenue); text-align: center; margin-top: 10px; }
+
+/* ---------- pantalla de éxito ---------- */
+.sol-done { text-align: center; padding: 12px 8px 8px; }
+.sol-done__check {
+  width: 72px; height: 72px; border-radius: 50%; margin: 8px auto 16px;
+  background: var(--cs-teal-bg); color: var(--cs-teal); display: flex; align-items: center; justify-content: center;
+  font-size: 38px; border: 2px solid var(--cs-teal-200);
+}
+.sol-done h1 { font-size: 22px; margin: 0 0 8px; color: var(--texto); }
+.sol-done p { font-size: 14.5px; color: var(--texto-suave); line-height: 1.6; max-width: 520px; margin: 0 auto 10px; }
+.sol-done__pill {
+  display: inline-block; margin: 14px 0 6px; padding: 8px 16px; border-radius: 999px;
+  background: var(--cs-teal-bg); color: var(--cs-teal-800); font-weight: 600; font-size: 13.5px;
+  border: 1px solid var(--cs-teal-200);
+}
+.sol-done__verse { margin-top: 18px; font-style: italic; color: var(--texto-tenue); font-size: 13px; }
+
+/* gate (aceptar antes de iniciar) */
+.sol-gate__acts { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }

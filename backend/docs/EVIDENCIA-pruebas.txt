@@ -1,0 +1,229 @@
+CREATE TABLE
+CREATE FUNCTION
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+
+========== BANCO DE INVARIANTES - CasaRoca System ==========
+ #  |                 invariante                 |                      resultado                       | veredicto 
+----+--------------------------------------------+------------------------------------------------------+-----------
+  1 | Persona sin sede                           | RECHAZADA (not_null_violation)                       | PASA
+  2 | Menor sin acudiente                        | FALLO como debe                                      | PASA
+  3 | Menor CON acudiente                        | ACEPTADA                                             | PASA
+  4 | Menor como acudiente                       | RECHAZADA como debe                                  | PASA
+  5 | Sin consentimiento no se contacta          | false                                                | PASA
+  6 | Con consentimiento si se contacta          | true                                                 | PASA
+  7 | Tras revocar, no se contacta               | false                                                | PASA
+  8 | Consentimiento append-only                 | 2 filas                                              | PASA
+  9 | edad NO se almacena                        | no existe columna                                    | PASA
+ 10 | Dos personas sin correo                    | ACEPTADAS                                            | PASA
+ 11 | Auditoria automatica e inmutable           | 14 -> 14                                             | PASA
+ 12 | Asignacion por encima del techo del rol    | RECHAZADA como debe                                  | PASA
+ 13 | Sede no borrable                           | 6                                                    | PASA
+ 14 | Control de clasificacion (compuerta G5)    | 0 hallazgos                                          | PASA
+ 15 | Codigo de entrega N4 cifrado y verificable | correcto=true, incorrecto=false, crudo ilegible=true | PASA
+ 16 | Sin llave N4 no se descifra                | fallo como debe                                      | PASA
+(16 rows)
+
+ pasan | fallan | total 
+-------+--------+-------
+    16 |      0 |    16
+(1 row)
+
+CREATE TABLE
+GRANT
+DO
+GRANT
+SET
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+RESET
+
+===== AISLAMIENTO ENTRE SEDES (segunda cerradura) =====
+ # |                  escenario                   |     resultado     | veredicto 
+---+----------------------------------------------+-------------------+-----------
+ 1 | Sesion sin contexto de sede                  | 0 filas           | PASA
+ 2 | Panama ve sus propias filas                  | 4 filas           | PASA
+ 3 | Panama NO ve Barcelona ni Bogota             | 0 ajenas          | PASA
+ 4 | Panama escribiendo en Barcelona              | RECHAZADA por RLS | PASA
+ 5 | Nivel N2 leyendo datos N4 (menores)          | 0 filas           | PASA
+ 6 | Nivel N4 en su propia sede                   | 1 filas           | PASA
+ 7 | Alcance de organizacion ve todas las sedes   | 5 sedes           | PASA
+ 8 | El rol de la aplicacion no puede saltar RLS  | false             | PASA
+ 9 | El contexto no se filtra entre transacciones | 0 filas           | PASA
+(9 rows)
+
+ pasan | fallan | total 
+-------+--------+-------
+     9 |      0 |     9
+(1 row)
+
+CREATE TABLE
+CREATE FUNCTION
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+
+===== INVARIANTES DE MODULOS (esquemas 03 a 10) =====
+ #  |                    invariante                    |           resultado           | veredicto 
+----+--------------------------------------------------+-------------------------------+-----------
+  1 | Reconciliacion de aportes cuadra                 | cuadra=true, dif=0.00         | PASA
+  2 | Un peso de mas detiene la compuerta              | cuadra=false, dif=1.00        | PASA
+  3 | Aporte sin persona y sin declarar anonimo        | RECHAZADO como debe           | PASA
+  4 | Vista del pastor sin columna de monto            | no expone monto               | PASA
+  5 | Check-in de menor sin acudiente                  | RECHAZADO como debe           | PASA
+  6 | Retiro por acudiente SIN permiso de retiro       | no_autorizado                 | PASA
+  7 | Retiro con codigo incorrecto                     | codigo_incorrecto             | PASA
+  8 | Retiro autorizado y con codigo correcto          | entregado y salida registrada | PASA
+  9 | Los intentos fallidos SOBREVIVEN                 | 3 intentos                    | PASA
+ 10 | Salida escrita a mano sin verificar              | RECHAZADA como debe           | PASA
+ 11 | Segundo check-in con el menor adentro            | RECHAZADO como debe           | PASA
+ 12 | Voluntario con menores sin antecedentes          | RECHAZADO como debe           | PASA
+ 13 | Antecedentes vencidos (3 anios)                  | RECHAZADO como debe           | PASA
+ 14 | Voluntario verificado y vigente                  | ACEPTADO                      | PASA
+ 15 | Curso con valor e inscripcion sin pago declarado | RECHAZADA como debe           | PASA
+ 16 | Inscripcion por encima del cupo                  | RECHAZADA como debe           | PASA
+ 17 | Certificado sin aprobar el curso                 | RECHAZADO como debe           | PASA
+ 18 | Persona en dos hogares a la vez                  | RECHAZADA como debe           | PASA
+ 19 | Entrada en servicio sin check-in                 | RECHAZADA como debe           | PASA
+ 20 | Total del conteo generado                        | 225                           | PASA
+ 21 | Notas de consejeria append-only                  | 1                             | PASA
+(21 rows)
+
+ pasan | fallan | total 
+-------+--------+-------
+    21 |      0 |    21
+(1 row)
+
+CREATE TABLE
+CREATE FUNCTION
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+
+===== CONSOLA DE SISTEMAS =====
+ #  |                   invariante                    |      resultado      | veredicto 
+----+-------------------------------------------------+---------------------+-----------
+  1 | Segunda sede maestra                            | RECHAZADA como debe | PASA
+  2 | Desactivar la sede maestra                      | RECHAZADA como debe | PASA
+  3 | Crear iglesia sin alcance de organizacion       | RECHAZADA como debe | PASA
+  4 | Filial sin pastor congregacional                | RECHAZADA como debe | PASA
+  5 | Apagar el modulo Personas (nucleo)              | RECHAZADO como debe | PASA
+  6 | Encender RocaKids sin compuerta legal           | RECHAZADO como debe | PASA
+  7 | Encender RocaKids CON evidencia legal           | ACEPTADO            | PASA
+  8 | Permiso N4 a un rol con techo N2                | RECHAZADO como debe | PASA
+  9 | Aportes se enciende porque Personas esta activo | ACEPTADO            | PASA
+ 10 | Plantacion sin modulos de compuerta legal       | 0                   | PASA
+ 11 | Filial nace con los modulos legales apagados    | 3                   | PASA
+ 12 | Roles que pueden exportar RocaKids              | 0                   | PASA
+ 13 | Permiso sobre modulo apagado                    | false               | PASA
+ 14 | Toda vista con security_invoker                 | 0 vistas expuestas  | PASA
+ 15 | Sin objetos ilegibles para la aplicacion        | 0 objetos           | PASA
+ 16 | Sin secuencias sin conceder                     | 0 secuencias        | PASA
+ 17 | Alcance de segmento sin identificador           | RECHAZADO como debe | PASA
+ 18 | El director de segmento resuelve a UNA sede     | 1 sede(s)           | PASA
+ 19 | Segmento de un ministerio apagado               | RECHAZADO como debe | PASA
+ 20 | Grupo colgado de un segmento de otra sede       | RECHAZADO como debe | PASA
+ 21 | El pastor ve la consejeria de SU sede           | true                | PASA
+ 22 | El pastor de OTRA sede no la ve                 | false               | PASA
+ 23 | Nivel N3 sin vinculo pastoral                   | false               | PASA
+ 24 | Los pastores no alcanzan los aportes            | 0 permisos          | PASA
+ 25 | Permiso N3 a un rol N2 sin declararlo           | RECHAZADO como debe | PASA
+(25 rows)
+
+ pasan | fallan | total 
+-------+--------+-------
+    25 |      0 |    25
+(1 row)
+
+CREATE TABLE
+CREATE FUNCTION
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+DO
+
+===== EMPALME CON LOS MODULOS 100p =====
+ #  |                   invariante                    |        resultado        | veredicto 
+----+-------------------------------------------------+-------------------------+-----------
+  1 | El certificado cuadra con sus renglones         | 950000.50 · cuadra=true | PASA
+  2 | Modificar un aporte certificado                 | RECHAZADO como debe     | PASA
+  3 | Anular un aporte certificado                    | RECHAZADO como debe     | PASA
+  4 | Certificado con monedas mezcladas               | RECHAZADO como debe     | PASA
+  5 | Permiso nombrado fuera de su modulo             | RECHAZADO como debe     | PASA
+  6 | Verbos genericos conviven con los nombrados     | 156 filas               | PASA
+  7 | Rol COORDINADOR_NUEVOS con permisos             | 5                       | PASA
+  8 | Nuevo sin ninguna forma de contacto             | RECHAZADO como debe     | PASA
+  9 | El 4C arranca en la fecha de llegada, no de hoy | hace 20 dias            | PASA
+ 10 | Convertir dos veces el mismo registro           | RECHAZADO como debe     | PASA
+ 11 | Convertir a alguien que ya existe no lo duplica | 1 persona(s)            | PASA
+ 12 | La bandeja marca los atrasados                  | ATRASADO                | PASA
+(12 rows)
+
+ pasan | fallan | total 
+-------+--------+-------
+    12 |      0 |    12
+(1 row)
+

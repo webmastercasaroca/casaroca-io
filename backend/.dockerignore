@@ -1,0 +1,9 @@
+# Contexto de la imagen del migrador (backend/Dockerfile.migrador).
+# Lista blanca: se excluye TODO y solo entra lo que el migrador usa.
+# Así no viajan a Cloud Build ni node_modules, ni los PDF de entregas-drive,
+# ni un .env que alguien deje por error.
+*
+!db/migrations/
+!db/seeds/
+!db/tests/catalogos_no_vacios.sql
+!scripts/migrar-produccion.sh

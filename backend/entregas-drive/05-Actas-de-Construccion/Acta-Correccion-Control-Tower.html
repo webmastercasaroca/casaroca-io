@@ -1,0 +1,84 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Acta de corrección · Sistema Master (Control Tower)</title><style>
+@page { size: A4; margin: 20mm 18mm; }
+* { print-color-adjust: exact; -webkit-print-color-adjust: exact; box-sizing: border-box; }
+body { font-family: Georgia,"Times New Roman",serif; font-size:10.2pt; line-height:1.55; color:#1a1a1a; margin:0; }
+h1 { font-family:-apple-system,"Helvetica Neue",Arial,sans-serif; font-size:18pt; font-weight:600;
+     color:#0d2b4e; border-bottom:2px solid #0d2b4e; padding-bottom:.3em; margin:0 0 .6em; page-break-after:avoid; }
+h2 { font-family:-apple-system,"Helvetica Neue",Arial,sans-serif; font-size:12.6pt; font-weight:600;
+     color:#0d2b4e; margin:1.7em 0 .45em; page-break-after:avoid; }
+h3 { font-family:-apple-system,"Helvetica Neue",Arial,sans-serif; font-size:10.8pt; font-weight:600;
+     color:#24405e; margin:1.3em 0 .35em; page-break-after:avoid; }
+p { margin:0 0 .75em; text-align:justify; hyphens:auto; orphans:3; widows:3; }
+ul,ol { margin:0 0 .85em; padding-left:1.4em; } li { margin-bottom:.25em; }
+code { font-family:"SF Mono",Menlo,Consolas,monospace; font-size:.86em; background:#f2f4f7;
+       padding:.08em .3em; border-radius:3px; color:#12355b; }
+strong { font-weight:700; color:#000; }
+hr { border:none; border-top:1px solid #d4d9e0; margin:1.9em 0; }
+table { width:100%; border-collapse:collapse; margin:.6em 0 1.1em; font-size:9pt;
+        font-family:-apple-system,Arial,sans-serif; page-break-inside:avoid; }
+th { background:#0d2b4e; color:#fff; text-align:left; padding:.45em .6em; font-weight:600; }
+td { padding:.4em .6em; border-bottom:1px solid #e3e7ec; vertical-align:top; }
+tbody tr:nth-child(even) td { background:#f7f9fb; }
+td:not(:first-child) { text-align:right; } th:not(:first-child) { text-align:right; }
+pre { background:#f7f9fb; border:1px solid #e3e7ec; border-left:3px solid #0d2b4e;
+      padding:.7em .9em; margin:.6em 0 1.1em; border-radius:3px; overflow:hidden;
+      page-break-inside:avoid; }
+pre code { font-family:"SF Mono",Menlo,Consolas,monospace; font-size:8.6pt; line-height:1.45;
+      background:none; padding:0; color:#12355b; white-space:pre-wrap; word-break:break-word; }
+.pie { margin-top:2.2em; padding-top:.7em; border-top:1px solid #d4d9e0; font-size:8.4pt;
+       color:#5a6472; font-family:-apple-system,Arial,sans-serif; }
+</style></head><body>
+<h1>Acta de corrección · Sistema Master (Control Tower)</h1>
+<table><thead><tr><th>Campo</th><th>Dato</th></tr></thead><tbody>
+<tr><td>Proyecto</td><td>CasaRoca System · Sistema 100p</td></tr>
+<tr><td>Componente</td><td>Frontend · Sistema Master (<code>fase0-prototipo/master.html</code>)</td></tr>
+<tr><td>Fecha de corte</td><td>15 de septiembre de 2026</td></tr>
+<tr><td>Repositorio</td><td><code>github.com/100p-NANO/ecosistema-cr</code></td></tr>
+<tr><td>Commit de la corrección</td><td><code>da8f6eb</code></td></tr>
+<tr><td>Estado</td><td>Corregido y verificado en navegador</td></tr>
+</tbody></table>
+<hr>
+<h2>1. Objeto de este documento</h2>
+<p>Dejar constancia de una <strong>regresión encontrada en el Sistema Master y de su corrección</strong>. Este documento existe porque el fallo no era menor: durante cuatro días el Control Tower no pudo crear nada, y crear es justamente aquello para lo que se construyó.</p>
+<p>Se escribe con el mismo criterio que el acta del frontend: lo que se afirma aquí se comprueba abriendo la aplicación, y la sección 5 dice cómo.</p>
+<h2>2. Qué estaba roto</h2>
+<p>El 11 de septiembre, el commit <code>ff1a761</code> retiró 423 líneas de <code>master.js</code> y dejó en pie tanto las llamadas como el menú que apuntaban a ellas. Desde ese momento:</p>
+<table><thead><tr><th>Qué</th><th>Consecuencia</th></tr></thead><tbody>
+<tr><td>Las 6 entradas del menú «+ Crear»</td><td>Fallaban con error de programa. No se dibujaba la pantalla</td></tr>
+<tr><td>2 de los 4 botones de «Puesta en marcha»</td><td>«Crear equipo» y «Crear iglesia», muertos</td></tr>
+<tr><td>La secuencia de arranque del sistema</td><td><strong>Imposible de completar</strong></td></tr>
+<tr><td>El botón «comprobar cómo se ve»</td><td>Contestaba «este panel no tiene sesión» en cualquier equipo nuevo</td></tr>
+<tr><td>La regla de los pastores en matrimonio</td><td>Implementada en el motor, inalcanzable desde la pantalla</td></tr>
+</tbody></table>
+<p>El fallo del puente merece explicación aparte, porque era circular: los paneles por rol leen el censo del master para saber quién entra, y ese censo solo se escribía <strong>al crear algo</strong>. Como crear estaba roto, el censo no podía nacer nunca. En un computador recién estrenado, todo panel abierto desde el master respondía que no había sesión.</p>
+<p>⚠️ <strong>Por qué no se notó durante cuatro días:</strong> el equipo donde se construyó el master ya tenía el censo escrito en su navegador de una sesión anterior, así que allí el puente sí funcionaba. El fallo solo aparecía en un computador nuevo, que es precisamente el de cualquier persona a quien se le muestre el sistema.</p>
+<h2>3. Qué se corrigió</h2>
+<table><thead><tr><th>#</th><th>Corrección</th><th>Dónde</th></tr></thead><tbody>
+<tr><td>1</td><td>Restauradas las 13 funciones retiradas: las 6 pantallas de creación y sus 7 auxiliares</td><td><code>master.js</code></td></tr>
+<tr><td>2</td><td>El almacén graba su información de partida en cuanto la lee, no solo al crear</td><td><code>master-store.js</code></td></tr>
+<tr><td>3</td><td>La vista previa dejó de depender del censo para poder abrirse</td><td><code>permisos-panel.js</code></td></tr>
+<tr><td>4</td><td>El formulario de iglesia pide al pastor <strong>y a su esposa</strong>, como manda la regla de la iglesia</td><td><code>master.js</code></td></tr>
+<tr><td>5</td><td>El techo del pastor sale del catálogo de roles y no de un valor fijo</td><td><code>master-store.js</code></td></tr>
+<tr><td>6</td><td>El conteo de iglesias sale del dato real, no de una cifra escrita a mano</td><td><code>master.js</code></td></tr>
+<tr><td>7</td><td>«Plantillas de iglesia» pasó a tener pantalla propia</td><td><code>master.js</code></td></tr>
+<tr><td>8</td><td>Las pestañas sin operación explican que es a propósito y ofrecen el atajo</td><td><code>master.js</code></td></tr>
+</tbody></table>
+<p>Sobre la corrección 5 conviene detenerse: una iglesia creada desde el sistema nacía con sus pastores limitados a nivel N2, mientras que las iglesias ya existentes los tenían en N4. El mismo cargo quedaba con dos alcances distintos según cómo se hubiera creado la sede. La migración <code>0034</code> ya lo había resuelto en la base; era la capa visible la que no se había enterado.</p>
+<h2>4. Sobre el nombramiento de pastores</h2>
+<p>Queda registrado, por indicación de la dirección, que <strong>el término correcto es «esposa del pastor»</strong>. El sistema exige a los dos: una iglesia no se crea con un pastor solo, y ambos quedan con el mismo acceso a la sede.</p>
+<h2>5. Cómo comprobarlo</h2>
+<ol>
+<li>Abrir el Sistema Master.</li>
+<li>Menú <strong>+ Crear</strong>: las seis opciones abren su formulario.</li>
+<li><strong>Puesta en marcha</strong>: los cuatro botones llevan a su pantalla.</li>
+<li><strong>Crear iglesia</strong>: si se elige solo al pastor, el sistema se niega y explica la regla.</li>
+<li><strong>Iglesias y sedes</strong> → una iglesia → <strong>comprobar cómo se ve</strong>: el panel abre a nombre de esa iglesia y muestra únicamente los módulos que tiene encendidos.</li>
+</ol>
+<p>Comprobación registrada el 15 de septiembre: se creó una iglesia de prueba con plantilla Plantación, que enciende 10 de 22 módulos. El panel del pastor mostró <strong>7 pestañas visibles y 10 ocultas</strong>, correspondientes exactamente a los módulos concedidos. Aportes, RocaKids y Consejería quedaron fuera, como corresponde a esa plantilla. Las 30 pantallas del master se recorrieron sin un solo error.</p>
+<h2>6. Recomendación</h2>
+<p>La causa de fondo no fue un descuido puntual: fue el reemplazo de un archivo completo que se llevó funciones por delante sin que nada avisara. El propio mensaje del commit <code>ff1a761</code> advertía de que <strong>ya había ocurrido antes</strong> con otro auxiliar.</p>
+<p>Se recomienda añadir una comprobación al procedimiento de sellado que falle cuando una pantalla invocada no exista. Son pocas líneas, y convierte un fallo silencioso de cuatro días en un aviso inmediato.</p>
+<hr>
+<p><em>Documento de la mesa de trabajo del Sistema 100p. Corte del 15 de septiembre de 2026.</em></p>
+<p class="pie">Documento de la mesa de trabajo · CasaRoca System · Fase 1. CasaRoca System · Sistema 100p · corte del 15 de septiembre de 2026</p>
+</body></html>

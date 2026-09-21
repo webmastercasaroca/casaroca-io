@@ -1,0 +1,170 @@
+/* ============================================================
+   CASA ROCA · CAPA MÓVIL COMPARTIDA  (mobile.css)
+   ------------------------------------------------------------
+   Hace que TODAS las apps (director, nicodemo, central, pastor,
+   rocakids-director) sean prácticas en celular sin reescribir su
+   código: nav superior -> barra inferior tipo app, tablas
+   dr-table/ni-table -> tarjetas apiladas, modales -> hoja inferior.
+   Se apoya en mobile.js (inyecta data-col y la barra .m-tabbar).
+   Punto de quiebre principal: 760px (estándar del proyecto).
+   ============================================================ */
+
+/* ---------- 0. Base táctil global (todas las anchuras) ---------- */
+.m-tabbar, .m-sheet { display: none; }
+
+@media (max-width: 760px) {
+
+  /* Evitar zoom-in de iOS al enfocar inputs (<16px lo dispara) */
+  input, select, textarea { font-size: 16px !important; }
+
+  /* Objetivos táctiles cómodos para botones/acciones */
+  .dr-btn, .ni-btn, .cn-btn,
+  button[data-accion], a[data-accion] { min-height: var(--tactil-min); }
+  .dr-btn--sm, .ni-btn--sm { min-height: 38px; }
+
+  /* ============================================================
+     1. NAV SUPERIOR  ->  BARRA INFERIOR (la genera mobile.js)
+     ============================================================ */
+  .dr-nav, .ni-nav { display: none !important; }
+
+  .m-tabbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+    display: flex; align-items: stretch;
+    height: calc(60px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: rgba(255, 255, 255, 0.94);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    border-top: 1px solid var(--borde);
+    box-shadow: 0 -6px 20px rgba(13, 26, 56, 0.08);
+  }
+  .m-tabbar__item {
+    flex: 1 1 0; min-width: 0; border: none; background: none; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 3px; padding: 6px 2px; position: relative;
+    color: var(--texto-tenue); font-family: inherit;
+    font-size: 10.5px; font-weight: var(--peso-medio); line-height: 1.1;
+    transition: color var(--t-rapida);
+  }
+  .m-tabbar__ic { font-size: 1.3rem; line-height: 1; }
+  .m-tabbar__lbl {
+    max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .m-tabbar__item.is-active { color: var(--azul-700); }
+  .m-tabbar__item.is-active::before {
+    content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 26px; height: 3px; border-radius: 0 0 3px 3px; background: var(--azul-700);
+  }
+  .m-tabbar__item:active { background: var(--azul-50); }
+  /* badge opcional (ej. alertas) */
+  .m-tabbar__badge {
+    position: absolute; top: 4px; left: calc(50% + 8px);
+    min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px;
+    background: var(--peligro); color: #fff; font-size: 9px; font-weight: var(--peso-bold);
+    display: grid; place-items: center;
+  }
+
+  /* Hoja "Más" — lista completa de secciones */
+  .m-sheet {
+    position: fixed; inset: 0; z-index: 70; display: none;
+    background: rgba(7, 29, 68, 0.45); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+    align-items: flex-end;
+  }
+  .m-sheet.is-open { display: flex; animation: mFade .15s ease; }
+  .m-sheet__panel {
+    width: 100%; max-height: 78vh; overflow-y: auto;
+    background: var(--superficie); border-radius: var(--radio-xl) var(--radio-xl) 0 0;
+    padding: 10px 12px calc(18px + env(safe-area-inset-bottom, 0px));
+    box-shadow: var(--sombra-xl); animation: mUp .24s var(--ease-suave);
+  }
+  .m-sheet__grip { width: 40px; height: 4px; border-radius: 999px; background: var(--borde-fuerte);
+    margin: 6px auto 12px; }
+  .m-sheet__title { font-size: var(--tx-xs); text-transform: uppercase; letter-spacing: var(--track-wide);
+    color: var(--texto-tenue); font-weight: var(--peso-semi); margin: 10px 8px 6px; }
+  .m-sheet__item {
+    width: 100%; display: flex; align-items: center; gap: 12px;
+    padding: 13px 12px; border: none; background: none; cursor: pointer;
+    border-radius: var(--radio-md); font-family: inherit; font-size: var(--tx-base);
+    color: var(--texto); text-align: left; min-height: var(--tactil-min);
+  }
+  .m-sheet__item .m-sheet__ic { font-size: 1.25rem; width: 28px; text-align: center; flex: none; }
+  .m-sheet__item.is-active { background: var(--azul-50); color: var(--azul-700); font-weight: var(--peso-semi); }
+  .m-sheet__item:active { background: var(--superficie-2); }
+
+  @keyframes mFade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes mUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+  /* Aire inferior para que la barra no tape contenido */
+  .dr-main, .ni-main, .cn-main, .m-haspad {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px) + 24px) !important;
+  }
+
+  /* ============================================================
+     2. TABLAS  ->  TARJETAS APILADAS
+     Aplica solo al sistema de tablas dr-table / ni-table.
+     mobile.js pone data-col="<encabezado>" en cada celda.
+     ============================================================ */
+  .dr-tablewrap, .ni-tablewrap { overflow: visible; border: none; box-shadow: none; background: transparent; }
+
+  .dr-table, .ni-table { display: block; width: 100%; font-size: var(--tx-base); }
+  .dr-table thead, .ni-table thead { display: none; }           /* encabezados ocultos */
+  .dr-table tbody, .ni-table tbody { display: block; }
+  .dr-table tbody tr, .ni-table tbody tr {
+    display: block; background: var(--superficie);
+    border: 1px solid var(--borde); border-radius: var(--radio-md);
+    box-shadow: var(--sombra-xs); padding: 4px 14px; margin-bottom: 10px;
+  }
+  .dr-table tbody td, .ni-table tbody td {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 9px 0 !important; border: none !important;
+    border-bottom: 1px solid var(--borde-sutil) !important; text-align: right;
+  }
+  .dr-table tbody tr td:last-child, .ni-table tbody tr td:last-child { border-bottom: none !important; }
+  /* etiqueta de columna (lado izquierdo de cada fila-celda) */
+  .dr-table tbody td::before, .ni-table tbody td::before {
+    content: attr(data-col); flex: none; text-align: left;
+    font-size: var(--tx-2xs); text-transform: uppercase; letter-spacing: var(--track-wide);
+    font-weight: var(--peso-semi); color: var(--texto-tenue);
+  }
+  /* celdas sin etiqueta (columna de acción/avatar) ocupan toda la fila */
+  .dr-table tbody td[data-col=""]::before, .ni-table tbody td[data-col=""]::before { content: none; }
+  .dr-table tbody td[data-col=""], .ni-table tbody td[data-col=""] { justify-content: flex-start; text-align: left; }
+  /* la celda de persona (avatar+nombre) se ve mejor a la izquierda */
+  .dr-table tbody td:has(.dr-cell-person) { justify-content: flex-start; text-align: left; }
+  .dr-table tbody td:has(.dr-cell-person)::before { content: none; }
+  .dr-cell-person { width: 100%; }
+  /* botones de acción dentro de la celda ocupan ancho cómodo */
+  .dr-table tbody td .dr-btn, .ni-table tbody td .ni-btn { white-space: nowrap; }
+  /* fila de estado vacío: centrada, sin layout de tarjeta-celda */
+  .dr-table tbody td[colspan], .ni-table tbody td[colspan] {
+    display: block; text-align: center; justify-content: center;
+  }
+  .dr-table tbody td[colspan]::before, .ni-table tbody td[colspan]::before { content: none; }
+
+  /* ============================================================
+     3. MODALES  ->  HOJA INFERIOR (bottom sheet)
+     ============================================================ */
+  .dr-modalbg, .ni-modalbg { align-items: flex-end; place-items: end center; padding: 0; }
+  .dr-modal, .ni-modal {
+    max-width: 100%; width: 100%; max-height: 90vh;
+    border-radius: var(--radio-xl) var(--radio-xl) 0 0;
+    padding: 20px 18px calc(20px + env(safe-area-inset-bottom, 0px));
+  }
+  .dr-modal__acts, .ni-modal__acts, .cn-modal-actions, .dr-modal__actions { flex-wrap: wrap; }
+  .dr-modal__acts .dr-btn, .ni-modal__acts .ni-btn { flex: 1 1 auto; }
+
+  /* ============================================================
+     4. GRIDS DENSOS  ->  más legibles en celular
+     ============================================================ */
+  .dr-charts, .ni-charts { grid-template-columns: 1fr !important; }
+  .dr-grid2, .ni-grid2 { grid-template-columns: 1fr !important; }
+  .dr-person__data, .ni-person__data { grid-template-columns: 1fr 1fr; }
+  .dr-gauges, .ni-gauges { grid-template-columns: repeat(3, 1fr); }
+
+  /* La nav superior original podía ser sticky; al ocultarla, recupera scroll */
+  .dr-topbar, .ni-topbar, .cn-topbar { position: sticky; top: 0; }
+}
+
+/* Pantallas muy estrechas: datos de persona a 1 columna */
+@media (max-width: 380px) {
+  .dr-person__data, .ni-person__data { grid-template-columns: 1fr; }
+}

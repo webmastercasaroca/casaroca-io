@@ -1,0 +1,32 @@
+/* ============================================================
+   MARCA · Geomanist (OPCIONAL)
+
+   Geomanist es una fuente COMERCIAL de Atipo Foundry. Los archivos NO van
+   en el repositorio: la licencia web es de la iglesia.
+
+   Para usarla:
+     1. Poner Geomanist-Regular.woff2, -Medium.woff2 y -Bold.woff2 en
+        `frontend/fonts/`.
+     2. Añadir en `index.html`, ANTES de editorial.css:
+          <link rel="stylesheet" href="src/styles/marca-geomanist.css">
+
+   Sin esto, la pila tipografica cae a Inter y a la fuente del sistema, que
+   es exactamente como se ve hoy. No falta nada: falta la licencia.
+   ============================================================ */
+
+@font-face {
+  font-family: "Geomanist";
+  src: url("/fonts/Geomanist-Regular.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Geomanist";
+  src: url("/fonts/Geomanist-Medium.woff2") format("woff2");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Geomanist";
+  src: url("/fonts/Geomanist-Bold.woff2") format("woff2");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+

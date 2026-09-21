@@ -1,0 +1,29 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "casaroca-frontend",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5199",
+        "--directory",
+        "frontend"
+      ],
+      "port": 5199
+    },
+    {
+      "name": "casaroca-prototipo",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5198",
+        "--directory",
+        "fase0-prototipo"
+      ],
+      "port": 5198
+    }
+  ]
+}

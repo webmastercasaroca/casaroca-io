@@ -1,0 +1,17 @@
+# Dependencias y compilados: se reconstruyen con `npm install` y `npm run build`.
+node_modules/
+# iCloud vacía las carpetas del Escritorio: las dependencias viven en
+# `node_modules.nosync` (iCloud no la sincroniza) y `node_modules` es un enlace.
+node_modules
+node_modules.nosync/
+dist/
+*.tsbuildinfo
+
+# Entorno y credenciales
+.env
+.env.*
+!.env.example
+
+# Ruido del sistema
+*.log
+.DS_Store

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0F766E" />
+  <title>Casa Roca · Consejería — Hub del equipo</title>
+  <meta name="description" content="Hub del equipo de Consejería de Casa Sobre la Roca: acceso a las apps de Dirección, Coordinación y Consejeros. Asignación de casos, base de conocimiento y acompañamiento, sincronizados en vivo." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230F766E'/%3E%3Ctext x='16' y='22' font-size='15' text-anchor='middle' fill='%23fff' font-family='Arial' font-weight='bold'%3ECS%3C/text%3E%3C/svg%3E" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:'Inter',system-ui,sans-serif;
+      background:var(--blanco-calido,#F5F6F8);
+      color:var(--texto,#161D2E);
+      line-height:1.5;
+      -webkit-font-smoothing:antialiased;
+      min-height:100vh;
+    }
+    .skip{position:absolute;left:-999px;top:0;background:#fff;padding:.6rem 1rem;border-radius:8px;z-index:10}
+    .skip:focus{left:1rem;top:1rem}
+
+    .hero{
+      background:linear-gradient(135deg,#0B5650,#0F766E 55%,#13917F);
+      color:#fff;padding:2.4rem 1.25rem 2rem;
+    }
+    .hero__wrap{max-width:1040px;margin:0 auto}
+    .brand{display:flex;align-items:center;gap:.7rem;margin-bottom:1.1rem}
+    .brand__logo{width:38px;height:38px;border-radius:9px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);
+      display:grid;place-items:center;color:#fff;font-weight:800;font-size:.95rem;flex:none}
+    .brand__name{font-weight:700;font-size:.95rem;letter-spacing:.2px}
+    .brand__name small{display:block;font-weight:400;opacity:.8;font-size:.78rem}
+    h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:clamp(1.7rem,5vw,2.5rem);line-height:1.12;letter-spacing:-.5px}
+    .hero p{margin-top:.6rem;max-width:52ch;opacity:.92;font-size:1rem}
+    .hero__meta{margin-top:1.1rem;display:flex;flex-wrap:wrap;gap:.5rem}
+    .pill{font-size:.78rem;font-weight:600;padding:.3rem .7rem;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22)}
+
+    main{max-width:1040px;margin:0 auto;padding:1.6rem 1.25rem 3rem}
+    .section{margin-top:1.2rem}
+    .section__head{display:flex;align-items:baseline;gap:.6rem;margin-bottom:.9rem;flex-wrap:wrap}
+    .section__head h2{font-size:1.05rem;font-weight:800;letter-spacing:.2px}
+    .section__head span{font-size:.85rem;color:var(--texto-suave,#58617A)}
+
+    .grid{display:grid;gap:.85rem;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+
+    .card{
+      display:flex;flex-direction:column;gap:.45rem;
+      background:var(--superficie,#fff);border:1px solid var(--borde,#E6E8EE);
+      border-radius:14px;padding:1.05rem 1.05rem 1.1rem;
+      text-decoration:none;color:inherit;
+      transition:transform .14s ease,box-shadow .14s ease,border-color .14s ease;
+      position:relative;min-height:150px;
+    }
+    .card:hover,.card:focus-visible{
+      transform:translateY(-3px);
+      box-shadow:0 10px 26px -12px rgba(15,118,110,.40);
+      border-color:#5EBFB2;outline:none;
+    }
+    .card:focus-visible{outline:2px solid #0F766E;outline-offset:2px}
+    .card__top{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+    .ico{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;font-size:1.1rem;flex:none;
+      background:#E1F1EE;color:#0B5650}
+    .tag{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:.2rem .5rem;border-radius:6px;
+      background:#E1F1EE;color:#0B5650}
+    .card h3{font-size:1.02rem;font-weight:700;letter-spacing:-.2px}
+    .card p{font-size:.85rem;color:var(--texto-suave,#58617A);margin:0}
+    .card__who{font-size:.78rem;color:#0B5650;font-weight:600;margin-top:.1rem}
+    .card__file{margin-top:auto;font-size:.74rem;color:var(--texto-tenue,#8A92A6);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .card__go{position:absolute;top:1.05rem;right:1.05rem;color:var(--texto-tenue,#8A92A6);transition:transform .14s,color .14s}
+    .card:hover .card__go{transform:translateX(3px);color:#0F766E}
+
+    .note{margin-top:1.6rem;background:#fff;border:1px solid var(--borde,#E6E8EE);border-left:4px solid #0F766E;
+      border-radius:12px;padding:1rem 1.1rem;font-size:.88rem;color:var(--texto-suave,#58617A)}
+    .note strong{color:var(--texto,#161D2E)}
+
+    footer{max-width:1040px;margin:0 auto;padding:1.5rem 1.25rem 2.5rem;color:var(--texto-tenue,#8A92A6);font-size:.8rem;border-top:1px solid var(--borde,#E6E8EE)}
+    footer code{background:var(--superficie-2,#F1F2F5);padding:.1rem .4rem;border-radius:5px;font-size:.78rem}
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip">Saltar al contenido</a>
+
+  <header class="hero">
+    <div class="hero__wrap">
+      <div class="brand">
+        <div class="brand__logo">CS</div>
+        <div class="brand__name">Casa Roca · Consejería
+          <small>conocer · acompañar · ayudar · rodear</small>
+        </div>
+      </div>
+      <h1>Hub del equipo de Consejería</h1>
+      <p>Acceso directo a las apps del equipo: Dirección, Coordinación y Consejeros. Todo sincronizado en vivo. Toca una tarjeta para entrar.</p>
+      <div class="hero__meta">
+        <span class="pill">3 apps por rol</span>
+        <span class="pill">Sincronizado en vivo</span>
+        <span class="pill">Mobile-first</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="section">
+      <div class="section__head">
+        <h2>Punto de entrada</h2>
+        <span>Así empieza el flujo: la persona pide su cita</span>
+      </div>
+      <div class="grid">
+        <a class='card' href='/consejeria-solicitud' style='border-color:#5EBFB2;background:linear-gradient(180deg,#F2FBF9,#fff)'>
+          <span class="card__go" aria-hidden="true">→</span>
+          <div class="card__top"><div class="ico">📝</div><span class="tag">Formulario público</span></div>
+          <h3>Solicitud de apoyo espiritual</h3>
+          <p>Lo llena la persona. Al enviar, la solicitud cae <b>en vivo</b> en la bandeja de Dirección y Coordinación.</p>
+          <span class="card__file">consejeria-solicitud.html</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section__head">
+        <h2>Apps del equipo</h2>
+        <span>Cada rol del operativo de consejería</span>
+      </div>
+      <div class="grid">
+
+        <a class='card' href='/consejeria-director'>
+          <span class="card__go" aria-hidden="true">→</span>
+          <div class="card__top"><div class="ico">📚</div><span class="tag">Dirección</span></div>
+          <h3>Dirección de Consejería</h3>
+          <p>Cura la base de conocimiento, prepara al equipo y supervisa todo el operativo.</p>
+          <span class="card__who">Ps. Franklin Peña</span>
+          <span class="card__file">consejeria-director.html</span>
+        </a>
+
+        <a class='card' href='/consejeria-coordinador'>
+          <span class="card__go" aria-hidden="true">→</span>
+          <div class="card__top"><div class="ico">🗂️</div><span class="tag">Coordinación</span></div>
+          <h3>Coordinación de Consejería</h3>
+          <p>Bandeja de solicitudes, asignación al consejero correcto y carga del equipo.</p>
+          <span class="card__who">Javier Rodríguez</span>
+          <span class="card__file">consejeria-coordinador.html</span>
+        </a>
+
+        <a class='card' href='/consejeria-consejero'>
+          <span class="card__go" aria-hidden="true">→</span>
+          <div class="card__top"><div class="ico">🤲</div><span class="tag">Consejero</span></div>
+          <h3>App del Consejero</h3>
+          <p>Tus casos asignados, notas confidenciales, sesiones y asistente de conocimiento.</p>
+          <span class="card__who">Andrés Lozano</span>
+          <span class="card__file">consejeria-consejero.html</span>
+        </a>
+
+      </div>
+
+      <div class="note">
+        <strong>Todo sincronizado en vivo.</strong> El flujo viaja solo entre los roles:
+        <br>📝 La persona llena el formulario → 📥 cae en la bandeja de Dirección y Coordinación → 🗂️ asignan al consejero indicado → 🤲 aparece en su tablero → el consejero registra las consejerías (sesiones y notas) → 📊 ese avance se ve en vivo en los tableros de Coordinación y Dirección → ✅ hasta que el caso se cierra.
+        <br><span style="display:inline-block;margin-top:8px">En el <b>CRM de Consejería</b>, al abrir una persona verás si es su <b>primera consejería</b> 🆕 o si es <b>recurrente</b> 🔁, con su historial de procesos anteriores.</span>
+        <br><span style="display:inline-block;margin-top:8px;color:var(--texto-tenue)">Hub independiente: reúne solo el módulo de Consejería. El módulo sigue también dentro del hub general de Casa Roca · AI System. Para abrir varias apps a la vez y ver la sincronización, ábrelas en pestañas distintas del mismo navegador.</span>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Casa Roca · Consejería — Fase 0 (prototipo). Para correr localmente:
+    <code>cd hub-consejeria &amp;&amp; python3 -m http.server 5173</code> y abre <code>localhost:5173</code>.
+  </footer>
+</body>
+</html>

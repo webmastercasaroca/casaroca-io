@@ -1,0 +1,32 @@
+# =====================================================================
+# Imagen del MIGRADOR de producción (Cloud Run Job «casaroca-migrador»).
+# Contexto de construcción: backend/  (ver backend/.dockerignore)
+#
+#   docker build -f backend/Dockerfile.migrador backend
+#
+# Solo lleva psql 16, el script y el SQL. Nada de Node, nada de la API:
+# lo que corre contra la base con permisos de administrador tiene que ser
+# lo más pequeño y revisable posible.
+# =====================================================================
+FROM alpine:3.22
+
+# postgresql16-client: el mismo psql mayor que el servidor. \getenv (que
+# usa el script para leer la contraseña de la API sin ponerla en la línea
+# de comandos) existe desde psql 15.
+# «~16» fija la versión mayor sin fijar el parche: Alpine retira los
+# parches viejos de su repositorio y un «=16.15-r0» rompería el build.
+RUN apk add --no-cache bash~5 postgresql16-client~16 \
+ && adduser -D -H -u 10001 migrador
+
+WORKDIR /migrador
+# Misma forma que el repositorio (db/, scripts/), para que el script
+# encuentre las carpetas igual que en el Mac.
+COPY db/migrations/ db/migrations/
+COPY db/seeds/      db/seeds/
+COPY db/tests/catalogos_no_vacios.sql db/tests/
+COPY scripts/migrar-produccion.sh scripts/
+
+# ⛔ Usuario sin privilegios dentro del contenedor. El poder sobre la base
+#    lo da la contraseña del secreto, no el usuario del sistema operativo.
+USER 10001
+ENTRYPOINT ["bash", "/migrador/scripts/migrar-produccion.sh"]

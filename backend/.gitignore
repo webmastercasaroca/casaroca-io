@@ -1,0 +1,14 @@
+# Dependencias y compilados: se reconstruyen con `npm install` y `npm run build`.
+# Tenerlos en el repo hace ilegible la revisión de código, que es para lo que existe.
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Entorno y credenciales
+.env
+.env.*
+!.env.example
+
+# Ruido del sistema
+*.log
+.DS_Store

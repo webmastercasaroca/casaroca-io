@@ -1,0 +1,48 @@
+# =====================================================================
+# Copiar a terraform.tfvars (que NO se versiona) y llenar.
+# Aquí no va ningún secreto: las contraseñas las genera Terraform sin
+# guardarlas, y las claves de terceros se cargan con gcloud (README).
+# =====================================================================
+
+proyecto = "casaroca-system-PORDEFINIR" # ⚠️ el proyecto de GCP aún no existe
+fase     = 0                            # 0 maqueta · 1 pruebas · 2 producción
+region   = "us-east1"                   # decisión del plan: Virginia
+
+# ── Dominio ──────────────────────────────────────────────────────────
+# ⚠️ casaroca.io está POR COMPRAR. Mientras no exista, dejar vacío: no se
+#    crea el balanceador y la API se prueba con `gcloud run services proxy`.
+dominio_api = "" # "api.casaroca.io"
+dominio_app = "" # "app.casaroca.io" o "100p.casaroca.org", cuando haya frontend
+
+cors_origenes = [
+  "https://casaroca.org",
+  "https://www.casaroca.org",
+  "https://casaroca-system.netlify.app",
+]
+
+# ⛔ NO poner en true hasta que la API valide un token real (ver README).
+api_publica = false
+
+# ── Gasto ────────────────────────────────────────────────────────────
+# ⚠️ Quién paga la cuenta de GCP está POR DECIDIR. Con la cuenta, el
+#    presupuesto de la fase avisa al 50, 90 y 100 %.
+cuenta_facturacion = "" # "XXXXXX-XXXXXX-XXXXXX"
+moneda_facturacion = "USD"
+correos_alertas    = [] # ["sistemas@casaroca.org"]
+
+# En la maqueta se puede apagar para poder destruir y rehacer.
+# En producción, SIEMPRE true.
+proteger_borrado = true
+
+# ── Terceros (cuando tengan valor cargado con gcloud) ────────────────
+secretos_cargados = [] # ["payu-api-key", "recaptcha-secreto", "sendgrid-api-key"]
+payu_merchant_id  = ""
+
+# ── CI/CD ────────────────────────────────────────────────────────────
+# true solo después de conectar la app de Cloud Build en GitHub (README, paso 5).
+crear_disparador_github = false
+
+# ── Piezas que todavía no tienen imagen ──────────────────────────────
+imagen_frontend = ""
+imagen_pastoral = ""
+trabajadores    = {}

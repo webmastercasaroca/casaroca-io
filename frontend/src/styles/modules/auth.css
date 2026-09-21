@@ -1,0 +1,15 @@
+/* ============================================================
+   auth.css · Pantallas de login y recuperación de acceso
+   ============================================================ */
+.cr-auth {
+  min-height: 100vh; display: grid; place-items: center; padding: var(--cr-sp-4);
+  background: linear-gradient(160deg, var(--cr-azul-900), var(--cr-azul-700));
+}
+.cr-auth__caja {
+  width: 100%; max-width: 400px; background: var(--cr-superficie);
+  border-radius: var(--cr-radio-lg); box-shadow: var(--cr-sombra-lg); padding: var(--cr-sp-6);
+}
+.cr-auth__marca { display: flex; align-items: center; gap: var(--cr-sp-3); margin-bottom: var(--cr-sp-5); }
+.cr-auth__titulo { font-size: var(--cr-tx-lg); margin: 0; }
+.cr-auth__ayuda { font-size: var(--cr-tx-sm); color: var(--cr-texto-suave); text-align: center; margin-top: var(--cr-sp-4); }
+.cr-auth .cr-btn { width: 100%; }

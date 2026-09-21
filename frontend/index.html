@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Sistema de la red Casa Sobre la Roca: 36 sedes, una central.">
+  <title>CasaRoca System</title>
+  <link rel="stylesheet" href="src/styles/variables.css">
+  <link rel="stylesheet" href="src/styles/editorial.css">
+  <style>
+    .sr-solo { position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+               overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+  </style>
+  <script>
+    /* La API y la versión se inyectan al desplegar. En desarrollo apuntan al local. */
+    window.CASAROCA_API = window.CASAROCA_API ?? 'http://127.0.0.1:3000';
+    window.CASAROCA_VERSION = window.CASAROCA_VERSION ?? 'dev';
+  </script>
+</head>
+<body>
+  <div id="app">
+    <noscript>
+      <div style="padding:2rem;font-family:system-ui">
+        <h1>Necesita JavaScript</h1>
+        <p>Este sistema necesita JavaScript para funcionar. Actívelo en su navegador.</p>
+      </div>
+    </noscript>
+  </div>
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

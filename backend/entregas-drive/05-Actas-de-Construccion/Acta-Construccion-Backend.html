@@ -1,0 +1,121 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Acta de construccion y publicacion · Backend</title><style>
+@page { size: A4; margin: 20mm 18mm; }
+* { print-color-adjust: exact; -webkit-print-color-adjust: exact; box-sizing: border-box; }
+body { font-family: Georgia,"Times New Roman",serif; font-size:10.2pt; line-height:1.55; color:#1a1a1a; margin:0; }
+h1 { font-family:-apple-system,"Helvetica Neue",Arial,sans-serif; font-size:18pt; font-weight:600;
+     color:#0d2b4e; border-bottom:2px solid #0d2b4e; padding-bottom:.3em; margin:0 0 .6em; page-break-after:avoid; }
+h2 { font-family:-apple-system,"Helvetica Neue",Arial,sans-serif; font-size:12.6pt; font-weight:600;
+     color:#0d2b4e; margin:1.7em 0 .45em; page-break-after:avoid; }
+h3 { font-family:-apple-system,"Helvetica Neue",Arial,sans-serif; font-size:10.8pt; font-weight:600;
+     color:#24405e; margin:1.3em 0 .35em; page-break-after:avoid; }
+p { margin:0 0 .75em; text-align:justify; hyphens:auto; orphans:3; widows:3; }
+ul,ol { margin:0 0 .85em; padding-left:1.4em; } li { margin-bottom:.25em; }
+code { font-family:"SF Mono",Menlo,Consolas,monospace; font-size:.86em; background:#f2f4f7;
+       padding:.08em .3em; border-radius:3px; color:#12355b; }
+strong { font-weight:700; color:#000; }
+hr { border:none; border-top:1px solid #d4d9e0; margin:1.9em 0; }
+table { width:100%; border-collapse:collapse; margin:.6em 0 1.1em; font-size:9pt;
+        font-family:-apple-system,Arial,sans-serif; page-break-inside:avoid; }
+th { background:#0d2b4e; color:#fff; text-align:left; padding:.45em .6em; font-weight:600; }
+td { padding:.4em .6em; border-bottom:1px solid #e3e7ec; vertical-align:top; }
+tbody tr:nth-child(even) td { background:#f7f9fb; }
+td:not(:first-child) { text-align:right; } th:not(:first-child) { text-align:right; }
+pre { background:#f7f9fb; border:1px solid #e3e7ec; border-left:3px solid #0d2b4e;
+      padding:.7em .9em; margin:.6em 0 1.1em; border-radius:3px; overflow:hidden;
+      page-break-inside:avoid; }
+pre code { font-family:"SF Mono",Menlo,Consolas,monospace; font-size:8.6pt; line-height:1.45;
+      background:none; padding:0; color:#12355b; white-space:pre-wrap; word-break:break-word; }
+.pie { margin-top:2.2em; padding-top:.7em; border-top:1px solid #d4d9e0; font-size:8.4pt;
+       color:#5a6472; font-family:-apple-system,Arial,sans-serif; }
+</style></head><body>
+<h1>Acta de construcción y publicación · Backend</h1>
+<table><thead><tr><th>Campo</th><th>Dato</th></tr></thead><tbody>
+<tr><td>Proyecto</td><td>CasaRoca System · Sistema 100p</td></tr>
+<tr><td>Componente</td><td>Backend (base de datos y servicios)</td></tr>
+<tr><td>Fecha de corte</td><td>11 de septiembre de 2026</td></tr>
+<tr><td>Repositorio</td><td><code>github.com/100p-NANO/ecosistema-cr</code>, carpeta <code>backend/</code></td></tr>
+<tr><td>Estado</td><td>Construido, probado y publicado</td></tr>
+</tbody></table>
+<hr>
+<h2>1. Objeto de este documento</h2>
+<p>Dejar constancia formal de qué se construyó en el backend del Sistema 100p, qué quedó publicado en el repositorio de la iglesia, y con qué evidencia se sostiene cada afirmación.</p>
+<p>Todas las cifras de este documento se obtuvieron <strong>ejecutando la base de datos</strong>, no leyendo el código. La corrida de referencia es del 11 de septiembre de 2026 y es reproducible con los tres comandos de la sección 6.</p>
+<h2>2. Publicación en el repositorio</h2>
+<p>El código dejó de vivir en carpetas sueltas del equipo consultor y quedó bajo la cuenta de la iglesia. Esto es lo que permite la revisión línea por línea que solicitó la dirección técnica.</p>
+<table><thead><tr><th>Concepto</th><th>Dato</th></tr></thead><tbody>
+<tr><td>Repositorio</td><td><code>github.com/100p-NANO/ecosistema-cr</code></td></tr>
+<tr><td>Cuenta propietaria</td><td><code>100p-NANO</code> (<code>100p@casaroca.org</code>)</td></tr>
+<tr><td>Visibilidad</td><td>Privado, por invitación</td></tr>
+<tr><td>Rama</td><td><code>main</code></td></tr>
+<tr><td>Archivos publicados</td><td>396 en total, de los cuales el backend aporta 84</td></tr>
+<tr><td>Commits del corte</td><td><code>745b20f</code> (consolidación) y <code>f7125b7</code> (corrección de seguridad)</td></tr>
+</tbody></table>
+<p>Se verificó que no se publicó ningún archivo de credenciales, ningún <code>.env</code> y ninguna dependencia compilada. La revisión de secretos previa a la publicación dio cero hallazgos.</p>
+<h2>3. Qué quedó construido</h2>
+<h3>3.1 Modelo de datos</h3>
+<table><thead><tr><th>Elemento</th><th>Cantidad</th></tr></thead><tbody>
+<tr><td>Migraciones SQL, planas y en orden</td><td>32</td></tr>
+<tr><td>Líneas de SQL</td><td>3.842</td></tr>
+<tr><td>Esquemas de negocio</td><td>13</td></tr>
+<tr><td>Tablas</td><td>59</td></tr>
+<tr><td>Vistas</td><td>22</td></tr>
+<tr><td>Funciones</td><td>50</td></tr>
+<tr><td>Políticas de seguridad a nivel de fila</td><td>103</td></tr>
+<tr><td>Disparadores de integridad</td><td>28</td></tr>
+<tr><td>Juegos de datos de catálogo y demostración</td><td>7</td></tr>
+</tbody></table>
+<p>Los trece esquemas cubren el modelo completo acordado en la mesa de trabajo: Núcleo, 01 Organización, 02 Identidad, 03 Grupos, 04 CRM, 05 Asistencia, 06 RocaKids, 07 Consejería, 08 Aportes, 09 Formación, 10 Talento, 11 Línea de tiempo y la Plataforma transversal, más la Consola de sistemas.</p>
+<h3>3.2 Servicios</h3>
+<p>Se construyó la API del <strong>Módulo de Nuevos</strong> en NestJS y TypeScript, escrita sobre el contrato publicado por el equipo de la iglesia, no sobre un contrato propio. Son 9 archivos de código fuente más su juego de pruebas de extremo a extremo.</p>
+<h3>3.3 Documentación entregada</h3>
+<p>Trece documentos en <code>backend/entregas-drive/</code>, organizados por la misma estructura de carpetas del Drive «Sistema 100p»: documentos base de arquitectura, observaciones al modelo de personas, empalme de módulos, modelo financiero recalculado sobre GCP y guía de operación de la base.</p>
+<h2>4. Qué quedó demostrado</h2>
+<p>Cada garantía del diseño tiene una prueba que falla si alguien la rompe. No son pruebas de que el código corre: son pruebas de que <strong>la regla de negocio se cumple aunque el programador se equivoque</strong>.</p>
+<table><thead><tr><th>Banco de pruebas</th><th>Qué demuestra</th><th>Resultado</th></tr></thead><tbody>
+<tr><td><code>invariantes</code></td><td>Garantías del núcleo: menores, consentimiento, clasificación de datos</td><td>16 / 16</td></tr>
+<tr><td><code>aislamiento_rls</code></td><td>Una sede no ve a otra, ejecutando con el rol de la aplicación</td><td>9 / 9</td></tr>
+<tr><td><code>invariantes_modulos</code></td><td>Esquemas 03 a 10: grupos, asistencia, RocaKids, consejería, aportes, formación, talento</td><td>21 / 21</td></tr>
+<tr><td><code>consola_sistemas</code></td><td>Módulos, habilitación por iglesia y matriz de permisos</td><td>25 / 25</td></tr>
+<tr><td><code>empalme_100p</code></td><td>El contrato con los módulos de Roles, Nuevos y Donaciones</td><td>12 / 12</td></tr>
+<tr><td><code>rls_tablas_hijas</code></td><td>La corrección del 11 de septiembre (ver sección 5)</td><td>6 / 6</td></tr>
+<tr><td><strong>Total</strong></td><td></td><td><strong>89 / 89</strong></td></tr>
+</tbody></table>
+<p>Resultado de la corrida de referencia: <strong>32 migraciones aplicadas sin un solo error, 89 pruebas ejecutadas, 89 aprobadas, 0 fallidas.</strong></p>
+<p>Las garantías más relevantes para la dirección:</p>
+<ul>
+<li><strong>Aislamiento entre sedes.</strong> Las pruebas se ejecutan con el rol de la aplicación, no como superusuario. Probarlo como superusuario no demostraría nada, porque el superusuario siempre omite la política.</li>
+<li><strong>Protección de menores.</strong> Un menor sin acudiente hace fallar la transacción. La entrega de un niño exige acudiente autorizado y código correcto, y el código va cifrado: se verifica, nunca se devuelve. Los intentos fallidos quedan registrados aunque la entrega se rechace.</li>
+<li><strong>Habeas Data (Ley 1581 de 2012).</strong> El consentimiento es un registro que solo se agrega, con finalidad, canal, evidencia y fecha. Sin registro, la función de contacto devuelve falso.</li>
+<li><strong>Aportes.</strong> La reconciliación es aritmética: una vista indica si lo migrado cuadra al peso con el cierre de control. El pastor congregacional ve hábito de aporte sin ninguna columna de monto.</li>
+<li><strong>Auditoría.</strong> Registro que solo se agrega, inmutable y particionado, con bitácora de lectura sobre los datos de mayor sensibilidad.</li>
+</ul>
+<h2>5. Correcciones de seguridad del 11 de septiembre</h2>
+<p>La auditoría de este corte se hizo contra la base en ejecución y encontró dos defectos que el banco de pruebas anterior no detectaba. Ambos quedaron corregidos en la migración <code>0031</code>, cada uno con su prueba.</p>
+<h3>5.1 Tablas hijas sin política de seguridad</h3>
+<p>La protección por sede se había aplicado a las tablas principales (personas, grupos, casos, servicios, cohortes, aportes) pero no a las tablas que registran <strong>quién se inscribió, quién asistió y quién es acudiente de quién</strong>. Dieciséis tablas quedaban legibles sin filtro.</p>
+<p><strong>Evidencia:</strong> una sede sin ninguna persona registrada podía leer los certificados de aporte y las inscripciones de formación de otra sede. Entre las tablas expuestas estaban las de RocaKids, que contienen datos de menores.</p>
+<p><strong>Corrección:</strong> cada tabla hija hereda ahora la visibilidad de su tabla padre. La política no repite el filtro de sede, sino que pregunta si el padre es visible. Así existe una sola fuente de verdad: si la regla de sede cambia, cambia en un solo lugar.</p>
+<h3>5.2 La aplicación podía elevar su propio techo de acceso</h3>
+<p>El rol con el que se ejecuta la aplicación tenía permiso de escritura sobre la matriz de permisos, que es la tabla que define hasta qué nivel de sensibilidad puede llegar cada rol.</p>
+<p><strong>Evidencia:</strong> operando con el nivel de acceso más bajo, la aplicación reescribió las 173 filas de la matriz asignándose el nivel máximo.</p>
+<p><strong>Corrección:</strong> se retiró a la aplicación el permiso de escritura sobre los ocho catálogos que definen los permisos. Esos catálogos los escribe la consola de sistemas o una migración con acta de respaldo, nunca el rol de ejecución.</p>
+<h3>5.3 Control para que no vuelva a ocurrir</h3>
+<p>Se añadió la vista <code>plataforma.v_control_rls</code>, que deja a la vista cualquier tabla que quede legible por la aplicación sin una sola política. Debe revisarse en cada corte.</p>
+<p>Es la tercera vez que aparece el mismo patrón en este proyecto, después de la corrección de las vistas en agosto. La lección es explícita y conviene dejarla escrita: <strong>el control se estaba poniendo donde se estaba mirando, no donde estaban todos los datos.</strong> Una tabla vacía en los datos de demostración no prueba nada; la comprobación válida es comparar lo que ve una sede contra lo que ve otra, no contra cero.</p>
+<h2>6. Cómo reproducir estas cifras</h2>
+<p>Sin nube, sin contenedores y sin dependencias de red. Requiere PostgreSQL 16.</p>
+<pre><code>cd backend
+./scripts/arrancar.sh     # levanta PostgreSQL 16 local en el puerto 5433
+./scripts/migrar.sh       # recrea la base y aplica las 32 migraciones y los datos
+./scripts/probar.sh       # ejecuta las 89 pruebas</code></pre>
+<p>La salida de la última instrucción imprime el veredicto de cada invariante y el total por banco.</p>
+<h2>7. Asuntos abiertos que requieren decisión de la mesa</h2>
+<ol>
+<li><strong>La tabla de personas del modelo del equipo no tiene columna de sede.</strong> Sin ella no es posible el aislamiento multisede para las 36 congregaciones. El detalle, con la corrección ya implementada, está en <code>backend/entregas-drive/01-Estructura-Datos/</code>.</li>
+<li><strong>Región de nube.</strong> Alojar en São Paulo en lugar de la región de Estados Unidos representa aproximadamente 575.000 pesos mensuales adicionales. La decisión depende de la cláusula de residencia de datos. El análisis está en <code>backend/entregas-drive/04-Infraestructura-Operacion/</code>.</li>
+<li><strong>Llave de cifrado.</strong> En desarrollo proviene de una variable de sesión. En producción debe provenir del gestor de llaves, nunca del código ni de una tabla de la propia base.</li>
+</ol>
+<h2>8. Advertencia de alcance</h2>
+<p>Este documento certifica que <strong>lo diseñado y lo construido</strong> cubre los controles descritos y que las pruebas los demuestran sobre el entorno de desarrollo. No certifica el comportamiento en producción: eso corresponde a la prueba de intrusión externa prevista en la compuerta G5 del plan de implementación.</p>
+<p class="pie">Documento de la mesa de trabajo · CasaRoca System · Fase 1.</p>
+</body></html>

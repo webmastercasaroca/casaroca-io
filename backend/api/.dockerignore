@@ -1,0 +1,15 @@
+# Lo que NO viaja a la construcción de la imagen de la API.
+# node_modules y dist se reconstruyen dentro (npm ci + build): copiar los
+# del Mac metería binarios de macOS en una imagen Linux.
+node_modules/
+dist/
+test/
+*.tsbuildinfo
+*.log
+.DS_Store
+# Credenciales: jamás dentro de una imagen.
+.env
+.env.*
+Dockerfile
+.dockerignore
+README.md

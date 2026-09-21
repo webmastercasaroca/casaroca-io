@@ -1,0 +1,32 @@
+/* ============================================================
+   MARCA · Fraunces + JetBrains Mono (OPCIONAL, autoalojadas)
+
+   Las dos son libres (SIL Open Font License) y se pueden servir desde el
+   propio dominio. Lo que NO se hace es pedirlas a Google en cada carga:
+   eso manda la IP de quien usa el sistema a un tercero, y este sistema
+   guarda datos de menores y de consejeria.
+
+   Para usarlas:
+     1. Descargar los .woff2 de Fraunces y JetBrains Mono (Google Fonts o
+        los repositorios de las fundiciones) y ponerlos en `frontend/fonts/`.
+     2. Añadir en `index.html`, ANTES de editorial.css:
+          <link rel="stylesheet" href="src/styles/marca-tipografias.css">
+
+   Sin esto, la pila cae a Georgia y al monoespaciado del sistema, que es
+   como se ve hoy y no rompe nada.
+   ============================================================ */
+@font-face {
+  font-family: "Fraunces";
+  src: url("/fonts/Fraunces-Variable.woff2") format("woff2-variations");
+  font-weight: 400 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/JetBrainsMono-Regular.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/JetBrainsMono-Medium.woff2") format("woff2");
+  font-weight: 500; font-style: normal; font-display: swap;
+}

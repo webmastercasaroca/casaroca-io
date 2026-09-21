@@ -1,0 +1,12 @@
+# Estado y caché de Terraform: el estado vive en el bucket de GCS, nunca aquí.
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+
+# Los valores reales de cada entorno. Se versiona solo el .example.
+terraform.tfvars
+*.auto.tfvars
+
+# .terraform.lock.hcl SÍ se versiona: fija las huellas de los proveedores.

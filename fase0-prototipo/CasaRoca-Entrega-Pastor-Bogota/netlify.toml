@@ -1,0 +1,22 @@
+# Casa Roca AI System — Prototipo Fase 0 (borrador / demo)
+# Sitio estático: no requiere build. Netlify sirve la carpeta tal cual.
+[build]
+  publish = "."
+  command = ""
+
+# Página de entrada: el Hub (mapa con todas las páginas).
+# El index del prototipo sigue accesible en /index.html
+[[redirects]]
+  from = "/"
+  to = "/hub.html"
+  status = 302
+  force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # Borrador: pedir a buscadores que NO lo indexen
+    X-Robots-Tag = "noindex, nofollow"

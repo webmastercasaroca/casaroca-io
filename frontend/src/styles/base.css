@@ -1,0 +1,30 @@
+/* ============================================================
+   base.css · Reset global y estilos base (body, títulos)
+   Solo usa variables de variables.css.
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--cr-fuente);
+  font-size: var(--cr-tx-base);
+  line-height: var(--cr-linea);
+  color: var(--cr-texto);
+  background: var(--cr-fondo);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4 { margin: 0 0 var(--cr-sp-3); line-height: 1.2; font-weight: var(--cr-peso-bold); color: var(--cr-azul-900); }
+h1 { font-size: var(--cr-tx-2xl); }
+h2 { font-size: var(--cr-tx-xl); }
+h3 { font-size: var(--cr-tx-lg); }
+h4 { font-size: var(--cr-tx-md); }
+p  { margin: 0 0 var(--cr-sp-3); }
+a  { color: var(--cr-azul-700); }
+img, svg { max-width: 100%; display: block; }
+table { border-collapse: collapse; width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: none; box-shadow: var(--cr-foco); border-radius: var(--cr-radio-sm); }
+/* Las cifras se alinean en columna: en tablas de aportes, un dígito
+   que baila hace que un total parezca distinto. */
+.cr-num { font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

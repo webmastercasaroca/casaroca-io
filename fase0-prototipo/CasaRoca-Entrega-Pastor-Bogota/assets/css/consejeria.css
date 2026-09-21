@@ -1,0 +1,548 @@
+/* ============================================================
+   CASA ROCA · CONSEJERÍA — ESTILOS
+   1) Tokens del acento teal (cuidado / escucha / calma)
+   2) Tema .cs: re-acentúa el panel (.dr-) en teal
+   3) Componentes propios: casos, estados, prioridad, asistente IA
+   Sobre la base de tokens.css + director.css.
+   ============================================================ */
+
+:root {
+  --cs-teal-900: #134E4A;
+  --cs-teal-800: #115E59;
+  --cs-teal:     #0F766E;   /* acento principal Consejería */
+  --cs-teal-600: #0D9488;
+  --cs-teal-500: #14B8A6;
+  --cs-teal-400: #2DD4BF;
+  --cs-teal-200: #99F6E4;
+  --cs-teal-bg:  #E9FBF6;
+  --cs-teal-50:  #F2FCFA;
+  --cs-sombra:   0 6px 16px -4px rgba(15, 118, 110, 0.32);
+}
+
+/* ============================================================
+   2) TEMA .cs — re-acentúa los componentes .dr- en teal
+   ============================================================ */
+.dr.cs .cs-logo,
+.dr.cs .dr-brand__logo.cs-logo { background: var(--cs-teal); color: #fff; }
+.dr.cs .dr-login__logo.cs-logo { background: linear-gradient(135deg, var(--cs-teal-600), var(--cs-teal-900)); color: #fff; }
+
+.dr.cs .dr-nav__item.is-active { color: var(--cs-teal); background: var(--cs-teal-bg); box-shadow: inset 3px 0 0 var(--cs-teal); }
+.dr.cs .dr-nav__item.is-active .dr-nav__ic { color: var(--cs-teal); }
+
+.dr.cs .dr-btn--primary { background: var(--cs-teal); border-color: var(--cs-teal); box-shadow: var(--cs-sombra); color: #fff; }
+.dr.cs .dr-btn--primary:hover { background: var(--cs-teal-800); }
+.dr.cs .dr-google { border-color: var(--cs-teal-200); }
+
+.dr.cs .dr-kpi__n { color: var(--cs-teal); }
+.dr.cs .dr-kpi.is-alerta { border-color: var(--cs-teal-200); background: var(--cs-teal-50); }
+
+.dr.cs .dr-filtro.is-active { background: var(--cs-teal); color: #fff; border-color: var(--cs-teal); }
+.dr.cs .dr-input:focus, .dr.cs .dr-select:focus, .dr.cs .dr-search:focus { border-color: var(--cs-teal-400); box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.22); }
+.dr.cs a { color: var(--cs-teal-800); }
+
+/* etiqueta "en vivo" y "próximamente" */
+.cs-live { color: var(--cs-teal-800); background: var(--cs-teal-bg); border-color: var(--cs-teal-200); }
+.cs-live::first-letter { color: var(--cs-teal); }
+.cs-soon { font-size: 12px; font-weight: 600; color: var(--mostaza-800); background: var(--mostaza-100); border: 1px solid var(--mostaza-200); border-radius: 999px; padding: 5px 12px; white-space: nowrap; }
+.cs-badge-beta { font-size: 11px; font-weight: 800; letter-spacing: .04em; color: #fff; background: var(--cs-teal); border-radius: 6px; padding: 2px 7px; vertical-align: middle; }
+
+/* ============================================================
+   3) ESTADOS (reusados del lenguaje del pastor) y PRIORIDAD
+   ============================================================ */
+.ps-estado { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; white-space: nowrap; display: inline-block; }
+.ps-estado--abierta { background: var(--info-bg); color: var(--info); }
+.ps-estado--orando { background: var(--mostaza-100); color: var(--mostaza-800); }
+.ps-estado--respondida { background: var(--exito-bg); color: var(--exito); }
+
+.cs-prio { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; color: var(--pc, var(--texto-suave)); background: color-mix(in srgb, var(--pc, #888) 13%, white); border: 1px solid color-mix(in srgb, var(--pc, #888) 28%, white); white-space: nowrap; }
+
+/* ============================================================
+   4) LISTA DE CASOS / CONSEJERÍAS
+   ============================================================ */
+.cs-casos { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 720px) { .cs-casos { grid-template-columns: 1fr 1fr; } }
+
+.cs-caso { background: var(--superficie); border: 1px solid var(--borde); border-radius: 16px; padding: 15px; box-shadow: var(--sombra-xs); display: flex; flex-direction: column; gap: 10px; transition: box-shadow .14s, border-color .14s; }
+.cs-caso:hover { box-shadow: var(--sombra-md); border-color: var(--cs-teal-200); }
+.cs-caso__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.cs-caso__persona { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.cs-caso__ava { width: 40px; height: 40px; border-radius: 12px; flex: none; display: grid; place-items: center; font-weight: 800; font-size: 14px; color: #fff; background: var(--cs-teal); }
+.cs-caso__nom { min-width: 0; }
+.cs-caso__nom b { display: block; font-size: 15px; color: var(--texto); letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cs-caso__nom small { color: var(--texto-tenue); font-size: 12px; }
+.cs-caso__contacto { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; color: var(--texto-suave); }
+.cs-caso__contacto a { color: var(--cs-teal-800); text-decoration: none; }
+.cs-caso__contacto a:hover { text-decoration: underline; }
+.cs-caso__fechas { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--texto-tenue); border-top: 1px solid var(--borde-sutil); padding-top: 8px; }
+.cs-caso__fechas b { color: var(--texto-suave); }
+.cs-caso__motivo { font-size: 13.5px; color: var(--texto-suave); line-height: 1.5; margin: 0; }
+.cs-caso__meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.cs-caso__foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; border-top: 1px solid var(--borde-sutil); padding-top: 10px; margin-top: auto; }
+.cs-caso__stat { font-size: 12px; color: var(--texto-tenue); }
+.cs-caso__stat b { color: var(--texto); }
+.cs-caso__acts { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.cs-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: var(--superficie-2); color: var(--texto-suave); border: 1px solid var(--borde); }
+.cs-chip--sel { cursor: pointer; }
+.cs-chip--sel.is-on { background: var(--cs-teal-bg); color: var(--cs-teal-800); border-color: var(--cs-teal-200); }
+
+/* mini lista (notas, sesiones, side panels) */
+.cs-mini { display: grid; gap: 8px; }
+.cs-mini__row { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; padding: 9px 11px; border: 1px solid var(--borde-sutil); border-radius: 11px; background: var(--superficie-3); }
+.cs-mini__row small { color: var(--texto-tenue); font-size: 12px; }
+.cs-mini__row p { margin: 2px 0 0; font-size: 13px; color: var(--texto); line-height: 1.45; }
+
+.cs-confid { font-size: 11.5px; color: var(--mostaza-800); background: var(--mostaza-50); border: 1px dashed var(--mostaza-200); border-radius: 9px; padding: 6px 10px; display: inline-flex; gap: 6px; align-items: center; }
+
+/* ============================================================
+   5) CONOCIMIENTO (base curada por el director)
+   ============================================================ */
+.cs-kn-cat { margin-bottom: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--texto-tenue); }
+.cs-kn-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 22px; }
+@media (min-width: 680px) { .cs-kn-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1040px) { .cs-kn-grid { grid-template-columns: 1fr 1fr 1fr; } }
+.cs-kn { background: var(--superficie); border: 1px solid var(--borde); border-radius: 15px; padding: 14px; box-shadow: var(--sombra-xs); display: flex; flex-direction: column; gap: 9px; }
+.cs-kn:hover { border-color: var(--cs-teal-200); box-shadow: var(--sombra-sm); }
+.cs-kn__top { display: flex; align-items: center; gap: 10px; }
+.cs-kn__ico { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; font-size: 19px; background: var(--cs-teal-bg); flex: none; }
+.cs-kn__t { font-size: 14.5px; font-weight: 700; color: var(--texto); letter-spacing: -.01em; }
+.cs-kn__tipo { font-size: 11.5px; color: var(--cs-teal-800); font-weight: 600; }
+.cs-kn__desc { font-size: 13px; color: var(--texto-suave); line-height: 1.5; margin: 0; flex: 1; }
+.cs-kn__docs { display: grid; gap: 6px; }
+.cs-kn__doc { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--texto-suave); background: var(--superficie-3); border: 1px solid var(--borde-sutil); border-radius: 9px; padding: 6px 9px; }
+.cs-kn__doc b { color: var(--texto); font-weight: 600; }
+.cs-kn__foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-top: 1px solid var(--borde-sutil); padding-top: 9px; font-size: 11.5px; color: var(--texto-tenue); }
+.cs-kn--click { cursor: pointer; transition: border-color .14s, box-shadow .14s, transform .06s; }
+.cs-kn--click:hover { border-color: var(--cs-teal-200); box-shadow: var(--sombra-md); transform: translateY(-1px); }
+.cs-kn--click:focus-visible { outline: 2px solid var(--cs-teal); outline-offset: 2px; }
+.cs-kn__desc--clamp { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.cs-kn__leer { color: var(--cs-teal-800); font-weight: 700; }
+.cs-recurso__texto { font-size: 14.5px; line-height: 1.65; color: var(--texto); background: var(--superficie-3); border: 1px solid var(--borde-sutil); border-radius: 12px; padding: 16px 18px; max-height: 52vh; overflow-y: auto; }
+
+/* ============================================================
+   6) ASISTENTE IA (placeholder de chat)
+   ============================================================ */
+.csa { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 940px) { .csa { grid-template-columns: 1fr 320px; align-items: start; } }
+.csa__main { background: var(--superficie); border: 1px solid var(--borde); border-radius: 18px; box-shadow: var(--sombra-xs); display: flex; flex-direction: column; overflow: hidden; }
+.csa__thread { padding: 18px; display: flex; flex-direction: column; gap: 14px; min-height: 280px; max-height: 50vh; overflow-y: auto; }
+.csa__msg { display: flex; gap: 10px; align-items: flex-start; max-width: 88%; }
+.csa__msg--user { align-self: flex-end; flex-direction: row-reverse; }
+.csa__ava { width: 34px; height: 34px; border-radius: 10px; flex: none; display: grid; place-items: center; font-size: 17px; background: var(--cs-teal-bg); }
+.csa__ava--u { background: var(--azul-100); color: var(--azul-700); font-size: 12px; font-weight: 700; }
+.csa__bub { background: var(--superficie-2); border: 1px solid var(--borde); border-radius: 14px; padding: 11px 14px; font-size: 14px; color: var(--texto); line-height: 1.55; }
+.csa__bub p { margin: 0 0 7px; } .csa__bub p:last-child { margin: 0; }
+.csa__msg--user .csa__bub { background: var(--cs-teal); color: #fff; border-color: var(--cs-teal); }
+.csa__bub--soon { background: var(--mostaza-50); border-color: var(--mostaza-200); }
+.csa__hint { font-size: 12.5px; color: var(--texto-suave); margin-top: 4px; }
+.csa-ans { background: var(--cs-teal-50); border: 1px solid var(--cs-teal-200); border-left: 3px solid var(--cs-teal); border-radius: 10px; padding: 11px 13px; margin: 4px 0; }
+.csa-ans__t { font-weight: 700; color: var(--cs-teal-900); font-size: 13.5px; margin-bottom: 5px; }
+.csa-ans p { font-size: 13.5px; line-height: 1.55; color: var(--texto); margin: 0 0 6px; }
+.csa-ans__src { font-size: 11px; color: var(--cs-teal-800); font-weight: 600; }
+.csa__chips { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 18px 14px; }
+.csa__chip { border: 1px solid var(--cs-teal-200); background: var(--cs-teal-50); color: var(--cs-teal-800); border-radius: 999px; padding: 7px 13px; font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: background .12s; }
+.csa__chip:hover { background: var(--cs-teal-bg); }
+.csa__compose { display: flex; gap: 8px; padding: 13px 18px; border-top: 1px solid var(--borde); background: var(--superficie-3); }
+.csa__input { flex: 1; border: 1px solid var(--borde-fuerte); border-radius: 11px; padding: 11px 14px; font: inherit; font-size: 14px; background: var(--superficie); color: var(--texto); }
+.csa__input:focus { outline: none; border-color: var(--cs-teal-400); box-shadow: 0 0 0 3px rgba(20,184,166,.22); }
+.csa__send { white-space: nowrap; }
+.csa__side .dr-card { margin: 0; }
+.csa__sources { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; }
+.csa__sources li { display: flex; gap: 9px; align-items: flex-start; font-size: 13px; }
+.csa__sources li span { font-size: 16px; }
+.csa__sources li b { display: block; color: var(--texto); font-size: 13px; }
+.csa__sources li small { color: var(--texto-tenue); font-size: 11.5px; }
+.csa__empty { color: var(--texto-tenue); font-style: italic; }
+
+/* ============================================================
+   7) KANBAN · PROCESOS ACTIVOS
+   ============================================================ */
+.cs-kanban { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
+.cs-kan-col { flex: 0 0 248px; min-width: 248px; background: var(--superficie-2); border: 1px solid var(--borde); border-radius: 15px; padding: 10px; scroll-snap-align: start; display: flex; flex-direction: column; }
+.cs-kan-col--fin { background: var(--exito-bg); border-color: var(--exito-borde); }
+.cs-kan-col--asig { background: var(--azul-50); border-color: var(--azul-100); }
+.cs-kan-col__head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 6px 10px; }
+.cs-kan-col__head b { font-size: 13.5px; color: var(--texto); display: flex; align-items: center; gap: 6px; }
+.cs-kan-col__count { font-size: 11px; font-weight: 700; color: var(--texto-suave); background: var(--superficie); border: 1px solid var(--borde); border-radius: 999px; padding: 1px 8px; }
+.cs-kan-col__body { display: flex; flex-direction: column; gap: 8px; min-height: 60px; }
+.cs-kan-col__empty { font-size: 12px; color: var(--texto-tenue); text-align: center; padding: 14px 6px; border: 1px dashed var(--borde-fuerte); border-radius: 10px; }
+.cs-kan-card { background: var(--superficie); border: 1px solid var(--borde); border-radius: 12px; padding: 10px; box-shadow: var(--sombra-xs); cursor: grab; }
+.cs-kan-card:active { cursor: grabbing; }
+.cs-kan-card.is-dragging { opacity: .45; box-shadow: var(--sombra-lg); }
+.cs-kan-card__grip { color: var(--texto-tenue); font-size: 13px; cursor: grab; margin-right: 2px; }
+.cs-kan-col.is-drop { border-color: var(--cs-teal); background: var(--cs-teal-bg); box-shadow: inset 0 0 0 2px var(--cs-teal-200); }
+.cs-kan-col.is-drop .cs-kan-col__empty { border-color: var(--cs-teal); color: var(--cs-teal-800); }
+.cs-kan-card__top { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+.cs-kan-card__ava { width: 30px; height: 30px; border-radius: 9px; flex: none; display: grid; place-items: center; font-weight: 800; font-size: 11px; color: #fff; background: var(--cs-teal); }
+.cs-kan-card__nom { min-width: 0; }
+.cs-kan-card__nom b { display: block; font-size: 13px; color: var(--texto); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cs-kan-card__nom small { font-size: 11px; color: var(--texto-tenue); }
+.cs-kan-card__meta { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+.cs-kan-card__foot { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.cs-kan-move { border: 1px solid var(--borde-fuerte); background: var(--superficie); border-radius: 8px; width: 30px; height: 28px; font-size: 14px; cursor: pointer; color: var(--cs-teal-800); display: grid; place-items: center; }
+.cs-kan-move:disabled { opacity: .35; cursor: not-allowed; }
+.cs-kan-addcol { flex: 0 0 auto; align-self: flex-start; margin-top: 4px; }
+
+/* ============================================================
+   8) BOTÓN FLOTANTE DEL ASISTENTE (FAB)
+   ============================================================ */
+.csa-fab { position: fixed; right: 18px; bottom: 18px; z-index: 60; display: inline-flex; align-items: center; gap: 8px; background: var(--cs-teal); color: #fff; border: none; border-radius: 999px; padding: 12px 18px; font: inherit; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 10px 26px -6px rgba(15,118,110,.5); transition: transform .12s, background .12s; }
+.csa-fab:hover { background: var(--cs-teal-800); transform: translateY(-2px); }
+.csa-fab:focus-visible { outline: 3px solid var(--cs-teal-200); outline-offset: 2px; }
+.csa-fab__ic { font-size: 18px; }
+/* el asistente dentro del modal: SIEMPRE una sola columna (anula la rejilla 1fr/320px) */
+.csa--modal { display: block; }
+.csa--modal .csa__main { width: 100%; box-shadow: none; border: none; }
+.csa--modal .csa__thread { max-height: 46vh; min-height: 180px; }
+.csa--modal .csa__chips { padding: 0 0 12px; }
+.csa--modal .csa__compose { padding: 12px 0 0; border-top: 1px solid var(--borde); }
+@media (max-width: 560px) { .csa-fab__txt { display: none; } .csa-fab { padding: 14px; bottom: 78px; } }
+
+/* ============================================================
+   9) EXPLORADOR estilo Tableau
+   ============================================================ */
+.cs-explorer { display: flex; flex-direction: column; gap: 16px; }
+.cs-explorer__bar { display: flex; flex-wrap: wrap; gap: 14px 18px; align-items: flex-end; background: var(--superficie); border: 1px solid var(--borde); border-radius: 15px; padding: 14px 16px; box-shadow: var(--sombra-xs); }
+.cs-explorer__ctl { display: flex; flex-direction: column; gap: 6px; }
+.cs-explorer__ctl > span { font-size: 12px; font-weight: 700; color: var(--texto-suave); text-transform: uppercase; letter-spacing: .04em; }
+.cs-explorer__ctl .dr-select { min-width: 190px; }
+.cs-explorer__out { min-height: 200px; }
+.cs-explorer__out .dr-card { margin: 0; }
+
+/* tipo compacto en tablas (sin píldora) */
+.cs-tipo-txt { font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+/* cédula = código/llave */
+.cs-ced { font-family: var(--fuente-mono); font-size: 12px; color: var(--texto-suave); white-space: nowrap; }
+/* etapa del proceso (refleja el Kanban en vivo) */
+.cs-etapa { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; white-space: nowrap; display: inline-block; }
+.cs-etapa.is-asig { background: var(--azul-50); color: var(--azul-700); border: 1px solid var(--azul-100); }
+.cs-etapa.is-proc { background: var(--cs-teal-bg); color: var(--cs-teal-800); border: 1px solid var(--cs-teal-200); }
+.cs-etapa.is-fin { background: var(--exito-bg); color: var(--exito); border: 1px solid var(--exito-borde); }
+
+/* panel de controles del pivote */
+.cs-pivpanel { background: var(--superficie); border: 1px solid var(--borde); border-radius: 15px; padding: 14px 16px; box-shadow: var(--sombra-xs); margin-bottom: 14px; }
+.cs-pivpanel__row { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: flex-end; }
+.cs-pivpanel__flt { margin-top: 12px; border-top: 1px solid var(--borde-sutil); padding-top: 10px; }
+.cs-pivpanel__flt summary { cursor: pointer; font-size: 13px; font-weight: 700; color: var(--texto-suave); display: flex; align-items: center; gap: 8px; list-style: none; }
+.cs-pivpanel__flt summary::-webkit-details-marker { display: none; }
+.cs-flt__n { background: var(--cs-teal); color: #fff; border-radius: 999px; padding: 0 7px; font-size: 11px; }
+.cs-flt__grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 12px; }
+@media (min-width: 720px) { .cs-flt__grid { grid-template-columns: 1fr 1fr; } }
+.cs-flt__lbl { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--texto-tenue); margin-bottom: 6px; }
+.cs-flt__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* barra de análisis guardados */
+.cs-pivbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.cs-pivbar__saved { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.cs-saved { display: inline-flex; align-items: center; border: 1px solid var(--cs-teal-200); background: var(--cs-teal-50); border-radius: 999px; overflow: hidden; }
+.cs-saved__load { border: none; background: none; font: inherit; font-size: 12px; font-weight: 600; color: var(--cs-teal-800); padding: 5px 4px 5px 11px; cursor: pointer; }
+.cs-saved__del { border: none; background: none; color: var(--texto-tenue); cursor: pointer; padding: 5px 9px 5px 5px; font-size: 12px; }
+.cs-saved__del:hover { color: var(--peligro); }
+
+/* tabla dinámica */
+.cs-piv th, .cs-piv td { font-variant-numeric: tabular-nums; }
+.cs-piv__num { text-align: right; }
+.cs-piv__rh { text-align: left; font-weight: 600; color: var(--texto); background: var(--superficie-3); position: sticky; left: 0; }
+.cs-piv__tot { font-weight: 700; color: var(--cs-teal-800); background: var(--cs-teal-50); }
+.cs-piv__foot th, .cs-piv__foot td { border-top: 2px solid var(--borde-fuerte); font-weight: 700; color: var(--texto); background: var(--superficie-2); }
+.cs-piv--heat td.cs-heat { text-align: center; font-weight: 700; font-size: 13px; border: 2px solid var(--superficie); border-radius: 6px; }
+
+/* barras / apiladas del pivote */
+.cs-bars { display: grid; gap: 9px; }
+.cs-barrow { display: grid; grid-template-columns: 120px 1fr 42px; align-items: center; gap: 10px; }
+.cs-barrow__lbl { font-size: 12.5px; color: var(--texto-suave); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cs-barrow__tot { font-size: 12.5px; font-weight: 700; color: var(--texto); }
+.cs-bar { display: flex; align-items: stretch; gap: 3px; min-height: 22px; }
+.cs-bar--stack { gap: 2px; }
+.cs-bar__seg { display: flex; align-items: center; justify-content: flex-end; min-width: 2px; border-radius: 5px; color: #fff; font-size: 11px; font-weight: 700; padding: 0 5px; transition: width .25s; }
+.cs-bar--stack .cs-bar__seg { border-radius: 3px; justify-content: center; }
+.cs-bar--group .cs-bar__seg span { text-shadow: 0 1px 1px rgba(0,0,0,.2); }
+@media (max-width: 560px) { .cs-barrow { grid-template-columns: 84px 1fr 34px; } }
+
+/* ============================================================
+   10) HOJA DE VIDA del consejero
+   ============================================================ */
+/* fichas anchas (hoja de vida del consejero y perfil 360° del CRM):
+   el modal base es de 460px — muy angosto para 2 columnas. */
+.dr-modal:has(.cs-hv__hero) { max-width: 760px; padding: 24px; }
+@media (max-width: 640px) { .dr-modal:has(.cs-hv__hero) { max-width: 100%; padding: 18px; } }
+
+/* hero de la hoja de vida */
+.cs-hv__hero { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; background: linear-gradient(135deg, var(--cs-teal-50), var(--cs-teal-bg)); border: 1px solid var(--cs-teal-200); border-radius: 16px; padding: 18px 20px; margin-bottom: 18px; }
+.cs-hv__ava { width: 56px; height: 56px; border-radius: 16px; flex: none; display: grid; place-items: center; font-weight: 800; font-size: 20px; color: #fff; background: var(--cs-teal); box-shadow: var(--cs-sombra); }
+.cs-hv__id { flex: 1; min-width: 180px; }
+.cs-hv__id h3 { font-size: 20px; letter-spacing: -.02em; margin: 0; color: var(--texto); }
+.cs-hv__id p { margin: 2px 0 7px; font-size: 13px; color: var(--cs-teal-800); }
+.cs-hv__tags { display: flex; gap: 7px; flex-wrap: wrap; }
+.cs-hv__state { font-size: 11.5px; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
+.cs-hv__state.is-on { color: var(--exito); background: var(--exito-bg); }
+.cs-hv__state.is-off { color: var(--texto-tenue); background: var(--superficie-2); }
+.cs-hv__cert { font-size: 11.5px; font-weight: 600; color: var(--texto-suave); background: var(--superficie); border: 1px solid var(--borde); border-radius: 999px; padding: 2px 10px; }
+.cs-hv__kpis { display: flex; gap: 8px; }
+.cs-hv__kpi { text-align: center; background: var(--superficie); border: 1px solid var(--borde); border-radius: 12px; padding: 8px 14px; min-width: 64px; }
+.cs-hv__kpi b { display: block; font-size: 18px; color: var(--cs-teal); letter-spacing: -.02em; }
+.cs-hv__kpi span { font-size: 10.5px; color: var(--texto-tenue); text-transform: uppercase; letter-spacing: .03em; }
+
+.cs-hv__body { display: grid; grid-template-columns: 1fr; gap: 28px; }
+@media (min-width: 640px) { .cs-hv__body { grid-template-columns: 1fr 1fr; column-gap: 32px; } }
+.cs-hv__col { min-width: 0; }
+.cs-hv__grp { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--texto-tenue); margin: 0 0 8px; display: flex; align-items: center; gap: 8px; }
+.cs-hv__grp:not(:first-child) { margin-top: 14px; }
+.cs-hv__count { font-weight: 700; color: var(--cs-teal-800); background: var(--cs-teal-bg); border-radius: 999px; padding: 1px 8px; font-size: 11px; letter-spacing: 0; }
+.cs-kv { display: grid; gap: 6px; margin: 0; }
+.cs-kv > div { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; padding: 6px 0; border-bottom: 1px solid var(--borde-sutil); }
+.cs-kv dt { color: var(--texto-tenue); margin: 0; }
+.cs-kv dd { margin: 0; color: var(--texto); font-weight: 600; text-align: right; }
+.cs-hv__contact { display: flex; gap: 7px; flex-wrap: wrap; }
+.cs-hv__meta { font-size: 12px; color: var(--texto-tenue); margin-top: 7px; line-height: 1.5; }
+.cs-hv__progwrap { margin-bottom: 10px; }
+.cs-prog { height: 9px; border-radius: 999px; background: var(--superficie-2); overflow: hidden; margin-top: 6px; }
+.cs-prog i { display: block; height: 100%; border-radius: 999px; transition: width .3s; }
+
+/* checklist de formación compacto */
+.cs-flist { display: grid; gap: 7px; }
+.cs-fitem { display: flex; align-items: center; gap: 10px; padding: 9px 13px; border: 1px solid var(--borde-sutil); border-radius: 10px; background: var(--superficie-3); font-size: 13px; }
+.cs-fitem__n { flex: 1; color: var(--texto); font-weight: 500; }
+.cs-fitem__s { font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 999px; white-space: nowrap; }
+.cs-fitem--completo { border-color: var(--exito-borde); }
+.cs-fitem--completo .cs-fitem__s { color: var(--exito); background: var(--exito-bg); }
+.cs-fitem--curso .cs-fitem__s { color: var(--mostaza-800); background: var(--mostaza-100); }
+.cs-fitem--pendiente .cs-fitem__s { color: var(--texto-tenue); background: var(--superficie-2); }
+.cs-fdot { width: 19px; height: 19px; flex: none; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 800; }
+.cs-fdot.is-ok { color: #fff; background: var(--exito); }
+.cs-fdot.is-mid { color: #fff; background: var(--mostaza-500); }
+.cs-fdot.is-off { color: var(--texto-tenue); background: var(--superficie-2); border: 1px solid var(--borde-fuerte); }
+
+/* barra de búsqueda + filtros del Equipo */
+.cs-eqbar { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: flex-end; margin-bottom: 10px; }
+.cs-eqbar .dr-search { flex: 1 1 260px; min-width: 220px; }
+.cs-eqbar__sel { display: flex; flex-direction: column; gap: 4px; }
+.cs-eqbar__sel > span { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--texto-tenue); }
+.cs-eqbar__sel .dr-select { min-width: 160px; }
+
+/* chip de tipo de vínculo (planta / voluntario) */
+.cs-vinc { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; white-space: nowrap; display: inline-block; }
+.cs-vinc--planta { background: var(--azul-50); color: var(--azul-700); border: 1px solid var(--azul-100); }
+.cs-vinc--vol { background: var(--cs-teal-bg); color: var(--cs-teal-800); border: 1px solid var(--cs-teal-200); }
+
+/* estado de disponibilidad del consejero */
+.cs-avail { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; white-space: nowrap; display: inline-block; }
+.cs-avail.is-on { background: var(--exito-bg); color: var(--exito); }
+.cs-avail.is-busy { background: var(--mostaza-100); color: var(--mostaza-800); }
+.cs-avail.is-off { background: var(--superficie-2); color: var(--texto-tenue); }
+
+.cs-member__badges { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 8px; }
+
+.cs-member--click { cursor: pointer; transition: border-color .14s, box-shadow .14s, transform .06s; }
+.cs-member--click:hover { border-color: var(--cs-teal-200); box-shadow: var(--sombra-md); }
+.cs-member--click:active { transform: scale(.99); }
+.cs-member--click:focus-visible { outline: 2px solid var(--cs-teal); outline-offset: 2px; }
+
+/* ============================================================
+   11) CALENDARIO GRANDE (coordinador)
+   ============================================================ */
+.cs-cal--grande .dr-cal__cell { min-height: 92px; }
+.cs-cal--grande .dr-cal__bar b { font-size: 17px; }
+@media (min-width: 720px) { .cs-cal--grande .dr-cal__cell { min-height: 104px; } }
+
+/* ============================================================
+   12) CONEXIÓN GOOGLE CALENDAR
+   ============================================================ */
+.cs-gcal { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; background: var(--superficie); border: 1px solid var(--borde); border-radius: 14px; padding: 12px 16px; box-shadow: var(--sombra-xs); margin-bottom: 14px; }
+.cs-gcal small { display: block; color: var(--texto-tenue); font-size: 12px; margin-top: 2px; }
+.cs-gcal--on { background: var(--cs-teal-50); border-color: var(--cs-teal-200); }
+.cs-gcal__ok { color: var(--exito); font-weight: 700; }
+.cs-gcal__btn { display: inline-flex; align-items: center; gap: 8px; }
+.cs-gcal__btn svg { background: #fff; border-radius: 3px; padding: 1px; }
+
+/* ============================================================
+   13) BOTONES DE CONTACTO (WhatsApp / correo)
+   ============================================================ */
+.cs-contact-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 4px 0 14px; }
+.cs-wa, .cs-mail { display: inline-flex; align-items: center; gap: 8px; font: inherit; font-weight: 700; font-size: 13.5px; border-radius: 11px; padding: 10px 16px; text-decoration: none; border: 1px solid transparent; transition: transform .1s, box-shadow .12s, background .12s; }
+.cs-wa { background: #25D366; color: #fff; box-shadow: 0 4px 12px -3px rgba(37,211,102,.5); }
+.cs-wa:hover { background: #1ebe5a; transform: translateY(-1px); }
+.cs-mail { background: var(--superficie); color: var(--azul-700); border-color: var(--azul-200); }
+.cs-mail:hover { background: var(--azul-50); transform: translateY(-1px); }
+
+/* ============================================================
+   13b) BANDEJA: persona clickable + badge de recurrencia
+   ============================================================ */
+.cs-persona-link { display: inline-flex; align-items: center; gap: 7px; flex-wrap: wrap; background: none; border: none; padding: 0; margin: 0; font: inherit; cursor: pointer; text-align: left; color: var(--texto); }
+.cs-persona-link b { border-bottom: 1px dashed var(--borde-fuerte); }
+.cs-persona-link:hover b { color: var(--cs-teal-800); border-bottom-color: var(--cs-teal); }
+.cs-rec-badge { font-size: 10.5px; font-weight: 700; padding: 1px 7px; border-radius: 999px; white-space: nowrap; }
+.cs-rec-badge.is-new { background: var(--exito-bg); color: var(--exito); }
+.cs-rec-badge.is-rec { background: var(--mostaza-100); color: var(--mostaza-800); }
+
+/* última interacción del consejero con el caso */
+.cs-lastint { font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+.cs-lastint.is-ok { color: var(--exito); }
+.cs-lastint.is-warn { color: var(--mostaza-800); }
+.cs-lastint.is-stale { color: var(--peligro); font-weight: 700; }
+
+/* ============================================================
+   15) DOCUMENTOS (formularios + correos)
+   ============================================================ */
+.cs-doc__grp { margin: 18px 0 10px; }
+.cs-doc__grp h3 { font-size: 15px; color: var(--texto); margin: 0; }
+.cs-doc__grp p { font-size: 12.5px; color: var(--texto-tenue); margin: 2px 0 0; }
+.cs-doc__grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .cs-doc__grid { grid-template-columns: 1fr 1fr; } }
+.cs-doc { background: var(--superficie); border: 1px solid var(--borde); border-radius: 14px; padding: 14px 16px; box-shadow: var(--sombra-xs); }
+.cs-doc.is-off { opacity: .62; }
+.cs-doc__top { display: flex; align-items: flex-start; gap: 11px; }
+.cs-doc__ic { font-size: 22px; flex: none; }
+.cs-doc__idb { flex: 1; min-width: 0; }
+.cs-doc__idb b { display: block; font-size: 14.5px; color: var(--texto); }
+.cs-doc__idb small { color: var(--texto-tenue); font-size: 12px; }
+.cs-doc__state { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; flex: none; }
+.cs-doc__state.is-on { background: var(--exito-bg); color: var(--exito); }
+.cs-doc__state.is-off { background: var(--superficie-2); color: var(--texto-tenue); }
+.cs-doc__tags { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0 0; }
+.cs-doc__file { font-size: 12px; color: var(--texto-suave); margin-top: 8px; font-family: var(--fuente-mono, monospace); }
+.cs-doc__meta { font-size: 11.5px; color: var(--texto-tenue); margin-top: 9px; }
+.cs-doc__acts { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 11px; }
+
+/* ============================================================
+   16) RECORDATORIOS
+   ============================================================ */
+.cs-rem__block { background: var(--superficie); border: 1px solid var(--borde); border-radius: 15px; padding: 14px 16px; box-shadow: var(--sombra-xs); margin-bottom: 14px; }
+.cs-rem__head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.cs-rem__head h3 { font-size: 14.5px; color: var(--texto); margin: 0; }
+.cs-rem__n { font-size: 12px; font-weight: 700; color: var(--cs-teal-800); background: var(--cs-teal-bg); border: 1px solid var(--cs-teal-200); border-radius: 999px; padding: 1px 10px; }
+.cs-rem__list { display: grid; gap: 8px; }
+.cs-rem__item { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border: 1px solid var(--borde-sutil); border-radius: 11px; background: var(--superficie-3); }
+.cs-rem__ic { font-size: 17px; flex: none; }
+.cs-rem__tx { flex: 1; min-width: 0; }
+.cs-rem__tx b { display: block; font-size: 13.5px; color: var(--texto); }
+.cs-rem__tx small { color: var(--texto-tenue); font-size: 12px; }
+
+/* ============================================================
+   17) ANALÍTICA: KPIs clickables, insights y satisfacción
+   ============================================================ */
+.dr-kpi--btn { cursor: pointer; font-family: inherit; text-align: center; position: relative; transition: border-color .12s, box-shadow .12s, transform .06s; }
+.dr-kpi--btn:hover { border-color: var(--cs-teal-200); box-shadow: var(--sombra-md); transform: translateY(-2px); }
+.dr-kpi--btn:focus-visible { outline: 2px solid var(--cs-teal); outline-offset: 2px; }
+.dr-kpi__hint { display: block; font-size: 10px; color: var(--cs-teal-800); margin-top: 5px; font-weight: 600; }
+
+.cs-insights { background: linear-gradient(135deg, var(--cs-teal-50), var(--cs-teal-bg)); border: 1px solid var(--cs-teal-200); border-radius: 15px; padding: 14px 18px; margin: 16px 0; }
+.cs-insights__t { font-size: 14px; font-weight: 800; color: var(--cs-teal-800); margin-bottom: 8px; }
+.cs-insights__t small { font-weight: 500; color: var(--texto-suave); }
+.cs-insights ul { margin: 0; padding-left: 4px; list-style: none; display: grid; gap: 7px; }
+.cs-insights li { font-size: 13px; color: var(--texto); line-height: 1.5; }
+
+.cs-satpanel { display: grid; grid-template-columns: 1fr; gap: 16px; background: var(--superficie); border: 1px solid var(--borde); border-radius: 15px; padding: 16px 18px; box-shadow: var(--sombra-xs); margin-top: 18px; }
+@media (min-width: 640px) { .cs-satpanel { grid-template-columns: 200px 1fr; align-items: center; } }
+.cs-satpanel__score { text-align: center; }
+.cs-satpanel__score b { font-size: 46px; color: var(--cs-teal); letter-spacing: -.02em; line-height: 1; }
+.cs-satpanel__score span { font-size: 18px; color: var(--texto-tenue); }
+.cs-satpanel__score p { font-size: 13px; color: var(--texto-suave); margin-top: 6px; }
+.cs-satpanel__dist { display: grid; gap: 7px; }
+.cs-satrow { display: grid; grid-template-columns: 34px 1fr 26px; align-items: center; gap: 10px; }
+.cs-satrow__l { font-size: 12.5px; font-weight: 700; color: var(--texto-suave); }
+.cs-satrow__bar { height: 12px; border-radius: 999px; background: var(--superficie-2); overflow: hidden; }
+.cs-satrow__bar i { display: block; height: 100%; border-radius: 999px; transition: width .3s; }
+.cs-satrow b { font-size: 12.5px; color: var(--texto); text-align: right; }
+
+/* ============================================================
+   13c) ASIGNACIÓN: selección de formularios + vista previa del correo
+   ============================================================ */
+.cs-formsel { display: grid; gap: 8px; margin: 4px 0 12px; }
+.cs-formsel__item { display: flex; align-items: flex-start; gap: 11px; padding: 11px 13px; border: 1px solid var(--borde); border-radius: 12px; background: var(--superficie-3); cursor: pointer; transition: border-color .12s, background .12s; }
+.cs-formsel__item:hover { border-color: var(--cs-teal-200); background: var(--cs-teal-50); }
+.cs-formsel__item input { margin-top: 3px; width: 18px; height: 18px; flex: none; accent-color: var(--cs-teal); }
+.cs-formsel__item span { display: block; }
+.cs-formsel__item b { display: block; font-size: 14px; color: var(--texto); }
+.cs-formsel__item small { color: var(--texto-tenue); font-size: 12px; }
+.cs-mailprev { border: 1px solid var(--borde); border-radius: 12px; background: var(--superficie-2); margin: 4px 0 12px; overflow: hidden; }
+.cs-mailprev > summary { cursor: pointer; padding: 11px 14px; font-size: 13px; font-weight: 700; color: var(--cs-teal-800); list-style: none; }
+.cs-mailprev > summary::-webkit-details-marker { display: none; }
+.cs-mailprev__body { margin: 0; padding: 12px 14px; border-top: 1px solid var(--borde); background: var(--superficie); font-family: var(--fuente-mono, ui-monospace, Menlo, monospace); font-size: 11.5px; line-height: 1.55; color: var(--texto-suave); white-space: pre-wrap; word-break: break-word; max-height: 300px; overflow-y: auto; }
+.cs-mailnote { font-size: 12.5px; color: var(--texto-suave); background: var(--cs-teal-bg); border: 1px solid var(--cs-teal-200); border-radius: 11px; padding: 10px 13px; margin-bottom: 4px; }
+
+/* ============================================================
+   14) BUSCADOR CRM (directorio general de la iglesia)
+   ============================================================ */
+.cs-crm { background: var(--superficie); border: 1px solid var(--borde); border-radius: 15px; padding: 14px 16px; box-shadow: var(--sombra-xs); margin-bottom: 16px; }
+.cs-crm__head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.cs-crm__head small { display: block; color: var(--texto-tenue); font-size: 12px; margin-top: 2px; }
+.cs-crm__sync { font-size: 11.5px; font-weight: 700; color: var(--cs-teal-800); background: var(--cs-teal-bg); border: 1px solid var(--cs-teal-200); border-radius: 999px; padding: 3px 11px; white-space: nowrap; }
+.cs-crm__res { margin-top: 10px; display: grid; gap: 6px; max-height: 360px; overflow-y: auto; }
+.cs-crm__row { display: flex; align-items: center; gap: 11px; width: 100%; text-align: left; background: var(--superficie-3); border: 1px solid var(--borde-sutil); border-radius: 11px; padding: 9px 12px; cursor: pointer; font: inherit; transition: border-color .12s, background .12s; }
+.cs-crm__row:hover { border-color: var(--cs-teal-200); background: var(--cs-teal-50); }
+.cs-crm__ava { width: 36px; height: 36px; border-radius: 10px; flex: none; display: grid; place-items: center; font-weight: 800; font-size: 12px; color: #fff; background: var(--cs-teal); }
+.cs-crm__info { flex: 1; min-width: 0; }
+.cs-crm__info b { display: block; font-size: 14px; color: var(--texto); }
+.cs-crm__info small { color: var(--texto-tenue); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.cs-crm__badge { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: var(--superficie-2); color: var(--texto-suave); white-space: nowrap; }
+.cs-crm__badge.is-ig { background: var(--exito-bg); color: var(--exito); }
+.cs-crm__badge.is-cs { background: var(--cs-teal-bg); color: var(--cs-teal-800); }
+.cs-crm__priv { font-size: 12px; color: var(--mostaza-800); background: var(--mostaza-50); border: 1px dashed var(--mostaza-200); border-radius: 10px; padding: 8px 12px; margin-bottom: 14px; }
+
+/* equipo */
+.cs-team { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 680px) { .cs-team { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1040px) { .cs-team { grid-template-columns: 1fr 1fr 1fr; } }
+.cs-member { background: var(--superficie); border: 1px solid var(--borde); border-radius: 15px; padding: 15px; box-shadow: var(--sombra-xs); display: flex; flex-direction: column; gap: 10px; }
+.cs-member.is-off { opacity: .62; }
+.cs-member__top { display: flex; align-items: center; gap: 11px; }
+.cs-member__ava { width: 44px; height: 44px; border-radius: 13px; flex: none; display: grid; place-items: center; font-weight: 800; color: #fff; background: var(--cs-teal); }
+.cs-member__nom b { display: block; font-size: 15px; color: var(--texto); }
+.cs-member__nom small { color: var(--texto-tenue); font-size: 12px; }
+.cs-member__load { font-size: 12px; color: var(--texto-suave); }
+.cs-member__bar { height: 7px; border-radius: 999px; background: var(--superficie-2); overflow: hidden; }
+.cs-member__bar i { display: block; height: 100%; background: var(--cs-teal); border-radius: 999px; }
+.cs-member__esp { display: flex; flex-wrap: wrap; gap: 5px; }
+.cs-member__acts { display: flex; gap: 6px; flex-wrap: wrap; border-top: 1px solid var(--borde-sutil); padding-top: 10px; }
+
+/* ============================================================
+   Detalle del FORMULARIO WEB dentro del modal "Gestionar"
+   (solicitudes que llegan del público / consejeria-solicitud.html)
+   ============================================================ */
+.cs-fw { border: 1px solid var(--cs-teal-200); background: var(--cs-teal-50); border-radius: 12px; padding: 4px 14px 12px; margin: 0 0 16px; }
+.cs-fw > summary { cursor: pointer; font-weight: 700; font-size: 13.5px; color: var(--cs-teal-800); padding: 10px 2px; list-style: none; }
+.cs-fw > summary::-webkit-details-marker { display: none; }
+.cs-fw > summary::before { content: "▸ "; }
+.cs-fw[open] > summary::before { content: "▾ "; }
+.cs-fw__row { display: flex; gap: 10px; padding: 6px 0; border-top: 1px solid var(--cs-teal-200); font-size: 13px; }
+.cs-fw__row:first-of-type { border-top: 0; }
+.cs-fw__k { flex: 0 0 40%; max-width: 180px; color: var(--texto-suave); font-weight: 600; }
+.cs-fw__v { flex: 1; color: var(--texto); }
+.cs-fw__evalwrap { border-top: 1px solid var(--cs-teal-200); margin-top: 6px; }
+.cs-fw__eval { padding: 7px 0; border-top: 1px dashed var(--cs-teal-200); font-size: 12.5px; }
+.cs-fw__eval:first-of-type { border-top: 0; }
+.cs-fw__eval p { margin: 0 0 2px; color: var(--texto-suave); line-height: 1.4; }
+.cs-fw__eval b { color: var(--cs-teal-800); }
+
+/* ============================================================
+   BANDEJA DE SOLICITUDES — tabla compacta que cabe en pantalla
+   (13 columnas) sin scroll lateral. table-layout fijo + anchos %.
+   En móvil, mobile.css convierte la tabla en tarjetas (display:block),
+   así que estas reglas solo aplican en escritorio.
+   ============================================================ */
+.cs-tabla-bandeja { width: 100%; table-layout: fixed; font-size: 12px; }
+.cs-tabla-bandeja th,
+.cs-tabla-bandeja td { padding: 7px 8px; vertical-align: top; overflow: hidden; text-overflow: ellipsis; word-break: break-word; }
+.cs-tabla-bandeja th { font-size: 10px; letter-spacing: .02em; }
+.cs-tabla-bandeja td a { word-break: break-all; }
+/* anchos por columna: cédula, persona, tel, correo, edad, género,
+   ministerio, tipo, motivo, solicitó, prioridad, estado, acciones */
+.cs-tabla-bandeja th:nth-child(1),  .cs-tabla-bandeja td:nth-child(1)  { width: 8%; }
+.cs-tabla-bandeja th:nth-child(2),  .cs-tabla-bandeja td:nth-child(2)  { width: 9%; }
+.cs-tabla-bandeja th:nth-child(3),  .cs-tabla-bandeja td:nth-child(3)  { width: 7%; }
+.cs-tabla-bandeja th:nth-child(4),  .cs-tabla-bandeja td:nth-child(4)  { width: 12%; }
+.cs-tabla-bandeja th:nth-child(5),  .cs-tabla-bandeja td:nth-child(5)  { width: 4%; }
+.cs-tabla-bandeja th:nth-child(6),  .cs-tabla-bandeja td:nth-child(6)  { width: 6%; }
+.cs-tabla-bandeja th:nth-child(7),  .cs-tabla-bandeja td:nth-child(7)  { width: 9%; }
+.cs-tabla-bandeja th:nth-child(8),  .cs-tabla-bandeja td:nth-child(8)  { width: 9%; }
+.cs-tabla-bandeja th:nth-child(9),  .cs-tabla-bandeja td:nth-child(9)  { width: 11%; }
+.cs-tabla-bandeja th:nth-child(10), .cs-tabla-bandeja td:nth-child(10) { width: 7%; }
+.cs-tabla-bandeja th:nth-child(11), .cs-tabla-bandeja td:nth-child(11) { width: 6%; }
+.cs-tabla-bandeja th:nth-child(12), .cs-tabla-bandeja td:nth-child(12) { width: 9%; }
+.cs-tabla-bandeja th:nth-child(13), .cs-tabla-bandeja td:nth-child(13) { width: 13%; }
+/* el motivo se trunca a una línea dentro de su columna (ya no fija 200px) */
+.cs-tabla-bandeja td:nth-child(9) { max-width: 0 !important; }
+/* columna de acciones: botones pequeños que pueden envolver */
+.cs-tabla-bandeja td:last-child { white-space: normal !important; text-align: right; }
+.cs-tabla-bandeja td:last-child .dr-btn { font-size: 10.5px; padding: 4px 7px; margin: 2px 0 0 auto; }

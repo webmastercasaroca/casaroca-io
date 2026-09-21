@@ -1,0 +1,158 @@
+# =====================================================================
+# CI/CD de CasaRoca System en Cloud Build.
+#
+# Push a main (100p-NANO/ecosistema-cr) → este archivo:
+#   1. construye las dos imágenes (API y migrador), en paralelo
+#   2. las sube a Artifact Registry
+#   3. ejecuta el Job del migrador con la imagen nueva y ESPERA
+#   4. solo si el migrador terminó bien, despliega la API
+#
+# ⛔ El orden 3 → 4 es la garantía: la API nueva nunca arranca contra una
+#    base sin las migraciones que espera. Si el migrador falla, el build
+#    se detiene y la API anterior sigue sirviendo.
+# ⚠️ Esto exige migraciones que la API ANTERIOR tolere (añadir columnas y
+#    tablas sí; renombrar o borrar, en dos despliegues). Es la regla de
+#    «expandir y luego contraer».
+#
+# Contexto: la raíz del repositorio. Manual, desde la raíz:
+#   gcloud builds submit --config infra/gcp/cloudbuild.yaml \
+#     --substitutions=_REGION=us-east1,_PREFIJO=casaroca .
+# =====================================================================
+substitutions:
+  _REGION: us-east1
+  _PREFIJO: casaroca
+  # ⛔ El domingo NO se despliega. Para una emergencia real (el sistema ya
+  #    está caído y el arreglo es este) se pasa _FORZAR_DOMINGO=si a mano,
+  #    y queda en el registro del build quién lo forzó.
+  _FORZAR_DOMINGO: 'no'
+
+options:
+  # Obligatorio cuando el build corre con una cuenta de servicio propia.
+  logging: CLOUD_LOGGING_ONLY
+  dynamicSubstitutions: true
+
+timeout: 1800s
+
+steps:
+  # ── 0. Los dos frenos ───────────────────────────────────────────────
+  #
+  # ⛔ 19 de septiembre de 2026. Antes este archivo empezaba construyendo:
+  #    un push a `main` llegaba a producción sin pasar por ninguna
+  #    compuerta, cualquier día y a cualquier hora, y las migraciones
+  #    corrían contra la base de la red sin una copia hecha a propósito.
+  #    El RUNBOOK decía «nunca desplegar un domingo» y nada lo impedía.
+  #    Un documento que pide disciplina no es un freno; esto sí.
+  - id: freno-domingo
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    waitFor: ['-']
+    entrypoint: bash
+    args:
+      - -euo
+      - pipefail
+      - -c
+      - |
+        DIA=$(TZ=America/Bogota date +%u)   # 7 = domingo en Bogotá
+        if [ "$DIA" = "7" ] && [ "${_FORZAR_DOMINGO}" != "si" ]; then
+          echo "⛔ Es DOMINGO en Bogotá: el día de más uso del sistema."
+          echo "   Check-in de RocaKids, asistencia y formularios de nuevos."
+          echo "   No se despliega. Si de verdad es una emergencia:"
+          echo "     gcloud builds submit --substitutions=_FORZAR_DOMINGO=si ..."
+          exit 1
+        fi
+        if [ "$DIA" = "7" ]; then
+          echo "⚠️  DESPLIEGUE FORZADO EN DOMINGO. Queda registrado en este build."
+        fi
+        echo "Día $DIA en Bogotá: se puede desplegar."
+
+  # Copia bajo demanda ANTES de tocar la base. Cloud SQL ya tiene copias
+  # automáticas, pero la que importa cuando una migración sale mal es la
+  # de justo antes, no la de anoche.
+  - id: copia-antes-de-migrar
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    waitFor: ['freno-domingo']
+    entrypoint: bash
+    args:
+      - -euo
+      - pipefail
+      - -c
+      - |
+        INSTANCIA=$(gcloud sql instances list \
+          --filter="name~^${_PREFIJO}-" --format="value(name)" --limit=1)
+        if [ -z "$INSTANCIA" ]; then
+          echo "⛔ No encuentro la instancia de Cloud SQL: no migro a ciegas."
+          exit 1
+        fi
+        echo "Copia bajo demanda de $INSTANCIA antes de migrar ($BUILD_ID)"
+        gcloud sql backups create --instance="$INSTANCIA" \
+          --description="antes del build $BUILD_ID ($COMMIT_SHA)" --async
+        # --async a propósito: la copia queda ENCOLADA y registrada; esperar
+        # a que termine puede tardar más que el propio despliegue. Lo que
+        # importa es que exista el punto de retorno con su etiqueta.
+
+  # ── 1. Imágenes ─────────────────────────────────────────────────────
+  # La etiqueta es el BUILD_ID: existe también en builds manuales, y el
+  # commit queda en la etiqueta OCI de la imagen.
+  - id: construir-api
+    name: gcr.io/cloud-builders/docker
+    waitFor: ['freno-domingo']
+    args:
+      - build
+      - --pull
+      - --label=org.opencontainers.image.revision=$COMMIT_SHA
+      - --tag=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_PREFIJO}/api:$BUILD_ID
+      - backend/api
+
+  - id: construir-migrador
+    name: gcr.io/cloud-builders/docker
+    waitFor: ['freno-domingo']
+    args:
+      - build
+      - --pull
+      - --label=org.opencontainers.image.revision=$COMMIT_SHA
+      - --file=backend/Dockerfile.migrador
+      - --tag=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_PREFIJO}/migrador:$BUILD_ID
+      - backend
+
+  # ── 2. Subida ───────────────────────────────────────────────────────
+  - id: subir-api
+    name: gcr.io/cloud-builders/docker
+    waitFor: ['construir-api']
+    args: ['push', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_PREFIJO}/api:$BUILD_ID']
+
+  - id: subir-migrador
+    name: gcr.io/cloud-builders/docker
+    waitFor: ['construir-migrador']
+    args: ['push', '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_PREFIJO}/migrador:$BUILD_ID']
+
+  # ── 3. Migraciones ──────────────────────────────────────────────────
+  # `jobs execute --wait` devuelve error si la ejecución falla, y con eso
+  # el build se detiene aquí.
+  - id: migrar
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    waitFor: ['subir-migrador', 'subir-api', 'copia-antes-de-migrar']
+    entrypoint: bash
+    args:
+      - -euo
+      - pipefail
+      - -c
+      - |
+        gcloud run jobs update ${_PREFIJO}-migrador \
+          --region=${_REGION} \
+          --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_PREFIJO}/migrador:$BUILD_ID \
+          --quiet
+        gcloud run jobs execute ${_PREFIJO}-migrador --region=${_REGION} --wait
+
+  # ── 4. Despliegue de la API ─────────────────────────────────────────
+  # Solo cambia la imagen. Variables, secretos, cuenta de servicio y
+  # tamaños los fija Terraform y se conservan.
+  - id: desplegar-api
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    waitFor: ['migrar']
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - ${_PREFIJO}-api
+      - --region=${_REGION}
+      - --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_PREFIJO}/api:$BUILD_ID
+      - --quiet
