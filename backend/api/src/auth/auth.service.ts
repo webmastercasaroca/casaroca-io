@@ -46,7 +46,7 @@ export class AuthService {
     if (!usuario || !clave) throw new UnauthorizedException(generico);
 
     const { rows } = await this.pool.query(
-      `SELECT * FROM identidad.credencial_de($1)`, [usuario]);
+      `SELECT id as cuenta_id, clave_hash, estado, bloqueada_hasta, exige_segundo_factor, segundo_factor_activo, debe_cambiar_clave FROM identidad.cuentas WHERE usuario = $1::citext`, [usuario]);
     const c = rows[0];
 
     if (!c) {
